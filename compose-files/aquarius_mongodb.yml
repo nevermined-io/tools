@@ -7,7 +7,7 @@ services:
       backend:
         ipv4_address: 172.15.0.11
   aquarius:
-    image: oceanprotocol/aquarius:${AQUARIUS_VERSION:-stable}
+    image: keykoio/nevermind-metadata:${AQUARIUS_VERSION:-stable}
     ports:
     - 5000:5000
     networks:
