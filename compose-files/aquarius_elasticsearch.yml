@@ -10,7 +10,7 @@ services:
       MAX_MAP_COUNT: "64000"
       discovery.type: "single-node"
 
-  aquarius:
+  nevermind-metadata:
     image: keykoio/nevermind-metadata:${AQUARIUS_VERSION:-stable}
     ports:
       - 5000:5000
