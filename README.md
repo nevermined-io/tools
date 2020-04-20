@@ -260,10 +260,13 @@ The accounts from type mnemonic can be access with this seedphrase:
 
 See the page titled "[Ways to Contribute](https://docs.oceanprotocol.com/concepts/contributing/)" in the Ocean Protocol documentation.
 
+##Attribution
+This project is based in the [Ocean Protocol Barge](https://github.com/oceanprotocol/barge). It keeps the same Apache v2 License and adds some improvements.
+
 ## License
 
-```text
-Copyright 2019 Ocean Protocol Foundation
+```
+Copyright 2020 Keyko GmbH.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
