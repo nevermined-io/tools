@@ -444,7 +444,7 @@ while :; do
             ;;
         *)
             [ ${CHECK_ELASTIC_VM_COUNT} = "true" ] && check_max_map_count
-            printf $COLOR_Y'Starting Ocean...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting Nevermind...\n\n'$COLOR_RESET
             configure_secret_store
             [ -n "${NODE_COMPOSE_FILE}" ] && COMPOSE_FILES+=" -f ${NODE_COMPOSE_FILE}"
             [ ${KEEPER_DEPLOY_CONTRACTS} = "true" ] && clean_local_contracts

@@ -1,6 +1,6 @@
 [![banner](https://raw.githubusercontent.com/keyko-io/assets/master/images/logo/small/keyko_logo@2x-100.jpg)](https://keyko.io)
 
-#nevermind-tools
+# nevermind-tools
 > 🐳 Docker Compose files for the full Ocean Protocol stack.
 
 ---
@@ -49,7 +49,7 @@ cd barge
 
 That will run the current default versions of Aquarius, Brizo, Events Handler, Commons, Keeper Contracts, and Faucet. It will also run a local Spree network (i.e. `--local-spree-node`).
 
-<img width="486" alt="Welcome to Ocean Protocol" src="Welcome_to_Ocean_Protocol.png">
+<img width="486" alt="Welcome to Nevermind" src="Welcome_to_nevermind.jpeg">
 
 It's overkill, but to be _sure_ that you use exactly the Docker images and volumes you want, you can prune all the Docker things in your system first:
 
