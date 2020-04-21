@@ -17,5 +17,5 @@ services:
       LOCAL_CONTRACTS: ${KEEPER_DEPLOY_CONTRACTS}
       LOG_LEVEL: ${EVENTS_HANDLER_LOG_LEVEL}
     volumes:
-      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/keeper-contracts:ro
+      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermind-contracts:ro
       - ${ACCOUNTS_FOLDER}:/accounts

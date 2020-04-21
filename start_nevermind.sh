@@ -36,16 +36,16 @@ export AGENT_VERSION=${AGENT_VERSION:-latest}
 
 export PARITY_IMAGE="parity/parity:v2.5.7-stable"
 
-export PROJECT_NAME="ocean"
+export PROJECT_NAME="nevermind"
 export FORCEPULL="false"
 
 # Ocean filesystem artifacts
-export OCEAN_HOME="${HOME}/.ocean"
+export NEVERMIND_HOME="${HOME}/.nevermind"
 
 # keeper options
 export KEEPER_OWNER_ROLE_ADDRESS="${KEEPER_OWNER_ROLE_ADDRESS}"
 export KEEPER_DEPLOY_CONTRACTS="true"
-export KEEPER_ARTIFACTS_FOLDER="${OCEAN_HOME}/keeper-contracts/artifacts"
+export KEEPER_ARTIFACTS_FOLDER="${NEVERMIND_HOME}/nevermind-contracts/artifacts"
 # Specify which ethereum client to run or connect to: development, spree or nile
 export KEEPER_NETWORK_NAME="spree"
 export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
@@ -194,10 +194,10 @@ function configure_secret_store {
 }
 
 function check_if_owned_by_root {
-    if [ -d "$OCEAN_HOME" ]; then
-        uid=$(ls -nd "$OCEAN_HOME" | awk '{print $3;}')
+    if [ -d "$NEVERMIND_HOME" ]; then
+        uid=$(ls -nd "$NEVERMIND_HOME" | awk '{print $3;}')
         if [ "$uid" = "0" ]; then
-            printf $COLOR_R"WARN: $OCEAN_HOME is owned by root\n"$COLOR_RESET >&2
+            printf $COLOR_R"WARN: $NEVERMIND_HOME is owned by root\n"$COLOR_RESET >&2
         else
             uid=$(ls -nd "$KEEPER_ARTIFACTS_FOLDER" | awk '{print $3;}')
             if [ "$uid" = "0" ]; then

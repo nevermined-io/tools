@@ -19,6 +19,6 @@ services:
       enable_publish: 'true'
       enable_consume: 'true'
     volumes:
-      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/src/app/node_modules/@oceanprotocol/keeper-contracts/artifacts/:ro
+      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/src/app/node_modules/@keyko-io/nevermind-contracts/artifacts/:ro
       
 

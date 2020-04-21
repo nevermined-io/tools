@@ -25,5 +25,5 @@ services:
       IPFS_GATEWAY: ${BRIZO_IPFS_GATEWAY}
       OPERATOR_SERVICE_URL: ${OPERATOR_SERVICE_URL}
     volumes:
-      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/keeper-contracts:ro
+      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermind-contracts:ro
       - ${ACCOUNTS_FOLDER}:/accounts

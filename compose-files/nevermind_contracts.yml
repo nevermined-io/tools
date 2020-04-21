@@ -21,4 +21,4 @@ services:
     depends_on:
       - keeper-node
     volumes:
-    - ${KEEPER_ARTIFACTS_FOLDER}:/keeper-contracts/artifacts/
+    - ${KEEPER_ARTIFACTS_FOLDER}:/nevermind-contracts/artifacts/
