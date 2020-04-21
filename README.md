@@ -1,7 +1,7 @@
 [![banner](https://raw.githubusercontent.com/keyko-io/assets/master/images/logo/small/keyko_logo@2x-100.jpg)](https://keyko.io)
 
-# nevermind-tools
-> 🐳 Docker Compose files for the full Ocean Protocol stack.
+# Nevermind Tools
+> Swiss army knife used for running Nevermind Data Platform
 
 ---
 
@@ -31,27 +31,33 @@
 
 You need to have the newest versions of:
 
-- Linux or macOS. Windows is not currently supported. If you are on Windows, we recommend running Barge inside a Linux VM. Another option might be to use the [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux).
+- Linux or macOS. Windows is not currently supported. If you are on Windows, we recommend running the tools inside 
+  a Linux VM. Another option might be to use the 
+  [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux).
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/)
-- If you want to use Azure Storage with Brizo (and you might not), then you must edit the file [`brizo.env`](./brizo.env) to have your Azure credentials. To learn how to get those credentials, see our tutorial to [Set up Azure Storage](https://docs.oceanprotocol.com/tutorials/azure-for-brizo/).
+- If you want to use Azure Storage (and you might not), then you must edit the file [`gateway.env`](gateway.env) to have 
+  your Azure credentials. To learn how to get those credentials, see our tutorial to 
+  [Set up Azure Storage](https://docs.oceanprotocol.com/tutorials/azure-for-brizo/).
 
 ## Get Started
 
-If you're new to Barge, it's best to start with the defaults:
+If you're new to the project, it's best to start with the defaults:
 
 ```bash
-git clone git@github.com:oceanprotocol/barge.git
-cd barge
+git clone git@github.com:keyko-io/nevermind-tools.git
+cd nevermind-tools
 
-./start_ocean.sh
+./start_nevermind.sh
 ```
 
-That will run the current default versions of Aquarius, Brizo, Events Handler, Commons, Keeper Contracts, and Faucet. It will also run a local Spree network (i.e. `--local-spree-node`).
+That will run the current default versions of Aquarius, Brizo, Events Handler, Commons, Keeper Contracts, and Faucet. 
+It will also run a local Spree network (i.e. `--local-spree-node`).
 
 <img width="486" alt="Welcome to Nevermind" src="Welcome_to_nevermind.jpeg">
 
-It's overkill, but to be _sure_ that you use exactly the Docker images and volumes you want, you can prune all the Docker things in your system first:
+It's overkill, but to be _sure_ that you use exactly the Docker images and volumes you want, you can prune all the 
+Docker things in your system first:
 
 ```bash
 docker system prune --all --volumes
@@ -69,7 +75,8 @@ The default versions are always a combination of component versions which are co
 | -------- | -------- | -------------- | --------- | -------- | -------- | ------ |
 | `v1.0.7` | `v0.9.5` | `v0.4.7`       | `v0.13.2` | `v2.3.1` | `v0.3.4` | latest |
 
-You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
+You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as 
+`latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
 
 You can override the Docker image tag used for a particular component by setting its associated environment variable before calling `start_ocean.sh`:
 
@@ -122,11 +129,13 @@ will use the default Docker image tags for Aquarius, Keeper Contracts and Common
 
 ## Docker Building Blocks
 
-Barge consists of a set of building blocks that can be combined to form a local test environment. By default all building blocks will be started by the `start_ocean.sh` script.
+Barge consists of a set of building blocks that can be combined to form a local test environment. By default all 
+building blocks will be started by the `start_nevermind.sh` script.
 
 ### Commons
 
-By default it will start two containers (client & server). If Commons is running, you can open the **Commons Frontend** application in your browser:
+By default it will start two containers (client & server). If Commons is running, you can open the **Commons Frontend** 
+application in your browser:
 
 [http://localhost:3000](http://localhost:3000)
 
@@ -139,7 +148,8 @@ This Building Block can be disabled by setting the `--no-commons` flag.
 
 ### Aquarius
 
-By default it will start two containers (one for Aquarius and one for its database engine). By default, Barge will use Elasticsearch for its database engine. You can use the `--mongodb` option to use MongoDB instead.
+By default it will start two containers (one for Aquarius and one for its database engine). By default, the tools will 
+use Elasticsearch for its database engine. You can use the `--mongodb` option to use MongoDB instead.
 
 This Building Block can be disabled by setting the `--no-aquarius` flag.
 
@@ -202,7 +212,8 @@ By default it will start two containers, one for Faucet server and one for its d
 | -------- | ------------- | ------------------ | --------------------- | ------------------------------------------------- |
 | `faucet` | `3001`        | http://faucet:3001 | http://localhost:3001 | [Faucet](https://github.com/oceanprotocol/faucet) |
 
-By default the Faucet allows requests every 24hrs. To disable the timespan check you can pass `FAUCET_TIMESPAN=0` as environment variable before starting the script.
+By default the Faucet allows requests every 24hrs. To disable the timespan check you can pass `FAUCET_TIMESPAN=0` as 
+environment variable before starting the script.
 
 ### Agent
 
@@ -256,12 +267,9 @@ The accounts from type mnemonic can be access with this seedphrase:
 
 `taxi music thumb unique chat sand crew more leg another off lamp`
 
-## Contributing
-
-See the page titled "[Ways to Contribute](https://docs.oceanprotocol.com/concepts/contributing/)" in the Ocean Protocol documentation.
-
 ##Attribution
-This project is based in the [Ocean Protocol Barge](https://github.com/oceanprotocol/barge). It keeps the same Apache v2 License and adds some improvements.
+This project is based in the [Ocean Protocol Barge](https://github.com/oceanprotocol/barge). 
+It keeps the same Apache v2 License and adds some improvements.
 
 ## License
 

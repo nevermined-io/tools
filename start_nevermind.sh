@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# start_ocean.sh
-# Copyright (c) 2019 Ocean Protocol contributors
-# SPDX-License-Identifier: Apache-2.0
 IP="localhost"
 optspec=":-:"
 while getopts "$optspec" optchar; do
@@ -18,7 +15,7 @@ done
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-export BRIZO_ENV_FILE="${DIR}/brizo.env"
+export BRIZO_ENV_FILE="${DIR}/gateway.env"
 
 # Patch $DIR if spaces (BRIZO_ENV_FILE does not need patch)
 DIR="${DIR/ /\\ }"
