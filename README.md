@@ -36,7 +36,7 @@ You need to have the newest versions of:
   [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux).
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/)
-- If you want to use Azure Storage (and you might not), then you must edit the file [`brizo.env`](./brizo.env) to have 
+- If you want to use Azure Storage (and you might not), then you must edit the file [`gateway.env`](gateway.env) to have 
   your Azure credentials. To learn how to get those credentials, see our tutorial to 
   [Set up Azure Storage](https://docs.oceanprotocol.com/tutorials/azure-for-brizo/).
 
