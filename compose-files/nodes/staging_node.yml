@@ -13,9 +13,9 @@ services:
       --jsonrpc-hosts all
       --jsonrpc-apis all
     volumes:
-      - ../networks/nile/config:/home/parity/parity/config
-      - ../networks/nile/keys:/keys/nile
-      - keeper-node-nile:/home/parity/base
+      - ../networks/staging/config:/home/parity/parity/config
+      - ../networks/staging/keys:/keys/staging
+      - keeper-node-staging:/home/parity/base
     ports:
       - 8545:8545
     networks:

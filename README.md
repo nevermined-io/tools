@@ -18,7 +18,6 @@
   - [Keeper Node](#keeper-node)
   - [Secret Store](#secret-store)
   - [Faucet](#faucet)
-  - [Agent](#agent)
   - [Dashboard](#dashboard)
 - [Spree Network](#spree-network)
   - [Spree Mnemonic](#spree-mnemonic)
@@ -70,9 +69,9 @@ The startup script comes with a set of options for customizing various things.
 
 The default versions are always a combination of component versions which are considered stable.
 
-| Metadata API | Gateway    | Events Handler | Keeper    | Commons  | Faucet   | Agent  |
-| -------- | -------- | -------------- | --------- | -------- | -------- | ------ |
-| `v1.0.7` | `v0.9.5` | `v0.4.7`       | `v0.13.2` | `v2.3.1` | `v0.3.4` | latest |
+| Metadata API | Gateway    | Events Handler | Keeper    | Commons  | Faucet   | 
+| -------- | -------- | -------------- | --------- | -------- | -------- | 
+| `v1.0.7` | `v0.9.5` | `v0.4.7`       | `v0.13.2` | `v2.3.1` | `v0.3.4` | 
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as 
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
@@ -86,7 +85,6 @@ You can override the Docker image tag used for a particular component by setting
 - `COMMONS_CLIENT_VERSION`
 - `COMMONS_SERVER_VERSION`
 - `FAUCET_VERSION`
-- `AGENT_VERSION`
 
 For example:
 
@@ -112,14 +110,13 @@ will use the default Docker image tags for Metadata API, Keeper Contracts and Co
 | `--no-faucet`              | Start up Ocean without the `faucet` Building Block.                                             |
 | `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                               |
 | `--no-dashboard`           | Start up Ocean without the `dashboard` Building Block.                                          |
-| `--no-agent`               | Start up Ocean without the `agent` Building Block.                                          |
 | `--mongodb`                | Start up Ocean with MongoDB as DB engine for Metadata API instead of Elasticsearch.                 |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                  |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
-| `--local-duero-node`       | Runs a local parity node and connects the node to the `duero` network.                          |
-| `--local-nile-node`        | Runs a local parity node and connects the node to the `nile` network.                           |
-| `--local-pacific-node`     | Runs a local parity node and connects the node to the `pacific` network (official Ocean network |
+| `--local-integration-node`       | Runs a local parity node and connects the node to the `integration` network.                          |
+| `--local-staging-node`        | Runs a local parity node and connects the node to the `staging` network.                           |
+| `--local-production-node`     | Runs a local parity node and connects the node to the `production` network (official Ocean network |
 | `--reuse-ganache-database` | Configures a running `ganache` node to use a persistent database.                               |
 | `--force-pull`             | Force pulling the latest revision of the used Docker images.                                    |
 | `--purge`                  | Removes the Docker containers, volumes, artifact folder and networks used by the script.        |
@@ -189,9 +186,9 @@ This node can be one of the following types (with the default being `spree`):
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ganache` | Runs a local [ganache-cli](https://github.com/trufflesuite/ganache-cli) node that is not persistent by default. The contracts from the desired `nevermind-contracts` version will be deployed upon launch of this node. |
 | `spree`   | This is the default. Runs a local node of the Spree Network. See [Spree Network](#spree-network) for details. The contracts from the desired `nevermind-contracts` version will be deployed upon launch of this node.   |
-| `duero`   | Runs a local node of the Duero Network and connects to the [Duero Testnet](https://docs.oceanprotocol.com/concepts/testnets/#the-duero-testnet).                                                                     |
-| `nile`    | Runs a local node of the Nile Network and connects to the [Nile Testnet](https://docs.oceanprotocol.com/concepts/testnets/#nile-testnet).                                                                            |
-| `pacific` | Runs a local node of the Pacific Network and connects to the [Pacific network](https://docs.oceanprotocol.com/concepts/pacific-network/).                                                                            |
+| `integration` | Runs a local node connected to the Integration Network.                                                                     |
+| `staging` | Runs a local node connected to the Staging Network.                                                                     |
+| `production`    | Runs a local node connected to the Production Network.                                                                     |
 
 ### Secret Store
 
@@ -213,14 +210,6 @@ By default it will start two containers, one for Faucet server and one for its d
 
 By default the Faucet allows requests every 24hrs. To disable the timespan check you can pass `FAUCET_TIMESPAN=0` as 
 environment variable before starting the script.
-
-### Agent
-
-By default it will start one container. This Building Block can be disabled by setting the `--no-agent` flag.
-
-| Hostname | External Port | Internal URL      | Local URL             | Description                                     |
-| -------- | ------------- | ----------------- | --------------------- | ----------------------------------------------- |
-| `agent`  | `4040`        | http://agent:4040 | http://agent:4040 | [Agent](https://github.com/oceanprotocol/agent) |
 
 ### Dashboard
 

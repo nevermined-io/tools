@@ -13,9 +13,9 @@ services:
       --jsonrpc-hosts all
       --jsonrpc-apis all
     volumes:
-      - ../networks/duero/config:/home/parity/parity/config
-      - ../networks/duero/keys:/keys/duero
-      - keeper-node-duero:/home/parity/base
+      - ../networks/production/config:/home/parity/parity/config
+      - ../networks/production/keys:/keys/production
+      - keeper-node-production:/home/parity/base
     ports:
       - 8545:8545
     networks:

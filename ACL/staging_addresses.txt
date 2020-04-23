@@ -1,4 +1,4 @@
-Nile
+Staging
 Version=address
 v0.5.1=0x38ba43fFa8C7715F0f2A5d52E78a392d2bD71176
 v0.5.2=0x31a64a1DCdD9e1b8db84ef94431a61C6B462Ad0c

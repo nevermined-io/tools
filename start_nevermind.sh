@@ -29,7 +29,6 @@ export KEEPER_VERSION=${KEEPER_VERSION:-latest}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.3.4}
 export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v2.3.1}
 export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.3.1}
-export AGENT_VERSION=${AGENT_VERSION:-latest}
 
 export PARITY_IMAGE="parity/parity:v2.5.7-stable"
 
@@ -43,7 +42,7 @@ export NEVERMIND_HOME="${HOME}/.nevermind"
 export KEEPER_OWNER_ROLE_ADDRESS="${KEEPER_OWNER_ROLE_ADDRESS}"
 export KEEPER_DEPLOY_CONTRACTS="true"
 export KEEPER_ARTIFACTS_FOLDER="${NEVERMIND_HOME}/nevermind-contracts/artifacts"
-# Specify which ethereum client to run or connect to: development, spree or nile
+# Specify which ethereum client to run or connect to: development, integration or staging
 export KEEPER_NETWORK_NAME="spree"
 export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
 
@@ -124,11 +123,6 @@ export COMMONS_IPFS_NODE_URI=https://ipfs.oceanprotocol.com:443
 
 #export OPERATOR_SERVICE_URL=http://127.0.0.1:8050
 export OPERATOR_SERVICE_URL=https://operator-api.operator.dev-ocean.com
-
-#agent
-# private key for agent, public address: 0x6f2b82bB771687b69d0932c7386742804144ae7D
-# NEVER USE this address in production !
-export AGENT_PRIVATE_KEY='axis talent grab cushion figure couple plug ostrich file false jealous nest'
 
 # Export User UID and GID
 export LOCAL_USER_ID=$(id -u)
@@ -236,7 +230,6 @@ COMPOSE_FILES+=" -f ${COMPOSE_DIR}/events_handler.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/agent.yml"
 DOCKER_COMPOSE_EXTRA_OPTS="${DOCKER_COMPOSE_EXTRA_OPTS:-}"
 
 while :; do
@@ -267,9 +260,8 @@ while :; do
             export KEEPER_VERSION="latest"
             # TODO: Change label on Docker to refer `latest` to `master`
             export FAUCET_VERSION="latest"
-            export AGENT_VERSION="latest"
-	        export COMMONS_SERVER_VERSION="latest"
-	        export COMMONS_CLIENT_VERSION="latest"
+	          export COMMONS_SERVER_VERSION="latest"
+	          export COMMONS_CLIENT_VERSION="latest"
             printf $COLOR_Y'Switched to latest components...\n\n'$COLOR_RESET
             ;;
         --force-pull)
@@ -279,11 +271,7 @@ while :; do
         #################################################
         # Exclude switches
         #################################################
-        --no-pleuston)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/commons.yml/}"
-            printf $COLOR_Y'Starting without Commons...\n\n'$COLOR_RESET
-            ;;
-	--no-commons)
+	    --no-commons)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/commons.yml/}"
             printf $COLOR_Y'Starting without Commons...\n\n'$COLOR_RESET
             ;;
@@ -314,10 +302,6 @@ while :; do
         --no-acl-contract)
             export CONFIGURE_ACL="false"
             printf $COLOR_Y'Disabling acl validation in secret-store...\n\n'$COLOR_RESET
-            ;;
-        --no-agent)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/agent.yml/}"
-            printf $COLOR_Y'Starting without Agent ...\n\n'$COLOR_RESET
             ;;
         #################################################
         # Only Secret Store
@@ -363,35 +347,35 @@ while :; do
             printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store signing node...\n\n'$COLOR_RESET
             ;;
-        # connects you to nile ocean testnet
-        --local-nile-node)
-            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/nile_node.yml"
+        # connects you to staging network
+        --local-staging-node)
+            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/staging_node.yml"
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermind_contracts.yml/}"
             export KEEPER_MNEMONIC=''
-            export KEEPER_NETWORK_NAME="nile"
+            export KEEPER_NETWORK_NAME="staging"
             export KEEPER_DEPLOY_CONTRACTS="false"
             export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
-            printf $COLOR_Y'Starting with local Nile node...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting with local Staging node...\n\n'$COLOR_RESET
             ;;
-        # connects you to duero ocean testnet
-        --local-duero-node)
-            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/duero_node.yml"
+        # connects you to integration network
+        --local-integration-node)
+            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/integration.yml"
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermind_contracts.yml/}"
             export KEEPER_MNEMONIC=''
-            export KEEPER_NETWORK_NAME="duero"
+            export KEEPER_NETWORK_NAME="integration"
             export KEEPER_DEPLOY_CONTRACTS="false"
             export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
-            printf $COLOR_Y'Starting with local Duero node...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting with local Integration node...\n\n'$COLOR_RESET
             ;;
-        # connects you to Pacific ocean network
-        --local-pacific-node)
-            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/pacific_node.yml"
+        # connects you to production network
+        --local-production-node)
+            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/production_node.yml"
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermind_contracts.yml/}"
             export KEEPER_MNEMONIC=''
-            export KEEPER_NETWORK_NAME="pacific"
+            export KEEPER_NETWORK_NAME="production"
             export KEEPER_DEPLOY_CONTRACTS="false"
             export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
-            printf $COLOR_Y'Starting with local Pacific node...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting with local Production node...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
             ;;
         # spins up spree local testnet
@@ -420,9 +404,9 @@ while :; do
             docker network rm ${PROJECT_NAME}_backend || true
             docker network rm ${PROJECT_NAME}_secretstore || true
             docker volume rm ${PROJECT_NAME}_secret-store || true
-            docker volume rm ${PROJECT_NAME}_keeper-node-duero || true
-            docker volume rm ${PROJECT_NAME}_keeper-node-nile || true
-            docker volume rm ${PROJECT_NAME}_keeper-node-pacific || true
+            docker volume rm ${PROJECT_NAME}_keeper-node-integration || true
+            docker volume rm ${PROJECT_NAME}_keeper-node-staging || true
+            docker volume rm ${PROJECT_NAME}_keeper-node-production || true
             docker volume rm ${PROJECT_NAME}_faucet || true
             read -p "Are you sure you want to delete $KEEPER_ARTIFACTS_FOLDER? (y/N): " -n 1 -r
             echo
