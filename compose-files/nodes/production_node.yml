@@ -13,9 +13,9 @@ services:
       --jsonrpc-hosts all
       --jsonrpc-apis all
     volumes:
-      - ../networks/pacific/config:/home/parity/parity/config
-      - ../networks/pacific/keys:/keys/pacific
-      - keeper-node-pacific:/home/parity/base
+      - ../networks/production/config:/home/parity/parity/config
+      - ../networks/production/keys:/keys/production
+      - keeper-node-production:/home/parity/base
     ports:
       - 8545:8545
     networks:

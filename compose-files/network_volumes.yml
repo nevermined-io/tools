@@ -9,7 +9,7 @@ networks:
         - subnet: 172.15.0.1/24
 
 volumes:
-  keeper-node-duero:
-  keeper-node-nile:
-  keeper-node-pacific:
+  keeper-node-testing:
+  keeper-node-staging:
+  keeper-node-production:
   secret-store:
