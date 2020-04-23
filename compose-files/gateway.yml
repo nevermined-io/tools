@@ -1,7 +1,7 @@
 version: '3'
 services:
-  brizo:
-    image: keykoio/nevermind-gateway:$BRIZO_VERSION
+  gateway:
+    image: keykoio/nevermind-gateway:$GATEWAY_VERSION
     ports:
       - 8030:8030
     networks:
@@ -11,7 +11,7 @@ services:
       - keeper-node
       - secret-store-signing-node
     env_file:
-      - ${BRIZO_ENV_FILE}
+      - ${GATEWAY_ENV_FILE}
     environment:
       KEEPER_URL: ${KEEPER_RPC_URL}
       PARITY_URL: ${SIGNING_NODE_URL}
@@ -20,9 +20,9 @@ services:
       PROVIDER_ADDRESS: ${PROVIDER_ADDRESS}
       PROVIDER_PASSWORD: ${PROVIDER_PASSWORD}
       PROVIDER_KEYFILE: ${PROVIDER_KEYFILE}
-      LOG_LEVEL: ${BRIZO_LOG_LEVEL}
-      BRIZO_WORKERS: ${BRIZO_WORKERS}
-      IPFS_GATEWAY: ${BRIZO_IPFS_GATEWAY}
+      LOG_LEVEL: ${GATEWAY_LOG_LEVEL}
+      GATEWAY_WORKERS: ${GATEWAY_WORKERS}
+      IPFS_GATEWAY: ${GATEWAY_IPFS_GATEWAY}
       OPERATOR_SERVICE_URL: ${OPERATOR_SERVICE_URL}
     volumes:
       - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermind-contracts:ro

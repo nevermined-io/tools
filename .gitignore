@@ -16,5 +16,5 @@ networks/secret-store/config/config.toml
 **/.DS_Store
 ._*
 
-# Barge logs
-start_ocean.log
+# Logs
+*.log

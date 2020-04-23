@@ -9,10 +9,10 @@ services:
       - 4040:4040
     environment:
       LOCAL_CONTRACTS: ${KEEPER_DEPLOY_CONTRACTS}
-      aquariusUri: ${AQUARIUS_URI}
-      brizoAddress: ${PROVIDER_ADDRESS}
+      metadataUri: ${METADATA_URI}
+      gatewayAddress: ${PROVIDER_ADDRESS}
       nodeUri: ${KEEPER_RPC_URL}
-      brizoUri: ${BRIZO_URL}
+      gatewayUri: ${GATEWAY_URL}
       secretstoreUri: ${SECRET_STORE_URL}
       faucetUri: ${FAUCET_URL}
       PRIVATE_KEY: ${AGENT_PRIVATE_KEY}
