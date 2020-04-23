@@ -13,9 +13,9 @@ services:
       --jsonrpc-hosts all
       --jsonrpc-apis all
     volumes:
-      - ../networks/testing/config:/home/parity/parity/config
-      - ../networks/testing/keys:/keys/testing
-      - keeper-node-testing:/home/parity/base
+      - ../networks/integration/config:/home/parity/parity/config
+      - ../networks/integration/keys:/keys/integration
+      - keeper-node-integration:/home/parity/base
     ports:
       - 8545:8545
     networks:

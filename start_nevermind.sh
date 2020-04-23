@@ -42,7 +42,7 @@ export NEVERMIND_HOME="${HOME}/.nevermind"
 export KEEPER_OWNER_ROLE_ADDRESS="${KEEPER_OWNER_ROLE_ADDRESS}"
 export KEEPER_DEPLOY_CONTRACTS="true"
 export KEEPER_ARTIFACTS_FOLDER="${NEVERMIND_HOME}/nevermind-contracts/artifacts"
-# Specify which ethereum client to run or connect to: development, testing or staging
+# Specify which ethereum client to run or connect to: development, integration or staging
 export KEEPER_NETWORK_NAME="spree"
 export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
 
@@ -357,15 +357,15 @@ while :; do
             export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
             printf $COLOR_Y'Starting with local Staging node...\n\n'$COLOR_RESET
             ;;
-        # connects you to testing network
-        --local-testing-node)
-            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/testing.yml"
+        # connects you to integration network
+        --local-integration-node)
+            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/integration.yml"
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermind_contracts.yml/}"
             export KEEPER_MNEMONIC=''
-            export KEEPER_NETWORK_NAME="testing"
+            export KEEPER_NETWORK_NAME="integration"
             export KEEPER_DEPLOY_CONTRACTS="false"
             export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
-            printf $COLOR_Y'Starting with local Testing node...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting with local Integration node...\n\n'$COLOR_RESET
             ;;
         # connects you to production network
         --local-production-node)
@@ -404,7 +404,7 @@ while :; do
             docker network rm ${PROJECT_NAME}_backend || true
             docker network rm ${PROJECT_NAME}_secretstore || true
             docker volume rm ${PROJECT_NAME}_secret-store || true
-            docker volume rm ${PROJECT_NAME}_keeper-node-testing || true
+            docker volume rm ${PROJECT_NAME}_keeper-node-integration || true
             docker volume rm ${PROJECT_NAME}_keeper-node-staging || true
             docker volume rm ${PROJECT_NAME}_keeper-node-production || true
             docker volume rm ${PROJECT_NAME}_faucet || true
