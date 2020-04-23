@@ -15,15 +15,15 @@ done
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-export BRIZO_ENV_FILE="${DIR}/gateway.env"
+export GATEWAY_ENV_FILE="${DIR}/gateway.env"
 
-# Patch $DIR if spaces (BRIZO_ENV_FILE does not need patch)
+# Patch $DIR if spaces (GATEWAY_ENV_FILE does not need patch)
 DIR="${DIR/ /\\ }"
 COMPOSE_DIR="${DIR}/compose-files"
 
-# Default versions of Aquarius, Brizo, Keeper Contracts and Commons
-export AQUARIUS_VERSION=${AQUARIUS_VERSION:-latest}
-export BRIZO_VERSION=${BRIZO_VERSION:-v0.9.5}
+# Default versions of Metadata API, Gateway, Keeper Contracts and Commons
+export METADATA_VERSION=${METADATA_VERSION:-latest}
+export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.9.5}
 export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.4.7}
 export KEEPER_VERSION=${KEEPER_VERSION:-latest}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.3.4}
@@ -66,7 +66,7 @@ export KEEPER_MNEMONIC="taxi music thumb unique chat sand crew more leg another 
 export CONFIGURE_ACL="true"
 export ACL_CONTRACT_ADDRESS=""
 
-# Default Aquarius parameters: use Elasticsearch
+# Default MetadataAPI parameters: use Elasticsearch
 export DB_MODULE="elasticsearch"
 export DB_HOSTNAME="172.15.0.11"
 export DB_PORT="9200"
@@ -79,11 +79,11 @@ export DB_CLIENT_KEY=""
 export DB_CLIENT_CERT=""
 CHECK_ELASTIC_VM_COUNT=true
 
-export BRIZO_WORKERS=${BRIZO_WORKERS:-5}
-export BRIZO_LOG_LEVEL="INFO"
+export GATEWAY_WORKERS=${GATEWAY_WORKERS:-5}
+export GATEWAY_LOG_LEVEL="INFO"
 export EVENTS_HANDLER_LOG_LEVEL="INFO"
 
-export BRIZO_IPFS_GATEWAY=https://ipfs.oceanprotocol.com
+export GATEWAY_IPFS_GATEWAY=https://ipfs.oceanprotocol.com
 
 # Set a valid parity address and password to have seamless interaction with the `keeper`
 # it has to exist on the secret store signing node and as well on the keeper node
@@ -94,30 +94,30 @@ export ACCOUNTS_FOLDER="../accounts"
 if [ ${IP} = "localhost" ]; then
     export SECRET_STORE_URL=http://secret-store:12001
     export SIGNING_NODE_URL=http://secret-store-signing-node:8545
-    export AQUARIUS_URI=http://aquarius:5000
+    export METADATA_URI=http://metadata:5000
     export FAUCET_URL=http://localhost:3001
     export COMMONS_SERVER_URL=http://localhost:4000
     export COMMONS_CLIENT_URL=http://localhost:3000
     export COMMONS_KEEPER_RPC_HOST=http://localhost:8545
     export COMMONS_SECRET_STORE_URL=http://localhost:12001
-    export BRIZO_URL=http://localhost:8030
+    export GATEWAY_URL=http://localhost:8030
 else
     export SECRET_STORE_URL=http://${IP}:12001
     export SIGNING_NODE_URL=http://${IP}:8545
-    export AQUARIUS_URI=http://${IP}:5000
+    export METADATA_URI=http://${IP}:5000
     export FAUCET_URL=http://${IP}:3001
     export COMMONS_SERVER_URL=http://${IP}:4000
     export COMMONS_CLIENT_URL=http://${IP}:3000
     export COMMONS_KEEPER_RPC_HOST=http://${IP}:8545
     export COMMONS_SECRET_STORE_URL=http://${IP}:12001
-    export BRIZO_URL=http://${IP}:8030
+    export GATEWAY_URL=http://${IP}:8030
 fi
 # Default Faucet options
 export FAUCET_TIMESPAN=${FAUCET_TIMESPAN:-24}
 
 #commons
-export COMMONS_BRIZO_URL=${BRIZO_URL}
-export COMMONS_AQUARIUS_URI=${AQUARIUS_URI}
+export COMMONS_GATEWAY_URL=${GATEWAY_URL}
+export COMMONS_METADATA_URI=${METADATA_URI}
 export COMMONS_FAUCET_URL=${FAUCET_URL}
 export COMMONS_IPFS_GATEWAY_URI=https://ipfs.oceanprotocol.com
 export COMMONS_IPFS_NODE_URI=https://ipfs.oceanprotocol.com:443
@@ -135,13 +135,13 @@ export LOCAL_USER_ID=$(id -u)
 export LOCAL_GROUP_ID=$(id -g)
 
 
-#add aquarius to /etc/hosts
+#add metadata to /etc/hosts
 
 if [ ${IP} = "localhost" ]; then
-	if grep -q "aquarius" /etc/hosts; then
-    		echo "aquarius exists"
+	if grep -q "metadata" /etc/hosts; then
+    		echo "metadata exists"
 	else
-    		echo "127.0.0.1 aquarius" | sudo tee -a /etc/hosts
+    		echo "127.0.0.1 metadata" | sudo tee -a /etc/hosts
 	fi
 fi
 
@@ -230,8 +230,8 @@ COMPOSE_FILES+=" -f ${COMPOSE_DIR}/dashboard.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermind_contracts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/commons.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/aquarius_elasticsearch.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/brizo.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata_elasticsearch.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/events_handler.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
@@ -247,7 +247,7 @@ while :; do
         # Log level
         #################################################
         --debug)
-            export BRIZO_LOG_LEVEL="DEBUG"
+            export GATEWAY_LOG_LEVEL="DEBUG"
             export EVENTS_HANDLER_LOG_LEVEL="DEBUG"
             ;;
         #################################################
@@ -261,8 +261,8 @@ while :; do
         # Version switches
         #################################################
         --latest)
-            export AQUARIUS_VERSION="latest"
-            export BRIZO_VERSION="latest"
+            export METADATA_VERSION="latest"
+            export GATEWAY_VERSION="latest"
             export EVENTS_HANDLER_VERSION="latest"
             export KEEPER_VERSION="latest"
             # TODO: Change label on Docker to refer `latest` to `master`
@@ -291,13 +291,13 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/events_handler.yml/}"
             printf $COLOR_Y'Starting without Events Handler...\n\n'$COLOR_RESET
             ;;
-        --no-brizo)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/brizo.yml/}"
-            printf $COLOR_Y'Starting without Brizo...\n\n'$COLOR_RESET
+        --no-gateway)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway.yml/}"
+            printf $COLOR_Y'Starting without Gateway...\n\n'$COLOR_RESET
             ;;
-        --no-aquarius)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/aquarius_elasticsearch.yml/}"
-            printf $COLOR_Y'Starting without Aquarius...\n\n'$COLOR_RESET
+        --no-metadata)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata_elasticsearch.yml/}"
+            printf $COLOR_Y'Starting without Metadata API...\n\n'$COLOR_RESET
             ;;
         --no-secret-store)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store.yml/}"
@@ -334,8 +334,8 @@ while :; do
         # MongoDB
         #################################################
         --mongodb)
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/aquarius_mongodb.yml"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/aquarius_elasticsearch.yml/}"
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata_mongodb.yml"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata_elasticsearch.yml/}"
             CHECK_ELASTIC_VM_COUNT=false
             export DB_MODULE="mongodb"
             export DB_HOSTNAME="mongodb"

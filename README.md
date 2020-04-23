@@ -12,8 +12,8 @@
   - [All Options](#all-options)
 - [Docker Building Blocks](#docker-building-blocks)
   - [Commons](#commons)
-  - [Aquarius](#aquarius)
-  - [Brizo](#brizo)
+  - [Metadata API](#metadataapi)
+  - [Gateway](#gateway)
   - [Events Handler](#events-handler)
   - [Keeper Node](#keeper-node)
   - [Secret Store](#secret-store)
@@ -37,8 +37,7 @@ You need to have the newest versions of:
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/)
 - If you want to use Azure Storage (and you might not), then you must edit the file [`gateway.env`](gateway.env) to have 
-  your Azure credentials. To learn how to get those credentials, see our tutorial to 
-  [Set up Azure Storage](https://docs.oceanprotocol.com/tutorials/azure-for-brizo/).
+  your Azure credentials.
 
 ## Get Started
 
@@ -51,7 +50,7 @@ cd nevermind-tools
 ./start_nevermind.sh
 ```
 
-That will run the current default versions of Aquarius, Brizo, Events Handler, Commons, Keeper Contracts, and Faucet. 
+That will run the current default versions of Metadata API, Gateway, Events Handler, Commons, Keeper Contracts, and Faucet. 
 It will also run a local Spree network (i.e. `--local-spree-node`).
 
 <img width="486" alt="Welcome to Nevermind" src="Welcome_to_nevermind.jpeg">
@@ -71,7 +70,7 @@ The startup script comes with a set of options for customizing various things.
 
 The default versions are always a combination of component versions which are considered stable.
 
-| Aquarius | Brizo    | Events Handler | Keeper    | Commons  | Faucet   | Agent  |
+| Metadata API | Gateway    | Events Handler | Keeper    | Commons  | Faucet   | Agent  |
 | -------- | -------- | -------------- | --------- | -------- | -------- | ------ |
 | `v1.0.7` | `v0.9.5` | `v0.4.7`       | `v0.13.2` | `v2.3.1` | `v0.3.4` | latest |
 
@@ -80,8 +79,8 @@ You can use the `--latest` option to pull the most recent Docker images for all 
 
 You can override the Docker image tag used for a particular component by setting its associated environment variable before calling `start_ocean.sh`:
 
-- `AQUARIUS_VERSION`
-- `BRIZO_VERSION`
+- `METADATA_VERSION`
+- `GATEWAY_VERSION`
 - `EVENTS_HANDLER_VERSION`
 - `KEEPER_VERSION`
 - `COMMONS_CLIENT_VERSION`
@@ -92,11 +91,11 @@ You can override the Docker image tag used for a particular component by setting
 For example:
 
 ```bash
-export BRIZO_VERSION=v0.9.1
+export GATEWAY_VERSION=v0.9.1
 ./start_ocean.sh
 ```
 
-will use the default Docker image tags for Aquarius, Keeper Contracts and Commons, but `v0.8.1` for Brizo.
+will use the default Docker image tags for Metadata API, Keeper Contracts and Commons, but `v0.8.1` for Gateway.
 
 > If you use the `--latest` option, then the `latest` Docker images will be used _regardless of whether you set any environment variables beforehand._
 
@@ -106,15 +105,15 @@ will use the default Docker image tags for Aquarius, Keeper Contracts and Common
 | -------------------------- | ----------------------------------------------------------------------------------------------- |
 | `--latest`                 | Pull Docker images tagged with `latest`.                                                        |
 | `--no-commons`             | Start up Ocean without the `commons` Building Block. Helpful for development on `commons`.      |
-| `--no-aquarius`            | Start up Ocean without the `aquarius` Building Block.                                           |
-| `--no-brizo`               | Start up Ocean without the `brizo` Building Block.                                              |
+| `--no-metadata`            | Start up Ocean without the `metadata` Building Block.                                           |
+| `--no-gateway`               | Start up Ocean without the `gateway` Building Block.                                              |
 | `--no-events-handler`      | Start up Ocean without the `events-handler` Building Block.                                     |
 | `--no-secret-store`        | Start up Ocean without the `secret-store` Building Block.                                       |
 | `--no-faucet`              | Start up Ocean without the `faucet` Building Block.                                             |
 | `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                               |
 | `--no-dashboard`           | Start up Ocean without the `dashboard` Building Block.                                          |
 | `--no-agent`               | Start up Ocean without the `agent` Building Block.                                          |
-| `--mongodb`                | Start up Ocean with MongoDB as DB engine for Aquarius instead of Elasticsearch.                 |
+| `--mongodb`                | Start up Ocean with MongoDB as DB engine for Metadata API instead of Elasticsearch.                 |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                  |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
@@ -146,26 +145,26 @@ This Building Block can be disabled by setting the `--no-commons` flag.
 | `commons-client` | `3000`        | http://commons-client:3000 | http://localhost:3000 | [Commons Client](https://github.com/oceanprotocol/commons) |
 | `commons-server` | `4000`        | http://commons-server:4000 | http://locahost:4000  | [Commons Server](https://github.com/oceanprotocol/commons) |
 
-### Aquarius
+### Metadata API
 
-By default it will start two containers (one for Aquarius and one for its database engine). By default, the tools will 
+By default it will start two containers (one for Metadata API and one for its database engine). By default, the tools will 
 use Elasticsearch for its database engine. You can use the `--mongodb` option to use MongoDB instead.
 
-This Building Block can be disabled by setting the `--no-aquarius` flag.
+This Building Block can be disabled by setting the `--no-metadata` flag.
 
 | Hostname        | External Port | Internal URL         | Local URL             | Description                                           |
 | --------------- | ------------- | -------------------- | --------------------- | ----------------------------------------------------- |
-| `aquarius`      | `5000`        | http://aquarius:5000 | http://localhost:5000 | [Aquarius](https://github.com/oceanprotocol/aquarius) |
-| `elasticsearch` |               |                      |                       | The Elasticsearch used by Aquarius                    |
-| `mongodb`       |               |                      |                       | The MongoDB used by Aquarius                          |
+| `metadata`      | `5000`        | http://metadata:5000 | http://localhost:5000 | [metadata](https://github.com/keyko-io/nevermind-metadata) |
+| `elasticsearch` |               |                      |                       | The Elasticsearch used by Metadata API                    |
+| `mongodb`       |               |                      |                       | The MongoDB used by Metadata API                          |
 
-### Brizo
+### Gateway
 
-By default it will start one container. This Building Block can be disabled by setting the `--no-brizo` flag.
+By default it will start one container. This Building Block can be disabled by setting the `--no-gateway` flag.
 
 | Hostname | External Port | Internal URL      | Local URL             | Description                                     |
 | -------- | ------------- | ----------------- | --------------------- | ----------------------------------------------- |
-| `brizo`  | `8030`        | http://brizo:8030 | http://localhost:8030 | [Brizo](https://github.com/oceanprotocol/brizo) |
+| `gateway`  | `8030`        | http://gateway:8030 | http://localhost:8030 | [Gateway](https://github.com/keyko-io/nevermind-gateway) |
 
 ### Events Handler
 
@@ -256,7 +255,7 @@ you will have available a keeper node in the local and private Spree Network wit
 | `0xbcE5A3468386C64507D30136685A99cFD5603135` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
 
 Use one of the above accounts to populate `PROVIDER_ADDRESS`, `PROVIDER_PASSWORD` and `PROVIDER_KEYFILE` in `start_ocean.sh`.
-This account will is used in `brizo` and `events-handler` as the `provider` account which is important for processing the
+This account will is used in `gateway` and `events-handler` as the `provider` account which is important for processing the
 service agreements flow. The `PROVIDER_KEYFILE` must be placed in the `accounts` folder and must match the ethereum
 address from `PROVIDER_ADDRESS`. The `PROVIDER_ADDRESS` is also set in `commons` instance so that published assets get
 assigned the correct provider address.

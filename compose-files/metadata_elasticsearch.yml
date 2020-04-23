@@ -1,12 +1,24 @@
 version: '3'
 services:
+  elasticsearch:
+    image: elasticsearch:6.8.3
+    networks:
+      backend:
+        ipv4_address: 172.15.0.11
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      MAX_MAP_COUNT: "64000"
+      discovery.type: "single-node"
+
   nevermind-metadata:
-    image: keykoio/nevermind-metadata:$AQUARIUS_VERSION
+    image: keykoio/nevermind-metadata:${METADATA_VERSION:-stable}
     ports:
-    - 5000:5000
+      - 5000:5000
     networks:
       backend:
         ipv4_address: 172.15.0.15
+    depends_on:
+      - elasticsearch
     environment:
       DB_MODULE: ${DB_MODULE}
       DB_HOSTNAME: ${DB_HOSTNAME}
@@ -18,3 +30,4 @@ services:
       DB_CA_CERTS: ${DB_CA_CERTS}
       DB_CLIENT_KEY: ${DB_CLIENT_KEY}
       DB_CLIENT_CERT: ${DB_CLIENT_CERT}
+
