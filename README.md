@@ -255,7 +255,7 @@ The accounts from type mnemonic can be access with this seedphrase:
 
 `taxi music thumb unique chat sand crew more leg another off lamp`
 
-##Attribution
+## Attribution
 
 This project is based in the [Ocean Protocol Barge](https://github.com/oceanprotocol/barge). 
 It keeps the same Apache v2 License and adds some improvements. See [NOTICE file](NOTICE).
