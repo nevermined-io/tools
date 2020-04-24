@@ -256,13 +256,16 @@ The accounts from type mnemonic can be access with this seedphrase:
 `taxi music thumb unique chat sand crew more leg another off lamp`
 
 ##Attribution
+
 This project is based in the [Ocean Protocol Barge](https://github.com/oceanprotocol/barge). 
-It keeps the same Apache v2 License and adds some improvements.
+It keeps the same Apache v2 License and adds some improvements. See [NOTICE file](NOTICE).
 
 ## License
 
 ```
-Copyright 2020 Keyko GmbH.
+Copyright 2020 Keyko GmbH
+This product includes software developed at
+BigchainDB GmbH and Ocean Protocol (https://www.oceanprotocol.com/)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
