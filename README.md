@@ -1,7 +1,7 @@
 [![banner](https://raw.githubusercontent.com/keyko-io/assets/master/images/logo/small/keyko_logo@2x-100.jpg)](https://keyko.io)
 
-# Nevermind Tools
-> Swiss army knife used for running Nevermind Data Platform
+# Nevermined Tools
+> Swiss army knife used for running Nevermined Data Platform
 
 ---
 
@@ -43,16 +43,16 @@ You need to have the newest versions of:
 If you're new to the project, it's best to start with the defaults:
 
 ```bash
-git clone git@github.com:keyko-io/nevermind-tools.git
-cd nevermind-tools
+git clone git@github.com:keyko-io/nevermined-tools.git
+cd nevermined-tools
 
-./start_nevermind.sh
+./start_nevermined.sh
 ```
 
 That will run the current default versions of Metadata API, Gateway, Events Handler, Commons, Keeper Contracts, and Faucet. 
 It will also run a local Spree network (i.e. `--local-spree-node`).
 
-<img width="486" alt="Welcome to Nevermind" src="Welcome_to_nevermind.jpeg">
+<img width="486" alt="Welcome to Nevermined" src="Welcome_to_nevermined.png">
 
 It's overkill, but to be _sure_ that you use exactly the Docker images and volumes you want, you can prune all the 
 Docker things in your system first:
@@ -126,7 +126,7 @@ will use the default Docker image tags for Metadata API, Keeper Contracts and Co
 ## Docker Building Blocks
 
 Barge consists of a set of building blocks that can be combined to form a local test environment. By default all 
-building blocks will be started by the `start_nevermind.sh` script.
+building blocks will be started by the `start_nevermined.sh` script.
 
 ### Commons
 
@@ -151,7 +151,7 @@ This Building Block can be disabled by setting the `--no-metadata` flag.
 
 | Hostname        | External Port | Internal URL         | Local URL             | Description                                           |
 | --------------- | ------------- | -------------------- | --------------------- | ----------------------------------------------------- |
-| `metadata`      | `5000`        | http://metadata:5000 | http://localhost:5000 | [metadata](https://github.com/keyko-io/nevermind-metadata) |
+| `metadata`      | `5000`        | http://metadata:5000 | http://localhost:5000 | [metadata](https://github.com/keyko-io/nevermined-metadata) |
 | `elasticsearch` |               |                      |                       | The Elasticsearch used by Metadata API                    |
 | `mongodb`       |               |                      |                       | The MongoDB used by Metadata API                          |
 
@@ -161,7 +161,7 @@ By default it will start one container. This Building Block can be disabled by s
 
 | Hostname | External Port | Internal URL      | Local URL             | Description                                     |
 | -------- | ------------- | ----------------- | --------------------- | ----------------------------------------------- |
-| `gateway`  | `8030`        | http://gateway:8030 | http://localhost:8030 | [Gateway](https://github.com/keyko-io/nevermind-gateway) |
+| `gateway`  | `8030`        | http://gateway:8030 | http://localhost:8030 | [Gateway](https://github.com/keyko-io/nevermined-gateway) |
 
 ### Events Handler
 
@@ -184,8 +184,8 @@ This node can be one of the following types (with the default being `spree`):
 
 | Node      | Description                                                                                                                                                                                                          |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ganache` | Runs a local [ganache-cli](https://github.com/trufflesuite/ganache-cli) node that is not persistent by default. The contracts from the desired `nevermind-contracts` version will be deployed upon launch of this node. |
-| `spree`   | This is the default. Runs a local node of the Spree Network. See [Spree Network](#spree-network) for details. The contracts from the desired `nevermind-contracts` version will be deployed upon launch of this node.   |
+| `ganache` | Runs a local [ganache-cli](https://github.com/trufflesuite/ganache-cli) node that is not persistent by default. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node. |
+| `spree`   | This is the default. Runs a local node of the Spree Network. See [Spree Network](#spree-network) for details. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node.   |
 | `integration` | Runs a local node connected to the Integration Network.                                                                     |
 | `staging` | Runs a local node connected to the Staging Network.                                                                     |
 | `production`    | Runs a local node connected to the Production Network.                                                                     |

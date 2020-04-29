@@ -1,7 +1,7 @@
 version: '3'
 services:
   events-handler:
-    image: keykoio/nevermind-gateway-events:$EVENTS_HANDLER_VERSION
+    image: keykoio/nevermined-gateway-events:$EVENTS_HANDLER_VERSION
     networks:
       backend:
         ipv4_address: 172.15.0.22
@@ -17,5 +17,5 @@ services:
       LOCAL_CONTRACTS: ${KEEPER_DEPLOY_CONTRACTS}
       LOG_LEVEL: ${EVENTS_HANDLER_LOG_LEVEL}
     volumes:
-      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermind-contracts:ro
+      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermined-contracts:ro
       - ${ACCOUNTS_FOLDER}:/accounts

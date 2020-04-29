@@ -1,7 +1,7 @@
 version: '3'
 services:
-  nevermind-metadata:
-    image: keykoio/nevermind-metadata:$METADATA_VERSION
+  nevermined-metadata:
+    image: keykoio/nevermined-metadata:$METADATA_VERSION
     ports:
     - 5000:5000
     networks:

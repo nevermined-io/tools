@@ -1,7 +1,7 @@
 version: '3'
 services:
   gateway:
-    image: keykoio/nevermind-gateway:$GATEWAY_VERSION
+    image: keykoio/nevermined-gateway:$GATEWAY_VERSION
     ports:
       - 8030:8030
     networks:
@@ -25,5 +25,5 @@ services:
       IPFS_GATEWAY: ${GATEWAY_IPFS_GATEWAY}
       OPERATOR_SERVICE_URL: ${OPERATOR_SERVICE_URL}
     volumes:
-      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermind-contracts:ro
+      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermined-contracts:ro
       - ${ACCOUNTS_FOLDER}:/accounts

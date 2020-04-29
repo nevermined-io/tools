@@ -17,7 +17,3 @@ Related to Issue #
 - [ ] Follows the code style of this project.
 - [ ] Tests Cover Changes
 - [ ] Documentation
-
-#### Funny gif
-
-![Put a link of a funny gif inside the parenthesis-->]()
