@@ -32,16 +32,16 @@ export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.3.1}
 
 export PARITY_IMAGE="parity/parity:v2.5.7-stable"
 
-export PROJECT_NAME="nevermind"
+export PROJECT_NAME="nevermined"
 export FORCEPULL="false"
 
 # Ocean filesystem artifacts
-export NEVERMIND_HOME="${HOME}/.nevermind"
+export NEVERMINED_HOME="${HOME}/.nevermined"
 
 # keeper options
 export KEEPER_OWNER_ROLE_ADDRESS="${KEEPER_OWNER_ROLE_ADDRESS}"
 export KEEPER_DEPLOY_CONTRACTS="true"
-export KEEPER_ARTIFACTS_FOLDER="${NEVERMIND_HOME}/nevermind-contracts/artifacts"
+export KEEPER_ARTIFACTS_FOLDER="${NEVERMINED_HOME}/nevermined-contracts/artifacts"
 # Specify which ethereum client to run or connect to: development, integration or staging
 export KEEPER_NETWORK_NAME="spree"
 export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
@@ -185,10 +185,10 @@ function configure_secret_store {
 }
 
 function check_if_owned_by_root {
-    if [ -d "$NEVERMIND_HOME" ]; then
-        uid=$(ls -nd "$NEVERMIND_HOME" | awk '{print $3;}')
+    if [ -d "$NEVERMINED_HOME" ]; then
+        uid=$(ls -nd "$NEVERMINED_HOME" | awk '{print $3;}')
         if [ "$uid" = "0" ]; then
-            printf $COLOR_R"WARN: $NEVERMIND_HOME is owned by root\n"$COLOR_RESET >&2
+            printf $COLOR_R"WARN: $NEVERMINED_HOME is owned by root\n"$COLOR_RESET >&2
         else
             uid=$(ls -nd "$KEEPER_ARTIFACTS_FOLDER" | awk '{print $3;}')
             if [ "$uid" = "0" ]; then
@@ -221,7 +221,7 @@ show_banner
 
 COMPOSE_FILES=""
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/dashboard.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermind_contracts.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/commons.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata_elasticsearch.yml"
@@ -350,7 +350,7 @@ while :; do
         # connects you to staging network
         --local-staging-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/staging_node.yml"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermind_contracts.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="staging"
             export KEEPER_DEPLOY_CONTRACTS="false"
@@ -360,7 +360,7 @@ while :; do
         # connects you to integration network
         --local-integration-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/integration.yml"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermind_contracts.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="integration"
             export KEEPER_DEPLOY_CONTRACTS="false"
@@ -370,7 +370,7 @@ while :; do
         # connects you to production network
         --local-production-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/production_node.yml"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermind_contracts.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="production"
             export KEEPER_DEPLOY_CONTRACTS="false"
@@ -425,7 +425,7 @@ while :; do
             ;;
         *)
             [ ${CHECK_ELASTIC_VM_COUNT} = "true" ] && check_max_map_count
-            printf $COLOR_Y'Starting Nevermind...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting Nevermined...\n\n'$COLOR_RESET
             configure_secret_store
             [ -n "${NODE_COMPOSE_FILE}" ] && COMPOSE_FILES+=" -f ${NODE_COMPOSE_FILE}"
             [ ${KEEPER_DEPLOY_CONTRACTS} = "true" ] && clean_local_contracts

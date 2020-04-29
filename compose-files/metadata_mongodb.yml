@@ -6,8 +6,8 @@ services:
     networks:
       backend:
         ipv4_address: 172.15.0.11
-  nevermind-metadata:
-    image: keykoio/nevermind-metadata:${METADATA_VERSION:-stable}
+  nevermined-metadata:
+    image: keykoio/nevermined-metadata:${METADATA_VERSION:-stable}
     ports:
     - 5000:5000
     networks:

@@ -1,7 +1,7 @@
 version: '3'
 services:
-  nevermind-contracts:
-    image: keykoio/nevermind-contracts:$KEEPER_VERSION
+  nevermined-contracts:
+    image: keykoio/nevermined-contracts:$KEEPER_VERSION
     networks:
       backend:
         ipv4_address: 172.15.0.14
@@ -21,4 +21,4 @@ services:
     depends_on:
       - keeper-node
     volumes:
-    - ${KEEPER_ARTIFACTS_FOLDER}:/nevermind-contracts/artifacts/
+    - ${KEEPER_ARTIFACTS_FOLDER}:/nevermined-contracts/artifacts/
