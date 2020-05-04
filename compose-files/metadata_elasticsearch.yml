@@ -1,6 +1,7 @@
 version: '3'
 services:
   elasticsearch:
+    container_name: nevermined-elasticsearch
     image: elasticsearch:6.8.3
     networks:
       backend:
@@ -11,6 +12,7 @@ services:
       discovery.type: "single-node"
 
   nevermined-metadata:
+    container_name: nevermined-metadata
     image: keykoio/nevermined-metadata:${METADATA_VERSION:-stable}
     ports:
       - 5000:5000

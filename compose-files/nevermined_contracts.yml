@@ -1,6 +1,7 @@
 version: '3'
 services:
   nevermined-contracts:
+    container_name: nevermined-contracts
     image: keykoio/nevermined-contracts:$KEEPER_VERSION
     networks:
       backend:

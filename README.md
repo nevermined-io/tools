@@ -76,7 +76,7 @@ The default versions are always a combination of component versions which are co
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as 
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
 
-You can override the Docker image tag used for a particular component by setting its associated environment variable before calling `start_ocean.sh`:
+You can override the Docker image tag used for a particular component by setting its associated environment variable before calling `start_nevermined.sh`:
 
 - `METADATA_VERSION`
 - `GATEWAY_VERSION`
@@ -90,7 +90,7 @@ For example:
 
 ```bash
 export GATEWAY_VERSION=v0.9.1
-./start_ocean.sh
+./start_nevermined.sh
 ```
 
 will use the default Docker image tags for Metadata API, Keeper Contracts and Commons, but `v0.8.1` for Gateway.
@@ -102,25 +102,27 @@ will use the default Docker image tags for Metadata API, Keeper Contracts and Co
 | Option                     | Description                                                                                     |
 | -------------------------- | ----------------------------------------------------------------------------------------------- |
 | `--latest`                 | Pull Docker images tagged with `latest`.                                                        |
-| `--no-commons`             | Start up Ocean without the `commons` Building Block. Helpful for development on `commons`.      |
-| `--no-metadata`            | Start up Ocean without the `metadata` Building Block.                                           |
-| `--no-gateway`               | Start up Ocean without the `gateway` Building Block.                                              |
-| `--no-events-handler`      | Start up Ocean without the `events-handler` Building Block.                                     |
-| `--no-secret-store`        | Start up Ocean without the `secret-store` Building Block.                                       |
-| `--no-faucet`              | Start up Ocean without the `faucet` Building Block.                                             |
+| `--no-commons`             | Start up without the `commons` Building Block. Helpful for development on `commons`.      |
+| `--no-metadata`            | Start up without the `metadata` Building Block.                                           |
+| `--no-gateway`             | Start up without the `gateway` Building Block.                                              |
+| `--no-events-handler`      | Start up without the `events-handler` Building Block.                                     |
+| `--no-secret-store`        | Start up without the `secret-store` Building Block.                                       |
+| `--no-faucet`              | Start up without the `faucet` Building Block.                                             |
 | `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                               |
-| `--no-dashboard`           | Start up Ocean without the `dashboard` Building Block.                                          |
-| `--mongodb`                | Start up Ocean with MongoDB as DB engine for Metadata API instead of Elasticsearch.                 |
+| `--no-dashboard`           | Start up without the `dashboard` Building Block.                                          |
+| `--mongodb`                | Start up with MongoDB as DB engine for Metadata API instead of Elasticsearch.                 |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                  |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
-| `--local-integration-node`       | Runs a local parity node and connects the node to the `integration` network.                          |
-| `--local-staging-node`        | Runs a local parity node and connects the node to the `staging` network.                           |
-| `--local-production-node`     | Runs a local parity node and connects the node to the `production` network (official Ocean network |
+| `--local-integration-node` | Runs a local parity node and connects the node to the `integration` network.                          |
+| `--local-staging-node`     | Runs a local parity node and connects the node to the `staging` network.                           |
+| `--local-production-node`  | Runs a local parity node and connects the node to the `production` network (official Ocean network |
 | `--reuse-ganache-database` | Configures a running `ganache` node to use a persistent database.                               |
 | `--force-pull`             | Force pulling the latest revision of the used Docker images.                                    |
 | `--purge`                  | Removes the Docker containers, volumes, artifact folder and networks used by the script.        |
-| `--exposeip`               | Binds the components to that specific ip. Exemple: ./start_ocean.sh --exposeip 192.168.0.1      |
+| `--exposeip`               | Binds the components to that specific ip. Exemple: ./start_nevermined.sh --exposeip 192.168.0.1      |
+| `--deattached`             | Starts the Docker containers in deattached mode      |
+
 
 
 ## Docker Building Blocks
@@ -139,8 +141,8 @@ This Building Block can be disabled by setting the `--no-commons` flag.
 
 | Hostname         | External Port | Internal URL               | Local URL             | Description                                                |
 | ---------------- | ------------- | -------------------------- | --------------------- | ---------------------------------------------------------- |
-| `commons-client` | `3000`        | http://commons-client:3000 | http://localhost:3000 | [Commons Client](https://github.com/oceanprotocol/commons) |
-| `commons-server` | `4000`        | http://commons-server:4000 | http://locahost:4000  | [Commons Server](https://github.com/oceanprotocol/commons) |
+| `commons-client` | `3000`        | http://commons-client:3000 | http://localhost:3000 | [Commons Client](https://github.com/keyko-io/nevermined-marketplace) |
+| `commons-server` | `4000`        | http://commons-server:4000 | http://locahost:4000  | [Commons Server](https://github.com/keyko-io/nevermined-marketplace) |
 
 ### Metadata API
 
@@ -169,7 +171,7 @@ By default it will start one container. This Building Block can be disabled by s
 
 | Hostname         | External Port | Internal URL | Local URL | Description                                                       |
 | ---------------- | ------------- | ------------ | --------- | ----------------------------------------------------------------- |
-| `events-handler` |               |              |           | [Events-handler](https://github.com/oceanprotocol/events-handler) |
+| `events-handler` |               |              |           | [Events-handler](https://github.com/keyko-io/nevermined-gateway-events) |
 
 ### Keeper Node
 
@@ -224,7 +226,7 @@ This will start a `portainer` dashboard with the following admin credentials and
 
 ## Spree Network
 
-If you run the `./start_ocean.sh` script with the `--local-spree-node` option (please see [Keeper Node](#keeper-node) section of this document for more details),
+If you run the `./start_nevermined.sh` script with the `--local-spree-node` option (please see [Keeper Node](#keeper-node) section of this document for more details),
 you will have available a keeper node in the local and private Spree Network with the following accounts enabled:
 
 | Account                                      | Type     | Password/Key                 | Balance          |
@@ -243,7 +245,7 @@ you will have available a keeper node in the local and private Spree Network wit
 | `0xe08A1dAe983BC701D05E492DB80e0144f8f4b909` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
 | `0xbcE5A3468386C64507D30136685A99cFD5603135` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
 
-Use one of the above accounts to populate `PROVIDER_ADDRESS`, `PROVIDER_PASSWORD` and `PROVIDER_KEYFILE` in `start_ocean.sh`.
+Use one of the above accounts to populate `PROVIDER_ADDRESS`, `PROVIDER_PASSWORD` and `PROVIDER_KEYFILE` in `start_nevermined.sh`.
 This account will is used in `gateway` and `events-handler` as the `provider` account which is important for processing the
 service agreements flow. The `PROVIDER_KEYFILE` must be placed in the `accounts` folder and must match the ethereum
 address from `PROVIDER_ADDRESS`. The `PROVIDER_ADDRESS` is also set in `commons` instance so that published assets get

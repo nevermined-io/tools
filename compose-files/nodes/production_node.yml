@@ -1,6 +1,7 @@
 version: '3'
 services:
   keeper-node:
+    container_name: nevermined-keeper-node
     image: ${PARITY_IMAGE}
     user: root
     command:

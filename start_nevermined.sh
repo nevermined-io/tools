@@ -30,12 +30,15 @@ export FAUCET_VERSION=${FAUCET_VERSION:-v0.3.4}
 export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v2.3.1}
 export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.3.1}
 
+export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
+
+
 export PARITY_IMAGE="parity/parity:v2.5.7-stable"
 
 export PROJECT_NAME="nevermined"
 export FORCEPULL="false"
 
-# Ocean filesystem artifacts
+# Local filesystem artifacts
 export NEVERMINED_HOME="${HOME}/.nevermined"
 
 # keeper options
@@ -244,6 +247,13 @@ while :; do
             export EVENTS_HANDLER_LOG_LEVEL="DEBUG"
             ;;
         #################################################
+        # Log level
+        #################################################
+        --deattached)
+            echo -e "Running containers in de-attached mode"
+            export COMPOSE_UP_OPTIONS="$COMPOSE_UP_OPTIONS -d"
+            ;;
+        #################################################
         # Disable color
         #################################################
         --no-ansi)
@@ -430,7 +440,7 @@ while :; do
             [ -n "${NODE_COMPOSE_FILE}" ] && COMPOSE_FILES+=" -f ${NODE_COMPOSE_FILE}"
             [ ${KEEPER_DEPLOY_CONTRACTS} = "true" ] && clean_local_contracts
             [ ${FORCEPULL} = "true" ] && eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" pull
-            eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up --remove-orphans
+            eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans
             break
     esac
     shift
