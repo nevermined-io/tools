@@ -1,12 +1,14 @@
 version: '3'
 services:
   mongodb:
+    container_name: nevermined-mongodb
     image: mongo:3.6
     command: mongod
     networks:
       backend:
         ipv4_address: 172.15.0.11
   nevermined-metadata:
+    container_name: metadata
     image: keykoio/nevermined-metadata:${METADATA_VERSION:-stable}
     ports:
     - 5000:5000

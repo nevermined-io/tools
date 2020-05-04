@@ -1,6 +1,7 @@
 version: '3'
 services:
   events-handler:
+    container_name: nevermined-events-handler
     image: keykoio/nevermined-gateway-events:$EVENTS_HANDLER_VERSION
     networks:
       backend:
