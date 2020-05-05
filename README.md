@@ -116,7 +116,7 @@ will use the default Docker image tags for Metadata API, Keeper Contracts and Co
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
 | `--local-integration-node` | Runs a local parity node and connects the node to the `integration` network.                          |
 | `--local-staging-node`     | Runs a local parity node and connects the node to the `staging` network.                           |
-| `--local-production-node`  | Runs a local parity node and connects the node to the `production` network (official Ocean network |
+| `--local-production-node`  | Runs a local parity node and connects the node to the `production` network  |
 | `--reuse-ganache-database` | Configures a running `ganache` node to use a persistent database.                               |
 | `--force-pull`             | Force pulling the latest revision of the used Docker images.                                    |
 | `--purge`                  | Removes the Docker containers, volumes, artifact folder and networks used by the script.        |
@@ -198,7 +198,7 @@ By default it will start three containers. This Building Block can be disabled b
 
 | Hostname                    | External Ports   | Internal URL                          | Local URL              | Description                                                                                   |
 | --------------------------- | ---------------- | ------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------- |
-| `secret-store`              | `12000`, `32771` | http://secret-store:12000             | http://localhost:12000 | An instance of the Ocean Secret Store                                                         |
+| `secret-store`              | `12000`, `32771` | http://secret-store:12000             | http://localhost:12000 | An instance of the  Secret Store                                                         |
 | `secret-store-cors-proxy`   | `12001`          | http://secret-store-cors-proxy:12001  | http://localhost:12001 | An NGINX proxy to enable CORS on the secret store                                             |
 | `secret-store-signing-node` | `9545`           | http://secret-store-signing-node:9545 | http://localhost:9545  | A Parity Ethereum node to `sign` messages for the secret store and to `decrypt` and `encrypt` |
 
