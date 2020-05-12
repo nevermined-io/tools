@@ -91,7 +91,12 @@ export GATEWAY_IPFS_GATEWAY=https://ipfs.oceanprotocol.com
 # it has to exist on the secret store signing node and as well on the keeper node
 export PROVIDER_ADDRESS=0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
 export PROVIDER_PASSWORD=secret
+# GATEWAY Wallet
 export PROVIDER_KEYFILE="/accounts/provider.json"
+# GATEWAY RSA KEY FILES
+export RSA_PRIVKEY_FILE="/accounts/rsa_priv_key.pem"
+export RSA_PUBKEY_FILE="/accounts/rsa_pub_key.pem"
+
 export ACCOUNTS_FOLDER="../accounts"
 if [ ${IP} = "localhost" ]; then
     export SECRET_STORE_URL=http://secret-store:12001
