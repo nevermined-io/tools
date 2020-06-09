@@ -19,6 +19,8 @@ MINIKUBE_HOME="/usr/local/bin"
 MINIKUBE_CMD="$MINIKUBE_HOME/minikube start"
 MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-kvm2}
 MINIKUBE_RECREATE=${MINIKUBE_RECREATE:-false}
+DEPLOY_MINIKUBE=${DEPLOY_MINIKUBE:-true}
+CONFIGURE_K8S_COMPUTE=${CONFIGURE_K8S_COMPUTE:-false}
 K="kubectl"
 SUDO=""
 
@@ -36,16 +38,21 @@ fi
 
 
 main() {
-  set_minikube_parameters
-  if [ "$MINIKUBE_RECREATE" = true ]; then
-    reset_minikube
-  else
-      echo -e "Skipping minikube re-install by MINIKUBE_RECREATE env variable"
+
+  if [ "$DEPLOY_MINIKUBE" = true ]; then
+    set_minikube_parameters
+    if [ "$MINIKUBE_RECREATE" = true ]; then
+      reset_minikube
+    else
+        echo -e "Skipping minikube re-install by MINIKUBE_RECREATE env variable"
+    fi
+    deploy_minikube
   fi
-  if deploy_minikube; then
-    sleep 1 #
-    #deploy_nevermined_compute
+
+  if [ "$CONFIGURE_K8S_COMPUTE" = true ]; then
+    deploy_nevermined_compute
   fi
+
 }
 
 
@@ -54,7 +61,6 @@ main() {
 
 # Set minikube startup parameters
 set_minikube_parameters() {
-  # Assuming driver none by default
     MINIKUBE_CMD=$MINIKUBE_CMD" --vm-driver="$MINIKUBE_DRIVER
 }
 
@@ -100,6 +106,7 @@ deploy_minikube() {
 
 
 install_kubectl_minikube_others() {
+
 # Installing kubectl if needed
   if ! [ -x "$(command -v kubectl)" ]; then
     echo -e "${COLOR_Y}Installing kubectl...${COLOR_RESET}"
@@ -150,6 +157,7 @@ install_kubectl_minikube_others() {
 deploy_nevermined_compute() {
 
   echo -e "${COLOR_B}Starting Nevermined Compute Stack...${COLOR_RESET}"
+  return 1
   $K create ns nevermined-operator
   $K create ns nevermined-compute
   
