@@ -17,6 +17,8 @@ fi
 
 MINIKUBE_HOME="/usr/local/bin"
 MINIKUBE_CMD="$MINIKUBE_HOME/minikube start"
+MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-kvm2}
+MINIKUBE_RECREATE=${MINIKUBE_RECREATE:-false}
 K="kubectl"
 SUDO=""
 
@@ -35,9 +37,13 @@ fi
 
 main() {
   set_minikube_parameters
-  if cleanup_and_deploy_minikube; then
-    echo -e "Here we will start Nevermined Compute"
-    #sleep 10 #
+  if [ "$MINIKUBE_RECREATE" = true ]; then
+    reset_minikube
+  else
+      echo -e "Skipping minikube re-install by MINIKUBE_RECREATE env variable"
+  fi
+  if deploy_minikube; then
+    sleep 1 #
     #deploy_nevermined_compute
   fi
 }
@@ -49,23 +55,31 @@ main() {
 # Set minikube startup parameters
 set_minikube_parameters() {
   # Assuming driver none by default
-    MINIKUBE_CMD=$MINIKUBE_CMD" --vm-driver=kvm2"
+    MINIKUBE_CMD=$MINIKUBE_CMD" --vm-driver="$MINIKUBE_DRIVER
 }
 
 
-cleanup_and_deploy_minikube() {
+reset_minikube() {
 
-  # Stop and delete previous minikube instance running
+  echo -e "Stop and delete previous minikube instance"
+
   if [ -x "$(command -v minikube)" ] ; then
-  minikube_status=$($SUDO $MINIKUBE_HOME/minikube status | grep 'host:' | awk '{print $2}')
-   if [[ $minikube_status == "Running" ]]; then
-  	echo -e "${COLOR_C}First, we need to stop existing minikube...${COLOR_RESET}"
-   $SUDO $MINIKUBE_HOME/minikube stop
-   $SUDO minikube delete
-   fi
-  echo -e "${COLOR_C}Delete existing k8s cluster...${COLOR_RESET}"
+    minikube_status=$($SUDO $MINIKUBE_HOME/minikube status | grep 'host:' | awk '{print $2}')
+
+    if [[ $minikube_status == "Running" ]]; then
+  	  echo -e "${COLOR_C}First, we need to stop existing minikube...${COLOR_RESET}"
+      $SUDO $MINIKUBE_HOME/minikube stop
+      $SUDO minikube delete
+    fi
+
+    echo -e "${COLOR_C}Delete existing k8s cluster...${COLOR_RESET}"
     $SUDO $MINIKUBE_HOME/minikube delete
+
   fi
+
+}
+
+deploy_minikube() {
 
   install_kubectl_minikube_others
 
@@ -73,7 +87,12 @@ cleanup_and_deploy_minikube() {
   echo -e "${COLOR_M}"minikube will now try to start the local k8s cluster"${COLOR_RESET}"
   $SUDO $MINIKUBE_CMD
 
-  if [ ! $($SUDO $MINIKUBE_HOME/minikube status >/dev/null 2>&1) ] ; then
+  minikube_status=$($SUDO $MINIKUBE_HOME/minikube status | grep 'host:' | awk '{print $2}')
+
+  #if [ ! $($SUDO $MINIKUBE_HOME/minikube status) ] ; then
+  if [[ $minikube_status == "Running" ]]; then
+    echo -e "\n${COLOR_G}Minikube is up and Running!${COLOR_RESET}\n"
+  else
     echo -e "${COLOR_R}Unable to start minikube. Please see errors above${COLOR_RESET}"
     return 1
   fi
@@ -130,7 +149,7 @@ install_kubectl_minikube_others() {
 
 deploy_nevermined_compute() {
 
-  echo -e "${COLOR_G}Nevermined Compute Stack...${COLOR_RESET}"
+  echo -e "${COLOR_B}Starting Nevermined Compute Stack...${COLOR_RESET}"
   $K create ns nevermined-operator
   $K create ns nevermined-compute
   
