@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
 export LC_ALL=en_US.UTF-8
 
@@ -48,7 +48,6 @@ export FAUCET_VERSION=${FAUCET_VERSION:-v0.3.4}
 export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v2.3.1}
 export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.3.1}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.1.0}
-
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
 
 
