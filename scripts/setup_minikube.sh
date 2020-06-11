@@ -146,7 +146,7 @@ install_kubectl_minikube_others() {
         echo "deb https://apt.kubernetes.io/ kubernetes-focal main" | $SUDO tee -a /etc/apt/sources.list.d/kubernetes.list
         $SUDO apt-get update
         $SUDO apt-get install -y kubectl socat conntrack kubeadm
-        $SUDO apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
+        $SUDO apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst
         $SUDO bash -c "echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables"
 
       elif [[ $DIST_TYPE == "CentOS" ]]; then
@@ -224,11 +224,14 @@ configure_nevermined_compute() {
 
   if ! $K get  -n $COMPUTE_NAMESPACE  rolebinding default-admin; then
     echo -e "Granting admin privileges"
-    #kubectl create rolebinding default-admin --clusterrole=admin --serviceaccount=default:default
-    $K create  -n $COMPUTE_NAMESPACE rolebinding default-admin --clusterrole=admin --serviceaccount=default:default
+    $K create -n $COMPUTE_NAMESPACE clusterrolebinding cluster-argo-admin --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:argo
+    $K create -n $COMPUTE_NAMESPACE rolebinding default-admin --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:default
+#    $K create -n $COMPUTE_NAMESPACE rolebinding argo-admin --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:argo
+    $K create -n $COMPUTE_NAMESPACE rolebinding argo-server --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:argo-server
+
   fi
 
-  # $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
+  $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
   
   echo -e "${COLOR_G}Point your browser at: http://localhost:8050/api/v1/docs/${COLOR_RESET}\n"
 
