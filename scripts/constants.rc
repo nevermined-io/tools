@@ -15,4 +15,5 @@ COLOR_RESET="\033[00m"
 OSX="Darwin"
 LINUX="Linux"
 
-
+CLUSTER_SERVICE_ACCOUNT=nevermined
+CLUSTER_ADMIN_EMAIL=root@nevermined.io

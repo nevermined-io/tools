@@ -110,7 +110,7 @@ will use the default Docker image tags for Metadata API, Keeper Contracts and Co
 | `--no-faucet`              | Start up without the `faucet` Building Block.                                             |
 | `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                               |
 | `--no-dashboard`           | Start up without the `dashboard` Building Block.                                          |
-| `--mongodb`                | Start up with MongoDB as DB engine for Metadata API instead of Elasticsearch.                 |
+| `--compute`                | Start up with the Nevermined compute components.                 |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                  |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
