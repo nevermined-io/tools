@@ -215,13 +215,6 @@ configure_nevermined_compute() {
 
   $K apply -n $COMPUTE_NAMESPACE -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/install.yaml
 
-  # On GKE, you may need to grant your account the ability to create new clusterroles
-  # $K create -n $COMPUTE_NAMESPACE clusterrolebinding $CLUSTER_SERVICE_ACCOUNT-cluster-admin-binding --clusterrole=cluster-admin --user=$CLUSTER_ADMIN_EMAIL
-
-  # echo -e "Configuring the service account to run Workflows"
-  # argo submit --serviceaccount $CLUSTER_SERVICE_ACCOUNT
-
-
   if ! $K get  -n $COMPUTE_NAMESPACE  rolebinding default-admin; then
     echo -e "Granting admin privileges"
     $K create -n $COMPUTE_NAMESPACE clusterrolebinding cluster-argo-admin --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:argo
@@ -233,7 +226,7 @@ configure_nevermined_compute() {
 
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
   
-  echo -e "${COLOR_G}Point your browser at: http://localhost:8050/api/v1/docs/${COLOR_RESET}\n"
+  echo -e "${COLOR_G}Point your browser at: http://localhost:2746/$COMPUTE_NAMESPACE/ ${COLOR_RESET}\n"
 
 }
 
