@@ -169,9 +169,9 @@ install_kubectl_minikube_others() {
   if ! [ -x "$(command -v minikube)" ] ; then
     echo -e "${COLOR_Y}Installing minikube...${COLOR_RESET}"
     if [[ $PLATFORM == $OSX ]]; then
-      curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 && chmod +x minikube && $SUDO mv minikube $MINIKUBE_HOME
+      curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
     elif [[ $PLATFORM == $LINUX ]]; then
-      curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && $SUDO mv minikube $MINIKUBE_HOME
+      curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
     fi
     $SUDO $MINIKUBE_HOME/minikube config set ShowBootstrapperDeprecationNotification false &&
     $SUDO $MINIKUBE_HOME/minikube config set WantUpdateNotification false &&
