@@ -5,17 +5,17 @@ services:
     image: ${PARITY_IMAGE}
     user: root
     command:
-      --config /home/parity/parity/config/config.toml
+      --chain rinkeby
       --base-path /home/parity/base
       --keys-path /keys
+      --light
       --ws-interface all
       --jsonrpc-cors all
       --jsonrpc-interface all
       --jsonrpc-hosts all
       --jsonrpc-apis all
-      --wrap --light
+      --unsafe-expose
     volumes:
-      - ../networks/rinkeby/config:/home/parity/parity/config
       - ../networks/rinkeby/keys:/keys/rinkeby
       - keeper-node-rinkeby:/home/parity/base
     ports:
