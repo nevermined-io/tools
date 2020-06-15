@@ -114,6 +114,7 @@ will use the default Docker image tags for Metadata API, Keeper Contracts and Co
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                  |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
+| `--local-rinkeby-node`   | Runs a local parity node and connects the node to the `rinkeby` testnet network  |
 | `--local-integration-node` | Runs a local parity node and connects the node to the `integration` network.                          |
 | `--local-staging-node`     | Runs a local parity node and connects the node to the `staging` network.                           |
 | `--local-production-node`  | Runs a local parity node and connects the node to the `production` network  |
@@ -188,6 +189,7 @@ This node can be one of the following types (with the default being `spree`):
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ganache` | Runs a local [ganache-cli](https://github.com/trufflesuite/ganache-cli) node that is not persistent by default. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node. |
 | `spree`   | This is the default. Runs a local node of the Spree Network. See [Spree Network](#spree-network) for details. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node.   |
+| `rinkebt` | Runs a local node connected to the Ethereum [Rinkeby Testnet](https://www.rinkeby.io/).                                                                     |
 | `integration` | Runs a local node connected to the Integration Network.                                                                     |
 | `staging` | Runs a local node connected to the Staging Network.                                                                     |
 | `production`    | Runs a local node connected to the Production Network.                                                                     |

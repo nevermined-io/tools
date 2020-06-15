@@ -62,7 +62,8 @@ fi
 export KEEPER_RPC_PORT="8545"
 export KEEPER_RPC_URL="http://"${KEEPER_RPC_HOST}:${KEEPER_RPC_PORT}
 # Use this seed only on Spree! (Spree is the default.)
-export KEEPER_MNEMONIC="taxi music thumb unique chat sand crew more leg another off lamp"
+KEEPER_MNEMONIC="${KEEPER_MNEMONIC:-taxi music thumb unique chat sand crew more leg another off lamp}"
+
 
 # Enable acl-contract validation in Secret-store
 export CONFIGURE_ACL="true"
@@ -126,11 +127,11 @@ export FAUCET_TIMESPAN=${FAUCET_TIMESPAN:-24}
 export COMMONS_GATEWAY_URL=${GATEWAY_URL}
 export COMMONS_METADATA_URI=${METADATA_URI}
 export COMMONS_FAUCET_URL=${FAUCET_URL}
-export COMMONS_IPFS_GATEWAY_URI=https://ipfs.oceanprotocol.com
-export COMMONS_IPFS_NODE_URI=https://ipfs.oceanprotocol.com:443
+export COMMONS_IPFS_GATEWAY_URI=https://ipfs.keyko.io
+export COMMONS_IPFS_NODE_URI=https://ipfs.keyko.io:443
 
 #export OPERATOR_SERVICE_URL=http://127.0.0.1:8050
-export OPERATOR_SERVICE_URL=https://operator-api.operator.dev-ocean.com
+export OPERATOR_SERVICE_URL=https://operator-api.operator.keyko.io
 
 # Export User UID and GID
 export LOCAL_USER_ID=$(id -u)
@@ -393,6 +394,20 @@ while :; do
             printf $COLOR_Y'Starting with local Production node...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
             ;;
+        # connects you to rinkeby testnet
+        --local-rinkeby-node)
+            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/rinkeby_node.yml"
+            # No contracts deployment, secret store & faucet
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/faucet.yml/}"
+            export KEEPER_MNEMONIC=''
+            export KEEPER_NETWORK_NAME="rinkeby"
+            export KEEPER_DEPLOY_CONTRACTS="false"
+            export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
+            printf $COLOR_Y'Starting with local Rinkeby node...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting without Secret Store & Faucet...\n\n'$COLOR_RESET
+            ;;
         # spins up spree local testnet
         --local-spree-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
@@ -419,6 +434,7 @@ while :; do
             docker network rm ${PROJECT_NAME}_backend || true
             docker network rm ${PROJECT_NAME}_secretstore || true
             docker volume rm ${PROJECT_NAME}_secret-store || true
+            docker volume rm ${PROJECT_NAME}_keeper-node-rinkeby || true
             docker volume rm ${PROJECT_NAME}_keeper-node-integration || true
             docker volume rm ${PROJECT_NAME}_keeper-node-staging || true
             docker volume rm ${PROJECT_NAME}_keeper-node-production || true
