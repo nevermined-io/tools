@@ -89,11 +89,11 @@ You can override the Docker image tag used for a particular component by setting
 For example:
 
 ```bash
-export GATEWAY_VERSION=v0.9.1
+export GATEWAY_VERSION=v0.2.0
 ./start_nevermined.sh
 ```
 
-will use the default Docker image tags for Metadata API, Keeper Contracts and Commons, but `v0.8.1` for Gateway.
+will use the default Docker image tags for Metadata API, Nevermined Contracts and Commons, but `v0.2.0` for Gateway.
 
 > If you use the `--latest` option, then the `latest` Docker images will be used _regardless of whether you set any environment variables beforehand._
 
@@ -189,7 +189,7 @@ This node can be one of the following types (with the default being `spree`):
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ganache` | Runs a local [ganache-cli](https://github.com/trufflesuite/ganache-cli) node that is not persistent by default. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node. |
 | `spree`   | This is the default. Runs a local node of the Spree Network. See [Spree Network](#spree-network) for details. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node.   |
-| `rinkebt` | Runs a local node connected to the Ethereum [Rinkeby Testnet](https://www.rinkeby.io/).                                                                     |
+| `rinkeby` | Runs a local node connected to the Ethereum [Rinkeby Testnet](https://www.rinkeby.io/).                                                                     |
 | `integration` | Runs a local node connected to the Integration Network.                                                                     |
 | `staging` | Runs a local node connected to the Staging Network.                                                                     |
 | `production`    | Runs a local node connected to the Production Network.                                                                     |

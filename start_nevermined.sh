@@ -400,13 +400,12 @@ while :; do
             # No contracts deployment, secret store & faucet
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store.yml/}"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/faucet.yml/}"
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="rinkeby"
             export KEEPER_DEPLOY_CONTRACTS="false"
             export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
             printf $COLOR_Y'Starting with local Rinkeby node...\n\n'$COLOR_RESET
-            printf $COLOR_Y'Starting without Secret Store & Faucet...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting without Secret Store ...\n\n'$COLOR_RESET
             ;;
         # spins up spree local testnet
         --local-spree-node)
