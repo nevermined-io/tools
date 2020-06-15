@@ -8,7 +8,6 @@ services:
       --chain rinkeby
       --base-path /home/parity/base
       --keys-path /keys
-      --light
       --ws-interface all
       --jsonrpc-cors all
       --jsonrpc-interface all
