@@ -71,7 +71,7 @@ The default versions are always a combination of component versions which are co
 
 | Metadata API | Gateway    | Events Handler | Keeper    | Commons  | Faucet   | 
 | -------- | -------- | -------------- | --------- | -------- | -------- | 
-| `v1.0.7` | `v0.9.5` | `v0.4.7`       | `v0.13.2` | `v2.3.1` | `v0.3.4` | 
+| `v0.2.0` | `v0.3.4` | `v0.2.2`       | `v0.3.1` | `v2.3.1` | `v0.3.4` | 
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as 
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
@@ -89,11 +89,11 @@ You can override the Docker image tag used for a particular component by setting
 For example:
 
 ```bash
-export GATEWAY_VERSION=v0.2.0
+export GATEWAY_VERSION=v0.3.4
 ./start_nevermined.sh
 ```
 
-will use the default Docker image tags for Metadata API, Nevermined Contracts and Commons, but `v0.2.0` for Gateway.
+will use the default Docker image tags for Metadata API, Nevermined Contracts and Commons, but `v0.3.4` for Gateway.
 
 > If you use the `--latest` option, then the `latest` Docker images will be used _regardless of whether you set any environment variables beforehand._
 
