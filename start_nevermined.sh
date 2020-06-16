@@ -33,7 +33,7 @@ export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.3.1}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
 
 
-export PARITY_IMAGE="parity/parity:v2.5.7-stable"
+export PARITY_IMAGE="parity/parity:v2.7.2-stable"
 
 export PROJECT_NAME="nevermined"
 export FORCEPULL="false"
