@@ -1,0 +1,15 @@
+version: '3'
+services:
+  compute-api:
+    container_name: compute-api
+    image: keykoio/nevermined-compute-api:$COMPUTE_API_VERSION
+    ports:
+    - 8050:8050
+    networks:
+      backend:
+        ipv4_address: 172.15.0.20
+    environment:
+      ALGO_POD_TIMEOUT: ${ALGO_POD_TIMEOUT}
+      SIGNATURE_REQUIRED: ${SIGNATURE_REQUIRED}
+      ALLOWED_PROVIDERS: ${ALLOWED_PROVIDERS}
+

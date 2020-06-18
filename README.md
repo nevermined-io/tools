@@ -71,7 +71,7 @@ The default versions are always a combination of component versions which are co
 
 | Metadata API | Gateway    | Events Handler | Keeper    | Commons  | Faucet   | 
 | -------- | -------- | -------------- | --------- | -------- | -------- | 
-| `v1.0.7` | `v0.9.5` | `v0.4.7`       | `v0.13.2` | `v2.3.1` | `v0.3.4` | 
+| `v0.2.0` | `v0.3.4` | `v0.2.2`       | `v0.3.1` | `v2.3.1` | `v0.3.4` | 
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as 
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
@@ -89,11 +89,11 @@ You can override the Docker image tag used for a particular component by setting
 For example:
 
 ```bash
-export GATEWAY_VERSION=v0.9.1
+export GATEWAY_VERSION=v0.3.4
 ./start_nevermined.sh
 ```
 
-will use the default Docker image tags for Metadata API, Keeper Contracts and Commons, but `v0.8.1` for Gateway.
+will use the default Docker image tags for Metadata API, Nevermined Contracts and Commons, but `v0.3.4` for Gateway.
 
 > If you use the `--latest` option, then the `latest` Docker images will be used _regardless of whether you set any environment variables beforehand._
 
@@ -114,6 +114,7 @@ will use the default Docker image tags for Metadata API, Keeper Contracts and Co
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                  |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
+| `--local-rinkeby-node`   | Runs a local parity node and connects the node to the `rinkeby` testnet network  |
 | `--local-integration-node` | Runs a local parity node and connects the node to the `integration` network.                          |
 | `--local-staging-node`     | Runs a local parity node and connects the node to the `staging` network.                           |
 | `--local-production-node`  | Runs a local parity node and connects the node to the `production` network  |
@@ -188,6 +189,7 @@ This node can be one of the following types (with the default being `spree`):
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ganache` | Runs a local [ganache-cli](https://github.com/trufflesuite/ganache-cli) node that is not persistent by default. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node. |
 | `spree`   | This is the default. Runs a local node of the Spree Network. See [Spree Network](#spree-network) for details. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node.   |
+| `rinkeby` | Runs a local node connected to the Ethereum [Rinkeby Testnet](https://www.rinkeby.io/).                                                                     |
 | `integration` | Runs a local node connected to the Integration Network.                                                                     |
 | `staging` | Runs a local node connected to the Staging Network.                                                                     |
 | `production`    | Runs a local node connected to the Production Network.                                                                     |

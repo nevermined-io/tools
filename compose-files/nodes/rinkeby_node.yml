@@ -1,0 +1,25 @@
+version: '3'
+services:
+  keeper-node:
+    container_name: nevermined-keeper-node
+    image: ${PARITY_IMAGE}
+    user: root
+    command:
+      --chain rinkeby
+      --base-path /home/parity/base
+      --keys-path /keys
+      --light
+      --ws-interface all
+      --jsonrpc-cors all
+      --jsonrpc-interface all
+      --jsonrpc-hosts all
+      --jsonrpc-apis all
+      --unsafe-expose
+    volumes:
+      - ../networks/rinkeby/keys:/keys/rinkeby
+      - keeper-node-rinkeby:/home/parity/base
+    ports:
+      - 8545:8545
+    networks:
+      backend:
+        ipv4_address: 172.15.0.12
