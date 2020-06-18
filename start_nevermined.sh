@@ -62,8 +62,7 @@ fi
 export KEEPER_RPC_PORT="8545"
 export KEEPER_RPC_URL="http://"${KEEPER_RPC_HOST}:${KEEPER_RPC_PORT}
 # Use this seed only on Spree! (Spree is the default.)
-KEEPER_MNEMONIC="${KEEPER_MNEMONIC:-taxi music thumb unique chat sand crew more leg another off lamp}"
-
+export KEEPER_MNEMONIC="${KEEPER_MNEMONIC:-taxi music thumb unique chat sand crew more leg another off lamp}"
 
 # Enable acl-contract validation in Secret-store
 export CONFIGURE_ACL="true"
