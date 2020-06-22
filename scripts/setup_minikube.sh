@@ -173,6 +173,9 @@ install_kubectl_minikube_others() {
     elif [[ $PLATFORM == $LINUX ]]; then
       curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
     fi
+    # Temporary fix to be able to mount volumes
+    $K -n kube-system patch pod storage-provisioner --patch '{"spec": {"containers": [{"name": "storage-provisioner","image": "gcr.io/k8s-minikube/storage-provisioner:latest"}]}}'
+    $K apply -f admin $__DIR/admin-user.yaml
     $SUDO $MINIKUBE_HOME/minikube config set ShowBootstrapperDeprecationNotification false &&
     $SUDO $MINIKUBE_HOME/minikube config set WantUpdateNotification false &&
     $SUDO $MINIKUBE_HOME/minikube config set WantReportErrorPrompt false &&
