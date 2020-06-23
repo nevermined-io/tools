@@ -1,4 +1,22 @@
 #!/usr/bin/env bash
+set -eo pipefail
+
+export LC_ALL=en_US.UTF-8
+
+__PWD=$PWD
+__DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+__PARENT_DIR=$(dirname $__DIR)
+
+
+if [[ -f $__DIR/constants.rc ]]; then
+    echo -e "Loading config from $__DIR/constants.rc"
+    set -o allexport
+    source $__DIR/constants.rc
+    set +o allexport
+fi
+
+
+
 IP="localhost"
 optspec=":-:"
 while getopts "$optspec" optchar; do
@@ -29,7 +47,7 @@ export KEEPER_VERSION=${KEEPER_VERSION:-latest}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.3.4}
 export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v2.3.1}
 export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.3.1}
-
+export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.1.0}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
 
 
@@ -84,8 +102,11 @@ CHECK_ELASTIC_VM_COUNT=true
 export GATEWAY_WORKERS=${GATEWAY_WORKERS:-5}
 export GATEWAY_LOG_LEVEL="INFO"
 export EVENTS_HANDLER_LOG_LEVEL="INFO"
+export COMPUTE_API_LOG_LEVEL="INFO"
+export COMPUTE_NAMESPACE="nevermined-compute"
 
-export GATEWAY_IPFS_GATEWAY=https://ipfs.oceanprotocol.com
+
+export GATEWAY_IPFS_GATEWAY=https://ipfs.keyko.io
 
 # Set a valid parity address and password to have seamless interaction with the `keeper`
 # it has to exist on the secret store signing node and as well on the keeper node
@@ -108,6 +129,8 @@ if [ ${IP} = "localhost" ]; then
     export COMMONS_KEEPER_RPC_HOST=http://localhost:8545
     export COMMONS_SECRET_STORE_URL=http://localhost:12001
     export GATEWAY_URL=http://localhost:8030
+    export COMPUTE_API_URL=http://localhost:8050
+
 else
     export SECRET_STORE_URL=http://${IP}:12001
     export SIGNING_NODE_URL=http://${IP}:8545
@@ -118,7 +141,10 @@ else
     export COMMONS_KEEPER_RPC_HOST=http://${IP}:8545
     export COMMONS_SECRET_STORE_URL=http://${IP}:12001
     export GATEWAY_URL=http://${IP}:8030
+    export COMPUTE_API_URL=http://${IP}:8050
+
 fi
+
 # Default Faucet options
 export FAUCET_TIMESPAN=${FAUCET_TIMESPAN:-24}
 
@@ -126,10 +152,10 @@ export FAUCET_TIMESPAN=${FAUCET_TIMESPAN:-24}
 export COMMONS_GATEWAY_URL=${GATEWAY_URL}
 export COMMONS_METADATA_URI=${METADATA_URI}
 export COMMONS_FAUCET_URL=${FAUCET_URL}
-export COMMONS_IPFS_GATEWAY_URI=https://ipfs.keyko.io
-export COMMONS_IPFS_NODE_URI=https://ipfs.keyko.io:443
+export COMMONS_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
+export COMMONS_IPFS_NODE_URI=https://ipfs.ipdb.com:443
 
-#export OPERATOR_SERVICE_URL=http://127.0.0.1:8050
+
 export OPERATOR_SERVICE_URL=https://operator-api.operator.keyko.io
 
 # Export User UID and GID
@@ -147,16 +173,6 @@ if [ ${IP} = "localhost" ]; then
 	fi
 fi
 
-# colors
-COLOR_R="\033[0;31m"    # red
-COLOR_G="\033[0;32m"    # green
-COLOR_Y="\033[0;33m"    # yellow
-COLOR_B="\033[0;34m"    # blue
-COLOR_M="\033[0;35m"    # magenta
-COLOR_C="\033[0;36m"    # cyan
-
-# reset
-COLOR_RESET="\033[00m"
 
 function get_acl_address {
     # detect keeper version
@@ -277,6 +293,7 @@ while :; do
             export FAUCET_VERSION="latest"
 	          export COMMONS_SERVER_VERSION="latest"
 	          export COMMONS_CLIENT_VERSION="latest"
+	          export COMPUTE_API_VERSION="latest"
             printf $COLOR_Y'Switched to latest components...\n\n'$COLOR_RESET
             ;;
         --force-pull)
@@ -340,6 +357,16 @@ while :; do
             export DB_HOSTNAME="mongodb"
             export DB_PORT="27017"
             printf $COLOR_Y'Starting with MongoDB...\n\n'$COLOR_RESET
+            ;;
+        #################################################
+        # Nevermined Compute
+        #################################################
+        --compute)
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/compute-api.yml"
+            export ALGO_POD_TIMEOUT="6000"
+            export SIGNATURE_REQUIRED="0"
+            export ALLOWED_PROVIDERS=""
+            printf $COLOR_Y'Starting with Compute stack...\n\n'$COLOR_RESET
             ;;
         #################################################
         # Contract/Storage switches

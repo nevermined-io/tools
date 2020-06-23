@@ -1,0 +1,19 @@
+
+
+# Colors
+COLOR_R="\033[0;31m"    # red
+COLOR_G="\033[0;32m"    # green
+COLOR_Y="\033[0;33m"    # yellow
+COLOR_B="\033[0;34m"    # blue
+COLOR_M="\033[0;35m"    # magenta
+COLOR_C="\033[0;36m"    # cyan
+
+# Color Reset
+COLOR_RESET="\033[00m"
+
+# Platform Type
+OSX="Darwin"
+LINUX="Linux"
+
+CLUSTER_SERVICE_ACCOUNT=nevermined
+CLUSTER_ADMIN_EMAIL=root@nevermined.io

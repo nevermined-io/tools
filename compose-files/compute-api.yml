@@ -1,15 +1,23 @@
 version: '3'
 services:
   compute-api:
-    container_name: compute-api
+    container_name: nevermined-compute-api
     image: keykoio/nevermined-compute-api:$COMPUTE_API_VERSION
     ports:
-    - 8050:8050
+      - 8050:8050
     networks:
       backend:
-        ipv4_address: 172.15.0.20
+        ipv4_address: 172.15.0.26
+    depends_on:
+      - keeper-node
     environment:
+      KEEPER_URL: ${KEEPER_RPC_URL}
+      LOG_LEVEL: ${COMPUTE_API_LOG_LEVEL}
+      LOCAL_CONTRACTS: ${KEEPER_DEPLOY_CONTRACTS}
+      COMPUTE_NAMESPACE: ${COMPUTE_NAMESPACE}
       ALGO_POD_TIMEOUT: ${ALGO_POD_TIMEOUT}
       SIGNATURE_REQUIRED: ${SIGNATURE_REQUIRED}
       ALLOWED_PROVIDERS: ${ALLOWED_PROVIDERS}
-
+    volumes:
+      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermined-contracts:ro
+      - ${ACCOUNTS_FOLDER}:/accounts

@@ -5,24 +5,28 @@
 
 ---
 
-- [Prerequisites](#prerequisites)
-- [Get Started](#get-started)
-- [Options](#options)
-  - [Component Versions](#component-versions)
-  - [All Options](#all-options)
-- [Docker Building Blocks](#docker-building-blocks)
-  - [Commons](#commons)
-  - [Metadata API](#metadataapi)
-  - [Gateway](#gateway)
-  - [Events Handler](#events-handler)
-  - [Keeper Node](#keeper-node)
-  - [Secret Store](#secret-store)
-  - [Faucet](#faucet)
-  - [Dashboard](#dashboard)
-- [Spree Network](#spree-network)
-  - [Spree Mnemonic](#spree-mnemonic)
-- [Contributing](#contributing)
-- [License](#license)
+   * [Nevermined Tools](#nevermined-tools)
+      * [Prerequisites](#prerequisites)
+      * [Get Started](#get-started)
+      * [Options](#options)
+         * [Component Versions](#component-versions)
+         * [All Options](#all-options)
+      * [Docker Building Blocks](#docker-building-blocks)
+         * [Commons](#commons)
+         * [Metadata API](#metadata-api)
+         * [Gateway](#gateway)
+         * [Events Handler](#events-handler)
+         * [Compute API](#compute-api)
+         * [Keeper Node](#keeper-node)
+         * [Secret Store](#secret-store)
+         * [Faucet](#faucet)
+         * [Dashboard](#dashboard)
+      * [Spree Network](#spree-network)
+      * [Compute Stack](#compute-stack)
+         * [Spree Mnemonic](#spree-mnemonic)
+      * [Attribution](#attribution)
+      * [License](#license)
+
 
 ---
 
@@ -110,7 +114,7 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--no-faucet`              | Start up without the `faucet` Building Block.                                             |
 | `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                               |
 | `--no-dashboard`           | Start up without the `dashboard` Building Block.                                          |
-| `--mongodb`                | Start up with MongoDB as DB engine for Metadata API instead of Elasticsearch.                 |
+| `--compute`                | Start up with the Nevermined compute components.                 |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                  |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
@@ -173,6 +177,15 @@ By default it will start one container. This Building Block can be disabled by s
 | Hostname         | External Port | Internal URL | Local URL | Description                                                       |
 | ---------------- | ------------- | ------------ | --------- | ----------------------------------------------------------------- |
 | `events-handler` |               |              |           | [Events-handler](https://github.com/keyko-io/nevermined-gateway-events) |
+
+### Compute API
+
+By default it will start one container. This Building Block can be enabled by setting the `--compute` flag.
+
+| Hostname | External Port | Internal URL      | Local URL             | Description                                     |
+| -------- | ------------- | ----------------- | --------------------- | ----------------------------------------------- |
+| `compute-api`  | `8050`        | http://compute-api:8050 | http://localhost:8050 | [Compute API](https://github.com/keyko-io/nevermined-compute-api) |
+
 
 ### Keeper Node
 
@@ -252,6 +265,19 @@ This account will is used in `gateway` and `events-handler` as the `provider` ac
 service agreements flow. The `PROVIDER_KEYFILE` must be placed in the `accounts` folder and must match the ethereum
 address from `PROVIDER_ADDRESS`. The `PROVIDER_ADDRESS` is also set in `commons` instance so that published assets get
 assigned the correct provider address.
+
+## Compute Stack
+
+To facilitate the deployment in local of the Nevermined compute stack there is a script called `scripts/setup_minikube.sh`.
+This script will be in charge of:
+
+- Install Minikube
+- Install Helm
+- Install the Argo Helm chart
+- Configure the namespace and permissions
+
+So if you want to run the compute stack locally, before running the `start_nevermined.sh` you can run the `scripts/setup_minikube.sh` script.
+ 
 
 ### Spree Mnemonic
 
