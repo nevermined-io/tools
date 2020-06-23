@@ -51,7 +51,7 @@ export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.1.0}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
 
 
-export PARITY_IMAGE="parity/parity:v2.5.7-stable"
+export PARITY_IMAGE="parity/parity:v2.7.2-stable"
 
 export PROJECT_NAME="nevermined"
 export FORCEPULL="false"
@@ -102,8 +102,11 @@ CHECK_ELASTIC_VM_COUNT=true
 export GATEWAY_WORKERS=${GATEWAY_WORKERS:-5}
 export GATEWAY_LOG_LEVEL="INFO"
 export EVENTS_HANDLER_LOG_LEVEL="INFO"
+export COMPUTE_API_LOG_LEVEL="INFO"
+export COMPUTE_NAMESPACE="nevermined-compute"
 
-export GATEWAY_IPFS_GATEWAY=https://ipfs.oceanprotocol.com
+
+export GATEWAY_IPFS_GATEWAY=https://ipfs.keyko.io
 
 # Set a valid parity address and password to have seamless interaction with the `keeper`
 # it has to exist on the secret store signing node and as well on the keeper node
