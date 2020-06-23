@@ -23,7 +23,8 @@ DEPLOY_MINIKUBE=${DEPLOY_MINIKUBE:-true}
 CONFIGURE_K8S_COMPUTE=${CONFIGURE_K8S_COMPUTE:-true}
 COMPUTE_NAMESPACE=${COMPUTE_NAMESPACE:-nevermined-compute}
 INSTALL_KUBECTL=${INSTALL_KUBECTL:-true}
-INSTALL_HELM=${INSTALL_HELM:-false}
+INSTALL_HELM=${INSTALL_HELM:-true}
+ARGO_VERSION=${ARGO_VERSION:-0.9.8}
 
 K="kubectl"
 SUDO=""
@@ -116,14 +117,17 @@ deploy_minikube() {
 
 install_helm() {
 
-  echo -e "${COLOR_Y}Installing helm...${COLOR_RESET}"
-  if [[ $PLATFORM == $OSX ]]; then
-    brew install helm
-  elif [[ $PLATFORM == $LINUX ]]; then
-    curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-    chmod 700 /tmp/get_helm.sh
-    /tmp/get_helm.sh
+  if ! [ -x "$(command -v helm)" ]; then
+    echo -e "${COLOR_Y}Installing helm...${COLOR_RESET}"
+    if [[ $PLATFORM == $OSX ]]; then
+      brew install helm
+    elif [[ $PLATFORM == $LINUX ]]; then
+      curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+      chmod 700 /tmp/get_helm.sh
+      /tmp/get_helm.sh
+    fi
   fi
+  helm version
 
 }
 
@@ -187,21 +191,28 @@ install_kubectl_minikube_others() {
   if ! [ -x "$(command -v argo)" ] ; then
     echo -e "${COLOR_Y}Installing argo...${COLOR_RESET}"
 
-    if [[ $PLATFORM == $OSX ]]; then
-      brew install argoproj/tap/argo
+    helm repo add argo https://argoproj.github.io/argo-helm
+    helm repo update
+    helm uninstall argo || true
+    helm install argo argo/argo --version $ARGO_VERSION
+    # Test installation
+    $K --namespace default get services -o wide | grep argo-server
+    echo -e "${COLOR_G}"Notice: argo was successfully installed"${COLOR_RESET}"
 
-    elif [[ $PLATFORM == $LINUX ]]; then
-      # Download the binary
-      curl -sLO https://github.com/argoproj/argo/releases/download/v2.8.1/argo-linux-amd64
-      # Make binary executable
-      chmod +x argo-linux-amd64
-      # Move binary to path
-      sudo mv ./argo-linux-amd64 /usr/local/bin/argo
-      # Test installation
-      argo version
-      echo -e "${COLOR_G}"Notice: argo was successfully installed"${COLOR_RESET}"
+#
+#    if [[ $PLATFORM == $OSX ]]; then
+#      brew install argoproj/tap/argo
+#
+#    elif [[ $PLATFORM == $LINUX ]]; then
+#      # Download the binary
+#      curl -sLO https://github.com/argoproj/argo/releases/download/v2.8.1/argo-linux-amd64
+#      # Make binary executable
+#      chmod +x argo-linux-amd64
+#      # Move binary to path
+#      sudo mv ./argo-linux-amd64 /usr/local/bin/argo
+#
+#    fi
 
-    fi
   fi
 
 }
