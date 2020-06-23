@@ -41,8 +41,8 @@ COMPOSE_DIR="${DIR}/compose-files"
 
 # Default versions of Metadata API, Gateway, Keeper Contracts and Commons
 export METADATA_VERSION=${METADATA_VERSION:-latest}
-export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.9.5}
-export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.4.7}
+export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.3.4}
+export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.2.2}
 export KEEPER_VERSION=${KEEPER_VERSION:-latest}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.3.4}
 export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v2.3.1}
@@ -80,7 +80,7 @@ fi
 export KEEPER_RPC_PORT="8545"
 export KEEPER_RPC_URL="http://"${KEEPER_RPC_HOST}:${KEEPER_RPC_PORT}
 # Use this seed only on Spree! (Spree is the default.)
-export KEEPER_MNEMONIC="taxi music thumb unique chat sand crew more leg another off lamp"
+export KEEPER_MNEMONIC="${KEEPER_MNEMONIC:-taxi music thumb unique chat sand crew more leg another off lamp}"
 
 # Enable acl-contract validation in Secret-store
 export CONFIGURE_ACL="true"
@@ -155,7 +155,8 @@ export COMMONS_FAUCET_URL=${FAUCET_URL}
 export COMMONS_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
 export COMMONS_IPFS_NODE_URI=https://ipfs.ipdb.com:443
 
-export OPERATOR_SERVICE_URL=https://localhost:8050
+
+export OPERATOR_SERVICE_URL=https://operator-api.operator.keyko.io
 
 # Export User UID and GID
 export LOCAL_USER_ID=$(id -u)
@@ -419,6 +420,19 @@ while :; do
             printf $COLOR_Y'Starting with local Production node...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
             ;;
+        # connects you to rinkeby testnet
+        --local-rinkeby-node)
+            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/rinkeby_node.yml"
+            # No contracts deployment, secret store & faucet
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store.yml/}"
+            export KEEPER_MNEMONIC=''
+            export KEEPER_NETWORK_NAME="rinkeby"
+            export KEEPER_DEPLOY_CONTRACTS="false"
+            export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
+            printf $COLOR_Y'Starting with local Rinkeby node...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting without Secret Store ...\n\n'$COLOR_RESET
+            ;;
         # spins up spree local testnet
         --local-spree-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
@@ -445,6 +459,7 @@ while :; do
             docker network rm ${PROJECT_NAME}_backend || true
             docker network rm ${PROJECT_NAME}_secretstore || true
             docker volume rm ${PROJECT_NAME}_secret-store || true
+            docker volume rm ${PROJECT_NAME}_keeper-node-rinkeby || true
             docker volume rm ${PROJECT_NAME}_keeper-node-integration || true
             docker volume rm ${PROJECT_NAME}_keeper-node-staging || true
             docker volume rm ${PROJECT_NAME}_keeper-node-production || true
