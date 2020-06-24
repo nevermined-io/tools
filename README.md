@@ -12,6 +12,7 @@
          * [Component Versions](#component-versions)
          * [All Options](#all-options)
       * [Docker Building Blocks](#docker-building-blocks)
+         * [Command Line Interface (CLI)](#command-line-interface-cli)
          * [Commons](#commons)
          * [Metadata API](#metadata-api)
          * [Gateway](#gateway)
@@ -134,6 +135,21 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 
 Barge consists of a set of building blocks that can be combined to form a local test environment. By default all 
 building blocks will be started by the `start_nevermined.sh` script.
+
+### Command Line Interface (CLI)
+
+The command line interface allows to interact with your Nevermined environment in an easy way.
+If you want to use the CLI in your shell we recommend to setup the following alias in your host:
+
+```bash
+alias ncli="docker exec -it nevermined-cli java -jar cli-shaded.jar $NEVERMINED_OPTIONS"
+``` 
+
+This will allow to interact with Nevermined using the `ncli` command.
+
+The CLI docker image uses volumes to store the accounts created and the assets downloaded.
+So if you want to get access to any of those you can find them in the `$HOME/.local/share/nevermined-cli/` directory. 
+
 
 ### Commons
 
