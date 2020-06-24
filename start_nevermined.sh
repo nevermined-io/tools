@@ -48,6 +48,7 @@ export FAUCET_VERSION=${FAUCET_VERSION:-v0.3.4}
 export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v2.3.1}
 export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.3.1}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.1.0}
+export CLI_VERSION=${CLI_VERSION:-latest}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
 
 
@@ -102,9 +103,10 @@ CHECK_ELASTIC_VM_COUNT=true
 export GATEWAY_WORKERS=${GATEWAY_WORKERS:-5}
 export GATEWAY_LOG_LEVEL="INFO"
 export EVENTS_HANDLER_LOG_LEVEL="INFO"
-export COMPUTE_API_LOG_LEVEL="INFO"
+export COMPUTE_API_LOG_LEVEL="ERROR"
 export COMPUTE_NAMESPACE="nevermined-compute"
-
+export CLI_VOLUME_PATH="/root/.local/share/nevermined-cli/data" # This will be exported via volume
+export CLI_ENABLED=false
 
 export GATEWAY_IPFS_GATEWAY=https://ipfs.keyko.io
 
@@ -254,6 +256,7 @@ COMPOSE_FILES+=" -f ${COMPOSE_DIR}/events_handler.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/cli.yml"
 DOCKER_COMPOSE_EXTRA_OPTS="${DOCKER_COMPOSE_EXTRA_OPTS:-}"
 
 while :; do
@@ -310,6 +313,11 @@ while :; do
         --no-events-handler)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/events_handler.yml/}"
             printf $COLOR_Y'Starting without Events Handler...\n\n'$COLOR_RESET
+            ;;
+        --no-cli)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/cli.yml/}"
+            CLI_ENABLED=true
+            printf $COLOR_Y'Starting without CLI...\n\n'$COLOR_RESET
             ;;
         --no-gateway)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway.yml/}"
