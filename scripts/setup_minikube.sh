@@ -187,17 +187,22 @@ install_kubectl_minikube_others() {
     echo -e "${COLOR_G}"Notice: minikube was successfully installed"${COLOR_RESET}"
   fi
 
-  # Installing argo if needed
+  # Installing argo with minio if needed
   if ! [ -x "$(command -v argo)" ] ; then
     echo -e "${COLOR_Y}Installing argo...${COLOR_RESET}"
 
     helm repo add argo https://argoproj.github.io/argo-helm
+    helm repo add stable https://kubernetes-charts.storage.googleapis.com/
     helm repo update
     helm uninstall argo || true
+    helm uninstall argo-artifacts || true
     helm install argo argo/argo --version $ARGO_VERSION
+    helm install argo-artifacts stable/minio --set service.type=LoadBalancer --set fullnameOverride=argo-artifacts
     # Test installation
     $K --namespace default get services -o wide | grep argo-server
     echo -e "${COLOR_G}"Notice: argo was successfully installed"${COLOR_RESET}"
+    $K --namespace default get services -o wide | grep argo-artifacts
+    echo -e "${COLOR_G}"Notice: argo-artifacts was successfully installed"${COLOR_RESET}"
 
 #
 #    if [[ $PLATFORM == $OSX ]]; then
