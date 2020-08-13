@@ -21,7 +21,7 @@ services:
       - 3000:3000
     depends_on:
       - keeper-node
-      - metadata
+      - nevermined-metadata
       - gateway
       - commonsserver
     environment:
