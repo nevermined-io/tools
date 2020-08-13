@@ -240,12 +240,13 @@ configure_nevermined_compute() {
     $K create -n $COMPUTE_NAMESPACE rolebinding default-admin --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:default
 #    $K create -n $COMPUTE_NAMESPACE rolebinding argo-admin --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:argo
     $K create -n $COMPUTE_NAMESPACE rolebinding argo-server --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:argo-server
+    $K create -n $COMPUTE_NAMESPACE clusterrolebinding cluster-admin-argo --clusterrole=cluster-admin --serviceaccount=$COMPUTE_NAMESPACE:argo-server
 
   fi
 
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
   
-  echo -e "${COLOR_G}Point your browser at: http://localhost:2746/$COMPUTE_NAMESPACE/ ${COLOR_RESET}\n"
+  echo -e "${COLOR_G}Point your browser at: http://localhost:2746/workflows/$COMPUTE_NAMESPACE/ ${COLOR_RESET}\n"
 
 }
 
