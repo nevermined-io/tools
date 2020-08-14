@@ -4,9 +4,9 @@ services:
     container_name: nevermined-dashboard
     image: portainer/portainer
     command:
-      --admin-password '$$2y$$05$$wk5y6Xr1Y5TQkhUcH1.HNunnCoV6Z//735W7o8l31LxMqVCpg6b6G'
+      --admin-password '$$2y$$05$$fkUploPQsSkt4/OAz/JBTu.S4Z1XT24jiviCBKrOHdSC7OcxIaBEK'
       --host 'unix:///var/run/docker.sock'
-      --logo 'https://raw.githubusercontent.com/oceanprotocol/art/master/logo/logo.png'
+      --logo 'https://raw.githubusercontent.com/keyko-io/assets/master/images/logo/nevermined_logo_1.png'
     networks:
       backend:
         ipv4_address: 172.15.0.25
