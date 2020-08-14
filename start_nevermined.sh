@@ -247,13 +247,11 @@ check_if_owned_by_root
 show_banner
 
 COMPOSE_FILES=""
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/dashboard.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/commons.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata_elasticsearch.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/events_handler.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
@@ -295,9 +293,9 @@ while :; do
             export KEEPER_VERSION="latest"
             # TODO: Change label on Docker to refer `latest` to `master`
             export FAUCET_VERSION="latest"
-	          export COMMONS_SERVER_VERSION="latest"
-	          export COMMONS_CLIENT_VERSION="latest"
-	          export COMPUTE_API_VERSION="latest"
+	        export COMMONS_SERVER_VERSION="latest"
+	        export COMMONS_CLIENT_VERSION="latest"
+	        export COMPUTE_API_VERSION="latest"
             printf $COLOR_Y'Switched to latest components...\n\n'$COLOR_RESET
             ;;
         --force-pull)
@@ -310,10 +308,6 @@ while :; do
 	    --no-commons)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/commons.yml/}"
             printf $COLOR_Y'Starting without Commons...\n\n'$COLOR_RESET
-            ;;
-        --no-events-handler)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/events_handler.yml/}"
-            printf $COLOR_Y'Starting without Events Handler...\n\n'$COLOR_RESET
             ;;
         --no-cli)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/cli.yml/}"
@@ -335,10 +329,6 @@ while :; do
         --no-faucet)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/faucet.yml/}"
             printf $COLOR_Y'Starting without Faucet...\n\n'$COLOR_RESET
-            ;;
-        --no-dashboard)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/dashboard.yml/}"
-            printf $COLOR_Y'Starting without Dashboard ...\n\n'$COLOR_RESET
             ;;
         --no-acl-contract)
             export CONFIGURE_ACL="false"
@@ -376,6 +366,20 @@ while :; do
             export SIGNATURE_REQUIRED="0"
             export ALLOWED_PROVIDERS=""
             printf $COLOR_Y'Starting with Compute stack...\n\n'$COLOR_RESET
+            ;;
+        #################################################
+        # Events Handler 
+        #################################################
+        --events-handler)
+			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/events_handler.yml"
+            printf $COLOR_Y'Starting with Events Handler...\n\n'$COLOR_RESET
+            ;;
+        #################################################
+        # Dashboard
+        #################################################
+        --dashboard)
+			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/dashboard.yml"
+            printf $COLOR_Y'Starting with Dashboard ...\n\n'$COLOR_RESET
             ;;
         #################################################
         # Contract/Storage switches

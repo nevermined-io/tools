@@ -110,12 +110,12 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--no-commons`             | Start up without the `commons` Building Block. Helpful for development on `commons`.      |
 | `--no-metadata`            | Start up without the `metadata` Building Block.                                           |
 | `--no-gateway`             | Start up without the `gateway` Building Block.                                              |
-| `--no-events-handler`      | Start up without the `events-handler` Building Block.                                     |
 | `--no-secret-store`        | Start up without the `secret-store` Building Block.                                       |
 | `--no-faucet`              | Start up without the `faucet` Building Block.                                             |
 | `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                               |
-| `--no-dashboard`           | Start up without the `dashboard` Building Block.                                          |
 | `--compute`                | Start up with the Nevermined compute components.                 |
+| `--events-handler`         | Start up with the `events-handler` Building Block.                                     |
+| `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                          |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                  |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
@@ -188,7 +188,7 @@ By default it will start one container. This Building Block can be disabled by s
 
 ### Events Handler
 
-By default it will start one container. This Building Block can be disabled by setting the `--no-events-handler` flag.
+Events Handler doesn't start by default. This Building Block can be enabled by setting the `--events-handler` flag.
 
 | Hostname         | External Port | Internal URL | Local URL | Description                                                       |
 | ---------------- | ------------- | ------------ | --------- | ----------------------------------------------------------------- |
@@ -246,10 +246,10 @@ environment variable before starting the script.
 
 ### Dashboard
 
-This will start a `portainer` dashboard with the following admin credentials and connects to the local docker host. This Building Block can be disabled by setting the `--no-dashboard` flag.
+This will start a `portainer` dashboard with the following admin credentials and connects to the local docker host. This Building Block can be enabled by setting the `--dashboard` flag.
 
 - User: `admin`
-- Password: `oceanprotocol`
+- Password: `nevermined`
 
 | Hostname    | External Port | Internal URL          | Local URL             | Description                                         |
 | ----------- | ------------- | --------------------- | --------------------- | --------------------------------------------------- |
