@@ -1,6 +1,6 @@
 [parity]
-chain = "/etc/parity/secretstore/chain.json"
-base_path = "/parity_data"
+chain = "/etc/openethereum/secret-store/chain.json"
+base_path = "/etc/openethereum"
 
 [ui]
 disable = true
@@ -28,9 +28,6 @@ disable = true
 port = 30303
 discovery = true
 
-[ipfs]
-enable = false
-
 [snapshots]
 disable_periodic = true
 
@@ -47,8 +44,8 @@ nodes = [
 ]
 interface = "all"
 port = 12000               # port used to communicated with other Secret Store nodes
-path = "/parity_data/secret_store"
+path = "db.ss/secret-store"
 
 [account]
-password = ["/etc/parity/secretstore/password"]
+password = ["/etc/openethereum/secret-store/password"]
 
