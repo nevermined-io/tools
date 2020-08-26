@@ -128,6 +128,7 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--purge`                  | Removes the Docker containers, volumes, artifact folder and networks used by the script.        |
 | `--exposeip`               | Binds the components to that specific ip. Exemple: ./start_nevermined.sh --exposeip 192.168.0.1      |
 | `--deattached`             | Starts the Docker containers in deattached mode      |
+| `--k8s`		             | Deploys the nevermined stack in Kubernetes (requires [kompose](https://kompose.io)) |
 
 
 

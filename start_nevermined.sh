@@ -111,6 +111,8 @@ export CLI_ENABLED=false
 
 export GATEWAY_IPFS_GATEWAY=https://ipfs.keyko.io
 
+export K8S_BACKEND_ENABLED=false
+
 # Set a valid parity address and password to have seamless interaction with the `keeper`
 # it has to exist on the secret store signing node and as well on the keeper node
 export PROVIDER_ADDRESS=0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
@@ -302,6 +304,10 @@ while :; do
             export FORCEPULL="true"
             printf $COLOR_Y'Pulling the latest revision of the used Docker images...\n\n'$COLOR_RESET
             ;;
+        --k8s)
+			export K8S_BACKEND_ENABLED=true
+            printf $COLOR_Y'Deploying Nevermined in Kubernetes...\n\n'$COLOR_RESET
+            ;;
         #################################################
         # Exclude switches
         #################################################
@@ -368,7 +374,7 @@ while :; do
             printf $COLOR_Y'Starting with Compute stack...\n\n'$COLOR_RESET
             ;;
         #################################################
-        # Events Handler 
+        # Events Handler
         #################################################
         --events-handler)
 			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/events_handler.yml"
@@ -499,8 +505,17 @@ while :; do
             [ -n "${NODE_COMPOSE_FILE}" ] && COMPOSE_FILES+=" -f ${NODE_COMPOSE_FILE}"
             [ ${KEEPER_DEPLOY_CONTRACTS} = "true" ] && clean_local_contracts
             [ ${FORCEPULL} = "true" ] && eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" pull
-            eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans
-            break
+
+
+			if [ ${K8S_BACKEND_ENABLED} = "true" ]
+      then
+				echo "GATEWAY_ENV_FILE=$GATEWAY_ENV_FILE"
+	      eval kompose "$COMPOSE_FILES" convert -o export
+			else
+        eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans
+			fi
+
+      break
     esac
     shift
 done
