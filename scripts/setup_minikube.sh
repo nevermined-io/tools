@@ -15,8 +15,6 @@ if [[ -f $__DIR/constants.rc ]]; then
     set +o allexport
 fi
 
-MINIKUBE_HOME="/usr/local/bin"
-MINIKUBE_CMD="$MINIKUBE_HOME/minikube start"
 MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-kvm2}
 MINIKUBE_RECREATE=${MINIKUBE_RECREATE:-true}
 DEPLOY_MINIKUBE=${DEPLOY_MINIKUBE:-true}
@@ -25,6 +23,10 @@ COMPUTE_NAMESPACE=${COMPUTE_NAMESPACE:-nevermined-compute}
 INSTALL_KUBECTL=${INSTALL_KUBECTL:-true}
 INSTALL_HELM=${INSTALL_HELM:-true}
 ARGO_VERSION=${ARGO_VERSION:-0.9.8}
+KUBERNETES_VERSION=${KUBERNETES_VERSION:-1.17.0}
+MINIKUBE_HOME="/usr/local/bin"
+MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION "
+
 
 K="kubectl"
 SUDO=""
@@ -102,7 +104,7 @@ deploy_minikube() {
 
   # start minikube with desired settings
   echo -e "${COLOR_M}"minikube will now try to start the local k8s cluster"${COLOR_RESET}"
-  $SUDO $MINIKUBE_CMD
+  $MINIKUBE_CMD
 
   minikube_status=$($SUDO $MINIKUBE_HOME/minikube status | grep 'host:' | awk '{print $2}')
 
@@ -145,20 +147,26 @@ install_kubectl_minikube_others() {
     elif [[ $PLATFORM == $LINUX ]]; then
 
       if [[ $DIST_TYPE == "Ubuntu" ]]; then
-        $SUDO apt-get update && $SUDO apt-get install -y apt-transport-https
-        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | $SUDO apt-key add -
-        echo "deb https://apt.kubernetes.io/ kubernetes-focal main" | $SUDO tee -a /etc/apt/sources.list.d/kubernetes.list
-        $SUDO apt-get update
-        $SUDO apt-get install -y kubectl socat conntrack kubeadm
-        $SUDO apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst
-        $SUDO bash -c "echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables"
+        sudo swapoff -a
+        sudo systemctl enable docker.service
+        sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg2
+        #curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+        echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+        sudo apt-get update
+        sudo apt-get install -y kubectl socat conntrack kubeadm kubelet keepalived
+        sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst
+        sudo bash -c "echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables"
+        sudo sysctl net.bridge.bridge-nf-call-iptables=1
+
 
       elif [[ $DIST_TYPE == "CentOS" ]]; then
         cp $__DIR/.kubenetes.repo /etc/yum.repos.d/kubernetes.repo
-        $SUDO yum install -y kubectl socat conntrack kubeadm
-        $SUDO bash -c "echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables"
+        sudo yum install -y kubectl socat conntrack kubeadm
+        sudo bash -c "echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables"
       fi
 
+      sudo addgroup libvirtd
       sudo adduser `id -un` kvm
       sudo adduser `id -un` libvirtd
       virsh list --all
@@ -177,6 +185,9 @@ install_kubectl_minikube_others() {
     elif [[ $PLATFORM == $LINUX ]]; then
       curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
     fi
+
+    minikube start
+
     # Temporary fix to be able to mount volumes
     $K -n kube-system patch pod storage-provisioner --patch '{"spec": {"containers": [{"name": "storage-provisioner","image": "gcr.io/k8s-minikube/storage-provisioner:latest"}]}}'
     $K apply -f admin $__DIR/admin-user.yaml
@@ -244,11 +255,11 @@ configure_nevermined_compute() {
 
   fi
 
+  sleep 5
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
-  
+
   echo -e "${COLOR_G}Point your browser at: http://localhost:2746/workflows/$COMPUTE_NAMESPACE/ ${COLOR_RESET}\n"
 
 }
 
 main "$@"
-
