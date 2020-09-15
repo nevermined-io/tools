@@ -200,6 +200,9 @@ function start_compute_api {
     kubectl -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=compute-api-pod --timeout=60s
     kubectl -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/compute-api-deployment 8050:8050 &
     echo -e "${COLOR_G}Compute API running at: http://localhost:8050 ${COLOR_RESET}\n"
+
+    # show logs for the compute-api pod
+    kubectl -n $COMPUTE_NAMESPACE logs -f -l app=compute-api-pod &
 }
 
 
@@ -267,6 +270,22 @@ function check_max_map_count {
     printf $COLOR_R'Please refer to https://www.elastic.co/guide/en/elasticsearch/reference/6.6/vm-max-map-count.html\n'$COLOR_RESET
     exit 1
   fi
+}
+
+function cleanup_processes {
+    list_descendants ()
+    {
+        local children=$(ps -o pid= --ppid "$1")
+
+        for pid in $children
+        do
+            list_descendants "$pid"
+        done
+
+        echo "$children"
+    }
+
+    kill $(list_descendants $$)
 }
 
 check_if_owned_by_root
@@ -524,14 +543,14 @@ while :; do
             [ ${KEEPER_DEPLOY_CONTRACTS} = "true" ] && clean_local_contracts
             [ ${FORCEPULL} = "true" ] && eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" pull
             eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans &
-            [ ${COMPUTE_START} = "true" ] && start_compute_api 2>&1 | print_log "minikube"
+            [ ${COMPUTE_START} = "true" ] && start_compute_api 2>&1 | print_log "minikube" &
 
-            # show logs for the compute-api pod
-            [ ${COMPUTE_START} = "true" ] && kubectl -n $COMPUTE_NAMESPACE logs -f -l app=compute-api-pod | print_log "minikube" &
-
-            echo $(jobs)
-            # bring docker compose to the foreground
+            # give control back to docker-compose
             %1
+
+            # kill all background jobs after docker-compose exits
+            cleanup_processes
+
             break
     esac
     shift
