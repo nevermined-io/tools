@@ -260,6 +260,7 @@ configure_nevermined_compute() {
   fi
 
   # wait for services and setup port forward
+  sleep 5
   $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=argo-server --timeout=60s
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
 

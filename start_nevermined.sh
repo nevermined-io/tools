@@ -8,10 +8,10 @@ __DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 __PARENT_DIR=$(dirname $__DIR)
 
 
-if [[ -f $__DIR/constants.rc ]]; then
-    echo -e "Loading config from $__DIR/constants.rc"
+if [[ -f $__DIR/scripts/constants.rc ]]; then
+    echo -e "Loading config from $__DIR/scripts/constants.rc"
     set -o allexport
-    source $__DIR/constants.rc
+    source $__DIR/scripts/constants.rc
     set +o allexport
 fi
 
@@ -174,6 +174,15 @@ if [ ${IP} = "localhost" ]; then
 	fi
 fi
 
+function print_log() {
+    title=$1
+    while read line
+    do
+        printf "$FORMAT_LOG" $title "$line"
+    done
+}
+
+
 function start_compute_api {
     export MINIKUBE_DRIVER=docker
     eval ./scripts/setup_minikube.sh
@@ -190,8 +199,7 @@ function start_compute_api {
     # wait for service and setup port forwarding
     kubectl -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=compute-api-pod --timeout=60s
     kubectl -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/compute-api-deployment 8050:8050 &
-    echo -e "${COLOR_G}Compute API runnin at: http://localhost:8050 ${COLOR_RESET}\n"
-    export COMPUTE_API_URL=http://172.17.0.1:8050
+    echo -e "${COLOR_G}Compute API running at: http://localhost:8050 ${COLOR_RESET}\n"
 }
 
 
@@ -381,6 +389,7 @@ while :; do
         --compute)
             printf $COLOR_Y'Starting with Compute stack...\n\n'$COLOR_RESET
             export COMPUTE_START="true"
+            export COMPUTE_API_URL=http://172.17.0.1:8050
             ;;
         #################################################
         # Events Handler 
@@ -515,7 +524,13 @@ while :; do
             [ ${KEEPER_DEPLOY_CONTRACTS} = "true" ] && clean_local_contracts
             [ ${FORCEPULL} = "true" ] && eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" pull
             eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans &
-            [ ${COMPUTE_START} = "true" ] && start_compute_api
+            [ ${COMPUTE_START} = "true" ] && start_compute_api 2>&1 | print_log "minikube"
+
+            # show logs for the compute-api pod
+            [ ${COMPUTE_START} = "true" ] && kubectl -n $COMPUTE_NAMESPACE logs -f -l app=compute-api-pod | print_log "minikube" &
+
+            echo $(jobs)
+            # bring docker compose to the foreground
             %1
             break
     esac

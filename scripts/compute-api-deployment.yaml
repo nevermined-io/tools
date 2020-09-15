@@ -37,5 +37,5 @@ spec:
           hostPath:
             path: /accounts
         - name: artifacts-volume
-          hostPath:
-            path: /artifacts
+          configMap:
+            name: artifacts
