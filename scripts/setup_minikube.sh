@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
 export LC_ALL=en_US.UTF-8
 
@@ -45,6 +45,9 @@ fi
 
 
 main() {
+
+  echo -e "${COLOR_M}"waiting for artifacts migration. This script should only be started after nevermined-tools"${COLOR_RESET}"
+  eval $__DIR/wait_for_migration_keeper_artifacts.sh
 
   if [ "$INSTALL_KUBECTL" = true ]; then
     install_kubectl_minikube_others
@@ -253,12 +256,14 @@ configure_nevermined_compute() {
     $K create -n $COMPUTE_NAMESPACE rolebinding argo-server --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:argo-server
     $K create -n $COMPUTE_NAMESPACE clusterrolebinding cluster-admin-argo --clusterrole=cluster-admin --serviceaccount=$COMPUTE_NAMESPACE:argo-server
 
+    $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}
   fi
 
-  sleep 5
+  # wait for services and setup port forward
+  $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=argo-server --timeout=60s
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
 
-  echo -e "${COLOR_G}Point your browser at: http://localhost:2746/workflows/$COMPUTE_NAMESPACE/ ${COLOR_RESET}\n"
+  echo -e "${COLOR_G}Point your browser at: http://localhost:2746/workflows/ ${COLOR_RESET}\n"
 
 }
 
