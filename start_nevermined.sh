@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eo pipefail
+set -emo pipefail
 
 export LC_ALL=en_US.UTF-8
 
@@ -8,10 +8,10 @@ __DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 __PARENT_DIR=$(dirname $__DIR)
 
 
-if [[ -f $__DIR/constants.rc ]]; then
-    echo -e "Loading config from $__DIR/constants.rc"
+if [[ -f $__DIR/scripts/constants.rc ]]; then
+    echo -e "Loading config from $__DIR/scripts/constants.rc"
     set -o allexport
-    source $__DIR/constants.rc
+    source $__DIR/scripts/constants.rc
     set +o allexport
 fi
 
@@ -57,6 +57,7 @@ export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
 
 export PROJECT_NAME="nevermined"
 export FORCEPULL="false"
+export COMPUTE_START="false"
 
 # Local filesystem artifacts
 export NEVERMINED_HOME="${HOME}/.nevermined"
@@ -158,9 +159,6 @@ export COMMONS_FAUCET_URL=${FAUCET_URL}
 export COMMONS_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
 export COMMONS_IPFS_NODE_URI=https://ipfs.ipdb.com:443
 
-
-export OPERATOR_SERVICE_URL=https://operator-api.operator.keyko.io
-
 # Export User UID and GID
 export LOCAL_USER_ID=$(id -u)
 export LOCAL_GROUP_ID=$(id -g)
@@ -175,6 +173,37 @@ if [ ${IP} = "localhost" ]; then
     		echo "127.0.0.1 metadata" | sudo tee -a /etc/hosts
 	fi
 fi
+
+function print_log() {
+    title=$1
+    while read line
+    do
+        printf "$FORMAT_LOG" $title "$line"
+    done
+}
+
+
+function start_compute_api {
+    export MINIKUBE_DRIVER=docker
+    eval ./scripts/setup_minikube.sh
+
+    # add docker images to cache so we don't have to login in the minikube docker env
+    minikube cache add keykoio/nevermined-compute-api:latest
+
+    # start the compute-api
+    minikube start --mount-string="${DIR}/accounts:/accounts" --mount
+
+    COMPUTE_API_DEPLOYMENT="${DIR}/scripts/compute-api-deployment.yaml"
+    envsubst < $COMPUTE_API_DEPLOYMENT | kubectl apply -n $COMPUTE_NAMESPACE -f -
+
+    # wait for service and setup port forwarding
+    kubectl -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=compute-api-pod --timeout=60s
+    kubectl -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/compute-api-deployment 8050:8050 &
+    echo -e "${COLOR_G}Compute API running at: http://localhost:8050 ${COLOR_RESET}\n"
+
+    # show logs for the compute-api pod
+    kubectl -n $COMPUTE_NAMESPACE logs -f -l app=compute-api-pod &
+}
 
 
 function get_acl_address {
@@ -241,6 +270,22 @@ function check_max_map_count {
     printf $COLOR_R'Please refer to https://www.elastic.co/guide/en/elasticsearch/reference/6.6/vm-max-map-count.html\n'$COLOR_RESET
     exit 1
   fi
+}
+
+function cleanup_processes {
+    list_descendants ()
+    {
+        local children=$(ps -o pid= --ppid "$1")
+
+        for pid in $children
+        do
+            list_descendants "$pid"
+        done
+
+        echo "$children"
+    }
+
+    kill $(list_descendants $$)
 }
 
 check_if_owned_by_root
@@ -361,11 +406,9 @@ while :; do
         # Nevermined Compute
         #################################################
         --compute)
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/compute-api.yml"
-            export ALGO_POD_TIMEOUT="6000"
-            export SIGNATURE_REQUIRED="0"
-            export ALLOWED_PROVIDERS=""
             printf $COLOR_Y'Starting with Compute stack...\n\n'$COLOR_RESET
+            export COMPUTE_START="true"
+            export COMPUTE_API_URL=http://172.17.0.1:8050
             ;;
         #################################################
         # Events Handler 
@@ -499,7 +542,15 @@ while :; do
             [ -n "${NODE_COMPOSE_FILE}" ] && COMPOSE_FILES+=" -f ${NODE_COMPOSE_FILE}"
             [ ${KEEPER_DEPLOY_CONTRACTS} = "true" ] && clean_local_contracts
             [ ${FORCEPULL} = "true" ] && eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" pull
-            eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans
+            eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans &
+            [ ${COMPUTE_START} = "true" ] && start_compute_api 2>&1 | print_log "minikube" &
+
+            # give control back to docker-compose
+            %1
+
+            # kill all background jobs after docker-compose exits
+            cleanup_processes
+
             break
     esac
     shift

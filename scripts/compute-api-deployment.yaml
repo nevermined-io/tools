@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: compute-api
+  name: compute-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: compute-api-pod
+  template:
+    metadata:
+      labels:
+        app: compute-api-pod
+    spec:
+      containers:
+      - name: compute-api
+        image: keykoio/nevermined-compute-api:latest
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: volume
+            mountPath: /accounts
+          - name: artifacts-volume
+            mountPath: /usr/local/artifacts
+        ports:
+        - containerPort: 8050
+        env:
+        - name: PROVIDER_ADDRESS
+          value: ${PROVIDER_ADDRESS}
+        - name: PROVIDER_KEYFILE
+          value: ${PROVIDER_KEYFILE}
+        - name: PROVIDER_PASSWORD
+          value: ${PROVIDER_PASSWORD}
+      volumes:
+        - name: volume
+          hostPath:
+            path: /accounts
+        - name: artifacts-volume
+          configMap:
+            name: artifacts

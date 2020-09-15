@@ -11,6 +11,9 @@ COLOR_C="\033[0;36m"    # cyan
 # Color Reset
 COLOR_RESET="\033[00m"
 
+# Format for log messages
+FORMAT_LOG="$COLOR_C%-29s|$COLOR_RESET %s\n"
+
 # Platform Type
 OSX="Darwin"
 LINUX="Linux"
