@@ -211,7 +211,6 @@ install_kubectl_minikube_others() {
     helm uninstall argo || true
     helm uninstall argo-artifacts || true
     helm install argo argo/argo --version $ARGO_VERSION
-    helm install argo-artifacts stable/minio --set service.type=LoadBalancer --set fullnameOverride=argo-artifacts
     # Test installation
     $K --namespace default get services -o wide | grep argo-server
     echo -e "${COLOR_G}"Notice: argo was successfully installed"${COLOR_RESET}"
@@ -246,25 +245,28 @@ configure_nevermined_compute() {
     $K create namespace $COMPUTE_NAMESPACE
   fi
 
+  $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}
   $K apply -n $COMPUTE_NAMESPACE -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/install.yaml
+  helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts
 
   if ! $K get  -n $COMPUTE_NAMESPACE  rolebinding default-admin; then
     echo -e "Granting admin privileges"
     $K create -n $COMPUTE_NAMESPACE clusterrolebinding cluster-argo-admin --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:argo
     $K create -n $COMPUTE_NAMESPACE rolebinding default-admin --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:default
-#    $K create -n $COMPUTE_NAMESPACE rolebinding argo-admin --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:argo
     $K create -n $COMPUTE_NAMESPACE rolebinding argo-server --clusterrole=admin --serviceaccount=$COMPUTE_NAMESPACE:argo-server
     $K create -n $COMPUTE_NAMESPACE clusterrolebinding cluster-admin-argo --clusterrole=cluster-admin --serviceaccount=$COMPUTE_NAMESPACE:argo-server
-
-    $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}
   fi
 
   # wait for services and setup port forward
   sleep 5
-  $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=argo-server --timeout=60s
+  $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=argo-server --timeout=120s
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
 
-  echo -e "${COLOR_G}Point your browser at: http://localhost:2746/workflows/ ${COLOR_RESET}\n"
+  $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=minio --timeout=120s
+  $K -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/argo-artifacts 8060:9000 &
+
+  echo -e "${COLOR_G}Argo Workflows at: http://localhost:2746/workflows/ ${COLOR_RESET}\n"
+  echo -e "${COLOR_G}Minio at: http://localhost:8060 ${COLOR_RESET}\n"
 
 }
 

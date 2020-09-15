@@ -189,6 +189,8 @@ function start_compute_api {
 
     # add docker images to cache so we don't have to login in the minikube docker env
     minikube cache add keykoio/nevermined-compute-api:latest
+    minikube cache add keykoio/nevermined-pod-config-py:latest
+    minikube cache add keykoio/nevermined-pod-publishing-py:latest
 
     # start the compute-api
     minikube start --mount-string="${DIR}/accounts:/accounts" --mount
