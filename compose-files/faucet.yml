@@ -1,27 +1,21 @@
 version: '3'
 services:
-  mongodb:
-    container_name: nevermined-mongodb
-    image: mongo:4
-    ports:
-      - 27017:27017
-    networks:
-      backend:
-        ipv4_address: 172.15.0.20
-
   faucet:
     container_name: nevermined-faucet
-    image: oceanprotocol/faucet:$FAUCET_VERSION
+    image: keyko-io/nevermined-faucet:$FAUCET_VERSION
     ports:
       - 3001:3001
     networks:
       backend:
         ipv4_address: 172.15.0.21
     depends_on:
-      - mongodb
+      - elasticsearch
       - keeper-node
     environment:
       FAUCET_NODE: ${KEEPER_RPC_URL}
       FAUCET_TIMESPAN: ${FAUCET_TIMESPAN}
       NODE_ENV: 'production'
-      MONGO_URL: 'mongodb://mongodb:27017/faucetdbtest'
+      ELASTIC_URL: ${DB_URI}
+      ELASTIC_USER: ${DB_USERNAME}
+      ELASTIC_PASSWORD: ${DB_PASSWORD}
+      ELASTIC_INDEX: ${DB_FAUCET}

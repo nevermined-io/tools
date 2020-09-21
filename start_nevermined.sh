@@ -93,8 +93,10 @@ export ACL_CONTRACT_ADDRESS=""
 export DB_MODULE="elasticsearch"
 export DB_HOSTNAME="172.15.0.11"
 export DB_PORT="9200"
+export DB_URI="http://$DB_HOSTNAME:$DB_PORT/"
 export DB_USERNAME="elastic"
 export DB_PASSWORD="changeme"
+export DB_FAUCET="faucetdb"
 export DB_SSL="false"
 export DB_VERIFY_CERTS="false"
 export DB_CA_CERTS=""
@@ -297,7 +299,8 @@ COMPOSE_FILES=""
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/commons.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata_elasticsearch.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
@@ -366,7 +369,7 @@ while :; do
             printf $COLOR_Y'Starting without Gateway...\n\n'$COLOR_RESET
             ;;
         --no-metadata)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata_elasticsearch.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata.yml/}"
             printf $COLOR_Y'Starting without Metadata API...\n\n'$COLOR_RESET
             ;;
         --no-secret-store)
@@ -376,6 +379,10 @@ while :; do
         --no-faucet)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/faucet.yml/}"
             printf $COLOR_Y'Starting without Faucet...\n\n'$COLOR_RESET
+            ;;
+        --no-elastic)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/elasticsearch.yml/}"
+            printf $COLOR_Y'Starting without ElasticSearch...\n\n'$COLOR_RESET
             ;;
         --no-acl-contract)
             export CONFIGURE_ACL="false"
@@ -397,7 +404,7 @@ while :; do
         #################################################
         --mongodb)
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata_mongodb.yml"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata_elasticsearch.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata.yml/}"
             CHECK_ELASTIC_VM_COUNT=false
             export DB_MODULE="mongodb"
             export DB_HOSTNAME="mongodb"
@@ -413,7 +420,7 @@ while :; do
             export COMPUTE_API_URL=http://172.17.0.1:8050
             ;;
         #################################################
-        # Events Handler 
+        # Events Handler
         #################################################
         --events-handler)
 			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/events_handler.yml"
