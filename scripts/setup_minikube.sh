@@ -257,6 +257,15 @@ configure_nevermined_compute() {
     $K create -n $COMPUTE_NAMESPACE clusterrolebinding cluster-admin-argo --clusterrole=cluster-admin --serviceaccount=$COMPUTE_NAMESPACE:argo-server
   fi
 
+  # create a secret with host docker credentials
+  kubectl -n $COMPUTE_NAMESPACE create secret generic regcred \
+    --from-file=.dockerconfigjson=$HOME/.docker/config.json \
+    --type=kubernetes.io/dockerconfigjson
+
+  # set secret as default for downloading docker images on the default serviceaccount
+  kubectl -n $COMPUTE_NAMESPACE patch serviceaccount default \
+      -p '{"imagePullSecrets": [{"name": "regcred"}]}'
+
   # wait for services and setup port forward
   sleep 5
   $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=argo-server --timeout=120s
