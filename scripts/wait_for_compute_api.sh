@@ -11,7 +11,7 @@ until [ $HTTP_CODE -eq 200 ] || [ $RETRY_COUNT -eq 120 ]; do
     break
   fi
   printf "."
-  sleep 5
+  sleep 10
   let RETRY_COUNT=RETRY_COUNT+1
 done
 
