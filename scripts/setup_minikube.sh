@@ -266,6 +266,9 @@ configure_nevermined_compute() {
     --from-file=.dockerconfigjson=$HOME/.docker/config.json \
     --type=kubernetes.io/dockerconfigjson
 
+  # make sure the service account exists
+  kubectl -n $COMPUTE_NAMESPACE create serviceaccount default || true
+
   # set secret as default for downloading docker images on the default serviceaccount
   kubectl -n $COMPUTE_NAMESPACE patch serviceaccount default \
       -p '{"imagePullSecrets": [{"name": "regcred"}]}'
