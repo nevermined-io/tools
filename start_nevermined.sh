@@ -133,7 +133,7 @@ if [ ${IP} = "localhost" ]; then
     export COMMONS_KEEPER_RPC_HOST=http://localhost:8545
     export COMMONS_SECRET_STORE_URL=http://localhost:12001
     export GATEWAY_URL=http://localhost:8030
-    export COMPUTE_API_URL=http://localhost:8050
+    export COMPUTE_API_URL=http://172.17.0.1:8050
 
 else
     export SECRET_STORE_URL=http://${IP}:12001
@@ -187,11 +187,6 @@ function start_compute_api {
     export MINIKUBE_DRIVER=docker
     eval ./scripts/setup_minikube.sh
 
-    # add docker images to cache so we don't have to login in the minikube docker env
-    minikube cache add keykoio/nevermined-compute-api:latest
-    minikube cache add keykoio/nevermined-pod-config-py:latest
-    minikube cache add keykoio/nevermined-pod-publishing-py:latest
-
     # start the compute-api
     minikube start --mount-string="${DIR}/accounts:/accounts" --mount
 
@@ -199,7 +194,7 @@ function start_compute_api {
     envsubst < $COMPUTE_API_DEPLOYMENT | kubectl apply -n $COMPUTE_NAMESPACE -f -
 
     # wait for service and setup port forwarding
-    kubectl -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=compute-api-pod --timeout=60s
+    kubectl -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=compute-api-pod --timeout=180s
     kubectl -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/compute-api-deployment 8050:8050 &
     echo -e "${COLOR_G}Compute API running at: http://localhost:8050 ${COLOR_RESET}\n"
 
