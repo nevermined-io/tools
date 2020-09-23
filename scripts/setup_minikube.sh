@@ -205,6 +205,8 @@ install_kubectl_minikube_others() {
   if ! [ -x "$(command -v argo)" ] ; then
     echo -e "${COLOR_Y}Installing argo...${COLOR_RESET}"
 
+    $MINIKUBE_CMD
+
     helm repo add argo https://argoproj.github.io/argo-helm
     helm repo add stable https://kubernetes-charts.storage.googleapis.com/
     helm repo update
@@ -214,8 +216,6 @@ install_kubectl_minikube_others() {
     # Test installation
     $K --namespace default get services -o wide | grep argo-server
     echo -e "${COLOR_G}"Notice: argo was successfully installed"${COLOR_RESET}"
-    $K --namespace default get services -o wide | grep argo-artifacts
-    echo -e "${COLOR_G}"Notice: argo-artifacts was successfully installed"${COLOR_RESET}"
 
 #
 #    if [[ $PLATFORM == $OSX ]]; then
@@ -247,7 +247,11 @@ configure_nevermined_compute() {
 
   $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}
   $K apply -n $COMPUTE_NAMESPACE -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/install.yaml
+
+  # Install argo artifacts
   helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts
+  $K -n $COMPUTE_NAMESPACE get services -o wide | grep argo-artifacts
+  echo -e "${COLOR_G}"Notice: argo-artifacts was successfully installed"${COLOR_RESET}"
 
   if ! $K get  -n $COMPUTE_NAMESPACE  rolebinding default-admin; then
     echo -e "Granting admin privileges"
