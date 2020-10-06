@@ -35,12 +35,12 @@
 
 You need to have the newest versions of:
 
-- Linux or macOS. Windows is not currently supported. If you are on Windows, we recommend running the tools inside 
-  a Linux VM. Another option might be to use the 
+- Linux or macOS. Windows is not currently supported. If you are on Windows, we recommend running the tools inside
+  a Linux VM. Another option might be to use the
   [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux).
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/)
-- If you want to use Azure Storage (and you might not), then you must edit the file [`gateway.env`](gateway.env) to have 
+- If you want to use Azure Storage (and you might not), then you must edit the file [`gateway.env`](gateway.env) to have
   your Azure credentials.
 
 ## Get Started
@@ -54,12 +54,12 @@ cd nevermined-tools
 ./start_nevermined.sh
 ```
 
-That will run the current default versions of Metadata API, Gateway, Events Handler, Commons, Keeper Contracts, and Faucet. 
+That will run the current default versions of Metadata API, Gateway, Events Handler, Commons, Keeper Contracts, and Faucet.
 It will also run a local Spree network (i.e. `--local-spree-node`).
 
 <img width="486" alt="Welcome to Nevermined" src="Welcome_to_nevermined.png">
 
-It's overkill, but to be _sure_ that you use exactly the Docker images and volumes you want, you can prune all the 
+It's overkill, but to be _sure_ that you use exactly the Docker images and volumes you want, you can prune all the
 Docker things in your system first:
 
 ```bash
@@ -74,11 +74,11 @@ The startup script comes with a set of options for customizing various things.
 
 The default versions are always a combination of component versions which are considered stable.
 
-| Metadata API | Gateway    | Events Handler | Keeper    | Commons  | Faucet   | 
-| -------- | -------- | -------------- | --------- | -------- | -------- | 
-| `v0.2.0` | `v0.3.4` | `v0.2.2`       | `v0.3.1` | `v2.3.1` | `v0.3.4` | 
+| Metadata API | Gateway    | Events Handler | Keeper    | Commons  | Faucet   |
+| -------- | -------- | -------------- | --------- | -------- | -------- |
+| `v0.2.0` | `v0.3.4` | `v0.2.2`       | `v0.3.1` | `v2.3.1` | `v0.3.4` |
 
-You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as 
+You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
 
 You can override the Docker image tag used for a particular component by setting its associated environment variable before calling `start_nevermined.sh`:
@@ -112,6 +112,7 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--no-gateway`             | Start up without the `gateway` Building Block.                                              |
 | `--no-secret-store`        | Start up without the `secret-store` Building Block.                                       |
 | `--no-faucet`              | Start up without the `faucet` Building Block.                                             |
+| `--no-elastic`             | Start up without ElasticSearch.                                             |
 | `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                               |
 | `--compute`                | Start up with the Nevermined compute components.                 |
 | `--events-handler`         | Start up with the `events-handler` Building Block.                                     |
@@ -133,7 +134,7 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 
 ## Docker Building Blocks
 
-Barge consists of a set of building blocks that can be combined to form a local test environment. By default all 
+Barge consists of a set of building blocks that can be combined to form a local test environment. By default all
 building blocks will be started by the `start_nevermined.sh` script.
 
 ### Command Line Interface (CLI)
@@ -143,17 +144,17 @@ If you want to use the CLI in your shell we recommend to setup the following ali
 
 ```bash
 alias ncli="docker exec -it nevermined-cli java -jar cli-shaded.jar $NEVERMINED_OPTIONS"
-``` 
+```
 
 This will allow to interact with Nevermined using the `ncli` command.
 
 The CLI docker image uses volumes to store the accounts created and the assets downloaded.
-So if you want to get access to any of those you can find them in the `$HOME/.local/share/nevermined-cli/` directory. 
+So if you want to get access to any of those you can find them in the `$HOME/.local/share/nevermined-cli/` directory.
 
 
 ### Commons
 
-By default it will start two containers (client & server). If Commons is running, you can open the **Commons Frontend** 
+By default it will start two containers (client & server). If Commons is running, you can open the **Commons Frontend**
 application in your browser:
 
 [http://localhost:3000](http://localhost:3000)
@@ -167,7 +168,7 @@ This Building Block can be disabled by setting the `--no-commons` flag.
 
 ### Metadata API
 
-By default it will start two containers (one for Metadata API and one for its database engine). By default, the tools will 
+By default it will start two containers (one for Metadata API and one for its database engine). By default, the tools will
 use Elasticsearch for its database engine. You can use the `--mongodb` option to use MongoDB instead.
 
 This Building Block can be disabled by setting the `--no-metadata` flag.
@@ -241,7 +242,7 @@ By default it will start two containers, one for Faucet server and one for its d
 | -------- | ------------- | ------------------ | --------------------- | ------------------------------------------------- |
 | `faucet` | `3001`        | http://faucet:3001 | http://localhost:3001 | [Faucet](https://github.com/oceanprotocol/faucet) |
 
-By default the Faucet allows requests every 24hrs. To disable the timespan check you can pass `FAUCET_TIMESPAN=0` as 
+By default the Faucet allows requests every 24hrs. To disable the timespan check you can pass `FAUCET_TIMESPAN=0` as
 environment variable before starting the script.
 
 ### Dashboard
@@ -293,7 +294,7 @@ This script will be in charge of:
 - Configure the namespace and permissions
 
 So if you want to run the compute stack locally, before running the `start_nevermined.sh` you can run the `scripts/setup_minikube.sh` script.
- 
+
 
 ### Spree Mnemonic
 
@@ -303,7 +304,7 @@ The accounts from type mnemonic can be access with this seedphrase:
 
 ## Attribution
 
-This project is based in the [Ocean Protocol Barge](https://github.com/oceanprotocol/barge). 
+This project is based in the [Ocean Protocol Barge](https://github.com/oceanprotocol/barge).
 It keeps the same Apache v2 License and adds some improvements. See [NOTICE file](NOTICE).
 
 ## License
