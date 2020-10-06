@@ -4,7 +4,7 @@ RETRY_COUNT=0
 HTTP_CODE=0
 COMPUTE_API_URL=http://localhost:8050
 
-until [ $HTTP_CODE -eq 200 ] || [ $RETRY_COUNT -eq 120 ]; do
+until [ $HTTP_CODE -eq 200 ] || [ $RETRY_COUNT -eq 240 ]; do
   HTTP_CODE=$(curl -s -o /dev/null -w ''%{http_code}'' $COMPUTE_API_URL)
   if [ $HTTP_CODE -eq 200 ]; then
     break
