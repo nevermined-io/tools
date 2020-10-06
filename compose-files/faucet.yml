@@ -2,7 +2,8 @@ version: '3'
 services:
   faucet:
     container_name: nevermined-faucet
-    image: keyko-io/nevermined-faucet:$FAUCET_VERSION
+    # image: keykoio/nevermined-faucet:$FAUCET_VERSION
+    image: a0704d3095bf
     ports:
       - 3001:3001
     networks:
@@ -19,3 +20,5 @@ services:
       ELASTIC_USER: ${DB_USERNAME}
       ELASTIC_PASSWORD: ${DB_PASSWORD}
       ELASTIC_INDEX: ${DB_FAUCET}
+    volumes:
+      - ${KEEPER_ARTIFACTS_FOLDER}:/root/.nevermined/nevermined-contracts/artifacts

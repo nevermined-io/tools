@@ -41,10 +41,10 @@ COMPOSE_DIR="${DIR}/compose-files"
 
 # Default versions of Metadata API, Gateway, Keeper Contracts and Commons
 export METADATA_VERSION=${METADATA_VERSION:-v0.2.0}
-export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.3.4}
+export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.4.3}
 export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.2.2}
-export KEEPER_VERSION=${KEEPER_VERSION:-v0.3.1}
-export FAUCET_VERSION=${FAUCET_VERSION:-v0.3.4}
+export KEEPER_VERSION=${KEEPER_VERSION:-v0.4.1}
+export FAUCET_VERSION=${FAUCET_VERSION:-v0.1.0}
 export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v2.3.1}
 export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.3.1}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.1.0}
@@ -91,7 +91,7 @@ export ACL_CONTRACT_ADDRESS=""
 
 # Default MetadataAPI parameters: use Elasticsearch
 export DB_MODULE="elasticsearch"
-export DB_HOSTNAME="172.15.0.11"
+export DB_HOSTNAME="elasticsearch"
 export DB_PORT="9200"
 export DB_URI="http://$DB_HOSTNAME:$DB_PORT/"
 export DB_USERNAME="elastic"
@@ -129,7 +129,7 @@ if [ ${IP} = "localhost" ]; then
     export SECRET_STORE_URL=http://secret-store:12001
     export SIGNING_NODE_URL=http://secret-store-signing-node:8545
     export METADATA_URI=http://metadata:5000
-    export FAUCET_URL=http://localhost:3001
+    export FAUCET_URL=http://faucet:3001
     export COMMONS_SERVER_URL=http://localhost:4000
     export COMMONS_CLIENT_URL=http://localhost:3000
     export COMMONS_KEEPER_RPC_HOST=http://localhost:8545
