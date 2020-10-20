@@ -1,0 +1,8 @@
+dn: ou=groups,dc=nevermined,dc=io
+ou: Groups
+objectClass: organizationalUnit
+
+dn: ou=sales,ou=groups,dc=nevermined,dc=io
+ou: sales
+description: Sales Department
+objectClass: organizationalUnit

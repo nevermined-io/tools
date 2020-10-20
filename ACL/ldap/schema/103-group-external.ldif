@@ -1,0 +1,9 @@
+dn: ou=external,ou=groups,dc=nevermined,dc=io
+ou: external
+description: External users
+objectClass: organizationalUnit
+
+dn: ou=acme,ou=external,ou=groups,dc=nevermined,dc=io
+ou: acme
+description: Acme Corp
+objectClass: organizationalUnit

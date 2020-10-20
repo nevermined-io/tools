@@ -115,6 +115,7 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--no-elastic`             | Start up without ElasticSearch.                                             |
 | `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                               |
 | `--compute`                | Start up with the Nevermined compute components.                 |
+| `--ldap`                   | Start an OpenLdap instance use for keeping the users and groups authentication.                 |
 | `--events-handler`         | Start up with the `events-handler` Building Block.                                     |
 | `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                          |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
@@ -244,6 +245,18 @@ By default it will start two containers, one for Faucet server and one for its d
 
 By default the Faucet allows requests every 24hrs. To disable the timespan check you can pass `FAUCET_TIMESPAN=0` as
 environment variable before starting the script.
+
+### OpenLdap
+
+If the `--ldap` flag is given an OpenLdap service will be started.
+
+- User: `admin`
+- Password: `nevermined`
+
+| Hostname | External Port | Internal URL      | Local URL             | Description                                     |
+| -------- | ------------- | ----------------- | --------------------- | ----------------------------------------------- |
+| `openldap`  | `1389`        | ldap://openldap:389 | ldap://localhost:1389 | [OpenLdap](https://github.com/dinkel/docker-openldap) |
+
 
 ### Dashboard
 

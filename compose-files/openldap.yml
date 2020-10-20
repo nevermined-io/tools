@@ -1,0 +1,17 @@
+version: '3'
+services:
+  openldap:
+    container_name: openldap
+    image: keykoio/docker-openldap
+    ports:
+      - 1389:389
+    networks:
+      backend:
+        ipv4_address: 172.15.0.30
+    environment:
+      SLAPD_PASSWORD: ${SLAPD_PASSWORD}
+      SLAPD_DOMAIN: ${SLAPD_DOMAIN}
+      SLAPD_ADDITIONAL_MODULES: ${SLAPD_ADDITIONAL_MODULES}
+    volumes:
+      - ${LDAP_PREPOPULATE_FOLDER}/schema:/etc/ldap.dist/prepopulate:ro
+      - ${LDAP_PREPOPULATE_FOLDER}/data:/etc/ldap.dist/data-preloading:ro

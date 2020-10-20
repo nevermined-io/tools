@@ -124,6 +124,8 @@ export PROVIDER_KEYFILE="/accounts/provider.json"
 export RSA_PRIVKEY_FILE="/accounts/rsa_priv_key.pem"
 export RSA_PUBKEY_FILE="/accounts/rsa_pub_key.pem"
 
+export LDAP_PREPOPULATE_FOLDER="${DIR}/${LDAP_DATA_FOLDER}"
+
 export ACCOUNTS_FOLDER="../accounts"
 if [ ${IP} = "localhost" ]; then
     export SECRET_STORE_URL=http://secret-store:12001
@@ -204,6 +206,9 @@ function start_compute_api {
     kubectl -n $COMPUTE_NAMESPACE logs -f -l app=compute-api-pod &
 }
 
+function initialize_openldap {
+    eval ./scripts/wait_for_openldap.sh
+}
 
 function get_acl_address {
     # detect keeper version
@@ -415,6 +420,15 @@ while :; do
             export COMPUTE_API_URL=http://172.17.0.1:8050
             ;;
         #################################################
+        # OpenLdap
+        #################################################
+        --ldap)
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/openldap.yml"
+            printf $COLOR_Y'Starting OpenLdap...\n\n'$COLOR_RESET
+            echo "Loading LDIF from ${LDAP_PREPOPULATE_FOLDER}...\n\n"
+            export LDAP_START="true"
+            ;;
+        #################################################
         # Events Handler
         #################################################
         --events-handler)
@@ -547,6 +561,7 @@ while :; do
             [ ${KEEPER_DEPLOY_CONTRACTS} = "true" ] && clean_local_contracts
             [ ${FORCEPULL} = "true" ] && eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" pull
             eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans &
+            [ ${LDAP_START} = "true" ] && initialize_openldap 2>&1 | print_log "openldap" &
             [ ${COMPUTE_START} = "true" ] && start_compute_api 2>&1 | print_log "minikube" &
 
             # give control back to docker-compose

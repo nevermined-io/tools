@@ -1,5 +1,18 @@
 
 
+# OpenLdap default configuration
+# Complete list of configuration possible here:
+# https://github.com/dinkel/docker-openldap#configuration-environment-variables
+
+SLAPD_DOMAIN=nevermined.io
+SLAPD_ADMIN=cn=admin,dc=nevermined,dc=io
+SLAPD_PASSWORD=nevermined
+SLAPD_ADDITIONAL_MODULES=memberof
+SLAPD_LOCAL_PORT=1389
+LDAP_DATA_FOLDER=ACL/ldap
+
+export LDAP_PRELOAD_DATA=${LDAP_PRELOAD_DATA:-true}
+
 # Colors
 COLOR_R="\033[0;31m"    # red
 COLOR_G="\033[0;32m"    # green
