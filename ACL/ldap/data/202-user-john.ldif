@@ -1,0 +1,9 @@
+dn: uid=john,ou=acme,ou=external,ou=groups,dc=nevermined,dc=io
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: John
+registeredAddress: 0x00a329c0648769A73afAc7F9381E08FB43dBEA72
+sn: Doe
+uid: john

@@ -1,0 +1,4 @@
+dn: ou=People,ou=groups,dc=nevermined,dc=io
+ou: People
+description: Everybody within the organization
+objectClass: organizationalUnit

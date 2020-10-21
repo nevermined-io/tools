@@ -1,0 +1,14 @@
+dn: uid=alice,ou=People,ou=groups,dc=nevermined,dc=io
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Alice
+registeredAddress: 0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
+sn: Smith
+uid: alice
+
+dn: uid=alice,ou=People,ou=groups,dc=nevermined,dc=io
+changetype: modify
+add: memberOf
+memberOf: ou=sales,ou=groups,dc=nevermined,dc=io

@@ -1,0 +1,14 @@
+dn: uid=bob,ou=People,ou=groups,dc=nevermined,dc=io
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Bob
+registeredAddress: 0xa99d43d86a0758d5632313b8fa3972b6088a21bb
+sn: Anderson
+uid: bob
+
+dn: uid=bob,ou=People,ou=groups,dc=nevermined,dc=io
+changetype: modify
+add: memberOf
+memberOf: ou=finance,ou=groups,dc=nevermined,dc=io

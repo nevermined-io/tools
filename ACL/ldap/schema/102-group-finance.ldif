@@ -1,0 +1,4 @@
+dn: ou=finance,ou=groups,dc=nevermined,dc=io
+ou: finance
+description: Finance Department
+objectClass: organizationalUnit
