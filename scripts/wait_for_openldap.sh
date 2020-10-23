@@ -17,6 +17,7 @@ if [[ -f $__PARENT_DIR/scripts/constants.rc ]]; then
     set +o allexport
 fi
 
+set +e
 until [ $SLAPD_READY -eq 1 ] || [ $RETRY_COUNT -eq 60 ]; do
   nc -z localhost $SLAPD_LOCAL_PORT
   if [ $? -eq 0 ]; then
@@ -28,6 +29,7 @@ until [ $SLAPD_READY -eq 1 ] || [ $RETRY_COUNT -eq 60 ]; do
   sleep 3
   let RETRY_COUNT=RETRY_COUNT+1
 done
+set -e
 
 if [ $SLAPD_READY -ne 1 ]; then
   echo "Waited for more than three minutes, but openldap is still not running"
@@ -35,10 +37,9 @@ if [ $SLAPD_READY -ne 1 ]; then
 fi
 
 if [ "$LDAP_PRELOAD_DATA" = "true" ]; then
-  for file_path in $(docker exec -it openldap bash -c "ls /etc/ldap.dist/data-preloading/*.ldif" | tr -d '\r'); do
-    printf "Preloading OpenLdap data $file_path"
-    #docker exec -it openldap sh -c "ls -la $file_path"
-    docker exec -it openldap ldapadd -h localhost -p 389 -x -w $SLAPD_PASSWORD  -D "$SLAPD_ADMIN" -f $file_path
+  for file_path in $(docker exec openldap bash -c "ls /etc/ldap.dist/data-preloading/*.ldif" | tr -d '\r'); do
+    printf "Preloading OpenLdap data $file_path\n"
+    docker exec openldap ldapadd -h localhost -p 389 -x -w $SLAPD_PASSWORD  -D "$SLAPD_ADMIN" -f $file_path
   done
 
 fi
