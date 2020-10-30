@@ -26,7 +26,7 @@ until [ $SLAPD_READY -eq 1 ] || [ $RETRY_COUNT -eq 60 ]; do
     break
   fi
   printf "Waiting for slapd to be running at port $SLAPD_LOCAL_PORT\n"
-  sleep 3
+  sleep 30
   let RETRY_COUNT=RETRY_COUNT+1
 done
 set -e
@@ -38,6 +38,7 @@ fi
 
 if [ "$LDAP_PRELOAD_DATA" = "true" ]; then
   for file_path in $(docker exec openldap bash -c "ls /etc/ldap.dist/data-preloading/*.ldif" | tr -d '\r'); do
+    sleep 10
     printf "Preloading OpenLdap data $file_path\n"
     docker exec openldap ldapadd -h localhost -p 389 -x -w $SLAPD_PASSWORD  -D "$SLAPD_ADMIN" -f $file_path
   done
