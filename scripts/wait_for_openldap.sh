@@ -19,7 +19,7 @@ fi
 
 set +e
 until [ $SLAPD_READY -eq 1 ] || [ $RETRY_COUNT -eq 60 ]; do
-  nc -z localhost $SLAPD_LOCAL_PORT
+  curl ldap://localhost:$SLAPD_LOCAL_PORT
   if [ $? -eq 0 ]; then
     echo "OpenLdap ready!"
     SLAPD_READY=1
