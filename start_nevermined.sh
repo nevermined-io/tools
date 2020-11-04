@@ -49,8 +49,8 @@ export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v2.3.1}
 export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.3.1}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.2.0}
 export PARITY_VERSION=${PARITY_VERSION:-v2.7.2-stable}
-export SS_VERSION=${SS_VERSION:-master}
-export SS_IMAGE=${SS_IMAGE:-oceanprotocol/parity-ethereum}
+export SS_VERSION=${SS_VERSION:-v3.0.1}
+export SS_IMAGE=${SS_IMAGE:-keykoio/nevermined-secret-store}
 
 export CLI_VERSION=${CLI_VERSION:-latest}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
@@ -114,7 +114,7 @@ export CLI_ENABLED=false
 
 export GATEWAY_IPFS_GATEWAY=https://ipfs.keyko.io
 
-# Set a valid parity address and password to have seamless interaction with the `keeper`
+# Set a valid provider address and password to have seamless interaction with the `keeper`
 # it has to exist on the secret store signing node and as well on the keeper node
 export PROVIDER_ADDRESS=0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
 export PROVIDER_PASSWORD=secret
