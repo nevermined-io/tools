@@ -19,7 +19,7 @@ OPTIONS:
 if [ "$#" -lt 1 ]; then
   echo "URL parameter missing"
   usage
-  exit 0
+  exit 1
 else
   URL=$1
 fi
