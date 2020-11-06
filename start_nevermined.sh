@@ -58,6 +58,8 @@ export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
 export PROJECT_NAME="nevermined"
 export FORCEPULL="false"
 export COMPUTE_START="false"
+export LDAP_START="false"
+
 
 # Local filesystem artifacts
 export NEVERMINED_HOME="${HOME}/.nevermined"
