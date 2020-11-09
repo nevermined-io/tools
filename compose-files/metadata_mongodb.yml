@@ -9,7 +9,7 @@ services:
         ipv4_address: 172.15.0.11
   nevermined-metadata:
     container_name: metadata
-    image: keykoio/nevermined-metadata:${METADATA_VERSION:-stable}
+    image: neverminedio/metadata-api:${METADATA_VERSION:-stable}
     ports:
     - 5000:5000
     networks:

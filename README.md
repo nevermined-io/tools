@@ -1,4 +1,4 @@
-[![banner](https://raw.githubusercontent.com/keyko-io/assets/master/images/logo/nevermined_logo_1.png)](https://nevermined.io)
+[![banner](https://raw.githubusercontent.com/nevermined-io/assets/main/images/logo/banner_logo.png)](https://nevermined.io)
 
 # Nevermined Tools
 > Swiss army knife used for running Nevermined Data Platform
@@ -48,7 +48,7 @@ You need to have the newest versions of:
 If you're new to the project, it's best to start with the defaults:
 
 ```bash
-git clone git@github.com:keyko-io/nevermined-tools.git
+git clone git@github.com:nevermined-io/tools.git nevermined-tools
 cd nevermined-tools
 
 ./start_nevermined.sh
@@ -74,9 +74,9 @@ The startup script comes with a set of options for customizing various things.
 
 The default versions are always a combination of component versions which are considered stable.
 
-| Metadata API | Gateway    | Events Handler | Keeper    | Commons  | Faucet   |
-| -------- | -------- | -------------- | --------- | -------- | -------- |
-| `v0.2.0` | `v0.3.4` | `v0.2.2`       | `v0.3.1` | `v2.3.1` | `v0.3.4` |
+| Metadata API | Gateway    | Gateway Events | Contracts    | Faucet   |
+| -------- | -------- | -------------- | --------- | -------- |
+| `v0.2.0` | `v0.4.4` | `v0.2.3`       | `v0.5.0` | `v0.2.1` |
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
@@ -94,11 +94,11 @@ You can override the Docker image tag used for a particular component by setting
 For example:
 
 ```bash
-export GATEWAY_VERSION=v0.3.4
+export GATEWAY_VERSION=v0.4.3
 ./start_nevermined.sh
 ```
 
-will use the default Docker image tags for Metadata API, Nevermined Contracts and Commons, but `v0.3.4` for Gateway.
+will use the default Docker image tags for Metadata API, Nevermined Contracts and Commons, but `v0.4.3` for Gateway.
 
 > If you use the `--latest` option, then the `latest` Docker images will be used _regardless of whether you set any environment variables beforehand._
 
@@ -164,8 +164,8 @@ This Building Block can be disabled by setting the `--no-commons` flag.
 
 | Hostname         | External Port | Internal URL               | Local URL             | Description                                                |
 | ---------------- | ------------- | -------------------------- | --------------------- | ---------------------------------------------------------- |
-| `commons-client` | `3000`        | http://commons-client:3000 | http://localhost:3000 | [Commons Client](https://github.com/keyko-io/nevermined-marketplace) |
-| `commons-server` | `4000`        | http://commons-server:4000 | http://locahost:4000  | [Commons Server](https://github.com/keyko-io/nevermined-marketplace) |
+| `marketplace-client` | `3000`        | http://marketplace-client:3000 | http://localhost:3000 | [Commons Client](https://github.com/nevermined-io/marketplace) |
+| `marketplace-server` | `4000`        | http://marketplace-server:4000 | http://locahost:4000  | [Commons Server](https://github.com/nevermined-io/marketplace) |
 
 ### Metadata API
 
@@ -176,7 +176,7 @@ This Building Block can be disabled by setting the `--no-metadata` flag.
 
 | Hostname        | External Port | Internal URL         | Local URL             | Description                                           |
 | --------------- | ------------- | -------------------- | --------------------- | ----------------------------------------------------- |
-| `metadata`      | `5000`        | http://metadata:5000 | http://localhost:5000 | [metadata](https://github.com/keyko-io/nevermined-metadata) |
+| `metadata`      | `5000`        | http://metadata:5000 | http://localhost:5000 | [metadata](https://github.com/nevermined-io/metadata-api) |
 | `elasticsearch` |               |                      |                       | The Elasticsearch used by Metadata API                    |
 | `mongodb`       |               |                      |                       | The MongoDB used by Metadata API                          |
 
@@ -186,7 +186,7 @@ By default it will start one container. This Building Block can be disabled by s
 
 | Hostname | External Port | Internal URL      | Local URL             | Description                                     |
 | -------- | ------------- | ----------------- | --------------------- | ----------------------------------------------- |
-| `gateway`  | `8030`        | http://gateway:8030 | http://localhost:8030 | [Gateway](https://github.com/keyko-io/nevermined-gateway) |
+| `gateway`  | `8030`        | http://gateway:8030 | http://localhost:8030 | [Gateway](https://github.com/nevermined-io/gateway) |
 
 ### Events Handler
 
@@ -194,7 +194,7 @@ Events Handler doesn't start by default. This Building Block can be enabled by s
 
 | Hostname         | External Port | Internal URL | Local URL | Description                                                       |
 | ---------------- | ------------- | ------------ | --------- | ----------------------------------------------------------------- |
-| `events-handler` |               |              |           | [Events-handler](https://github.com/keyko-io/nevermined-gateway-events) |
+| `events-handler` |               |              |           | [Events-handler](https://github.com/nevermined-io/gateway-events) |
 
 ### Compute API
 
@@ -202,7 +202,7 @@ By default it will start one container. This Building Block can be enabled by se
 
 | Hostname | External Port | Internal URL      | Local URL             | Description                                     |
 | -------- | ------------- | ----------------- | --------------------- | ----------------------------------------------- |
-| `compute-api`  | `8050`        | http://compute-api:8050 | http://localhost:8050 | [Compute API](https://github.com/keyko-io/nevermined-compute-api) |
+| `compute-api`  | `8050`        | http://compute-api:8050 | http://localhost:8050 | [Compute API](https://github.com/nevermined-io/compute-api) |
 
 
 ### Keeper Node

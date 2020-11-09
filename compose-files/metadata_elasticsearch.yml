@@ -2,7 +2,7 @@ version: '3'
 services:
   nevermined-metadata:
     container_name: nevermined-metadata
-    image: keykoio/nevermined-metadata:${METADATA_VERSION:-stable}
+    image: neverminedio/metadata-api:${METADATA_VERSION:-stable}
     ports:
       - 5000:5000
     networks:

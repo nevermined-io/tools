@@ -6,7 +6,7 @@ services:
     command:
       --admin-password '$$2y$$05$$fkUploPQsSkt4/OAz/JBTu.S4Z1XT24jiviCBKrOHdSC7OcxIaBEK'
       --host 'unix:///var/run/docker.sock'
-      --logo 'https://raw.githubusercontent.com/keyko-io/assets/master/images/logo/nevermined_logo_1.png'
+      --logo 'https://raw.githubusercontent.com/nevermined-io/assets/main/images/logo/banner_logo.png'
     networks:
       backend:
         ipv4_address: 172.15.0.25

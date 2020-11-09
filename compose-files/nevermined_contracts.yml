@@ -2,7 +2,7 @@ version: '3'
 services:
   nevermined-contracts:
     container_name: nevermined-contracts
-    image: keykoio/nevermined-contracts:$KEEPER_VERSION
+    image: neverminedio/contracts:$KEEPER_VERSION
     networks:
       backend:
         ipv4_address: 172.15.0.14

@@ -2,7 +2,7 @@ version: '3'
 services:
   cli:
     container_name: nevermined-cli
-    image: keykoio/nevermined-cli:$CLI_VERSION
+    image: neverminedio/cli:$CLI_VERSION
     networks:
       backend:
         ipv4_address: 172.15.0.27
