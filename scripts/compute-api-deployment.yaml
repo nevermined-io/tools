@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: compute-api
-        image: keykoio/nevermined-compute-api:latest
+        image: neverminedio/compute-api:latest
         imagePullPolicy: IfNotPresent
         volumeMounts:
           - name: volume

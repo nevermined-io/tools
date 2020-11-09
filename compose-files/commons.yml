@@ -39,5 +39,4 @@ services:
       REACT_APP_IPFS_GATEWAY_URI: ${COMMONS_IPFS_GATEWAY_URI}
       REACT_APP_IPFS_NODE_URI: ${COMMONS_IPFS_NODE_URI}
     volumes:
-      - ${KEEPER_ARTIFACTS_FOLDER}:/app/frontend/node_modules/@keyko-io/nevermined-contracts/artifacts/:ro
-
+      - ${KEEPER_ARTIFACTS_FOLDER}:/app/frontend/node_modules/@nevermined-io/contracts/artifacts/:ro

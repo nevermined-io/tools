@@ -2,7 +2,7 @@ version: '3'
 services:
   compute-api:
     container_name: nevermined-compute-api
-    image: keykoio/nevermined-compute-api:$COMPUTE_API_VERSION
+    image: nevermined/compute-api:$COMPUTE_API_VERSION
     ports:
       - 8050:8050
     networks:

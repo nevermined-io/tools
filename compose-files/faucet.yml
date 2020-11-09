@@ -2,7 +2,7 @@ version: '3'
 services:
   faucet:
     container_name: nevermined-faucet
-    image: keykoio/nevermined-faucet:$FAUCET_VERSION
+    image: neverminedio/faucet:$FAUCET_VERSION
     ports:
       - 3001:3001
     networks:
