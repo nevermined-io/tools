@@ -27,6 +27,7 @@ services:
       GATEWAY_WORKERS: ${GATEWAY_WORKERS}
       IPFS_GATEWAY: ${GATEWAY_IPFS_GATEWAY}
       COMPUTE_API_URL: ${COMPUTE_API_URL}
+      AUTHLIB_INSECURE_TRANSPORT: ${AUTHLIB_INSECURE_TRANSPORT}
     volumes:
       - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermined-contracts:ro
       - ${ACCOUNTS_FOLDER}:/accounts
