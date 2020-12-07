@@ -13,7 +13,7 @@
          * [All Options](#all-options)
       * [Docker Building Blocks](#docker-building-blocks)
          * [Command Line Interface (CLI)](#command-line-interface-cli)
-         * [Commons](#commons)
+         * [Marketplace](#marketplace)
          * [Metadata API](#metadata-api)
          * [Gateway](#gateway)
          * [Events Handler](#events-handler)
@@ -54,7 +54,7 @@ cd nevermined-tools
 ./start_nevermined.sh
 ```
 
-That will run the current default versions of Metadata API, Gateway, Events Handler, Commons, Keeper Contracts, and Faucet.
+That will run the current default versions of Metadata API, Gateway, Events Handler, Marketplace, Contracts, and Faucet.
 It will also run a local Spree network (i.e. `--local-spree-node`).
 
 <img width="486" alt="Welcome to Nevermined" src="Welcome_to_nevermined.png">
@@ -87,8 +87,8 @@ You can override the Docker image tag used for a particular component by setting
 - `GATEWAY_VERSION`
 - `EVENTS_HANDLER_VERSION`
 - `KEEPER_VERSION`
-- `COMMONS_CLIENT_VERSION`
-- `COMMONS_SERVER_VERSION`
+- `MARKETPLACE_CLIENT_VERSION`
+- `MARKETPLACE_SERVER_VERSION`
 - `FAUCET_VERSION`
 
 For example:
@@ -98,7 +98,7 @@ export GATEWAY_VERSION=v0.4.3
 ./start_nevermined.sh
 ```
 
-will use the default Docker image tags for Metadata API, Nevermined Contracts and Commons, but `v0.4.3` for Gateway.
+will use the default Docker image tags for Metadata API, Nevermined Contracts and Marketplace, but `v0.4.3` for Gateway.
 
 > If you use the `--latest` option, then the `latest` Docker images will be used _regardless of whether you set any environment variables beforehand._
 
@@ -107,7 +107,7 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | Option                     | Description                                                                                     |
 | -------------------------- | ----------------------------------------------------------------------------------------------- |
 | `--latest`                 | Pull Docker images tagged with `latest`.                                                        |
-| `--no-commons`             | Start up without the `commons` Building Block. Helpful for development on `commons`.      |
+| `--no-marketplace`         | Start up without the `marketplace` Building Block. Helpful when you are developing the `marketplace`.      |
 | `--no-metadata`            | Start up without the `metadata` Building Block.                                           |
 | `--no-gateway`             | Start up without the `gateway` Building Block.                                              |
 | `--no-secret-store`        | Start up without the `secret-store` Building Block.                                       |
@@ -153,19 +153,19 @@ The CLI docker image uses volumes to store the accounts created and the assets d
 So if you want to get access to any of those you can find them in the `$HOME/.local/share/nevermined-cli/` directory.
 
 
-### Commons
+### Marketplace
 
-By default it will start two containers (client & server). If Commons is running, you can open the **Commons Frontend**
+By default it will start two containers (client & server). If the Marketplace is running, you can open the **Marketplace Frontend**
 application in your browser:
 
 [http://localhost:3000](http://localhost:3000)
 
-This Building Block can be disabled by setting the `--no-commons` flag.
+This Building Block can be disabled by setting the `--no-marketplace` flag.
 
 | Hostname         | External Port | Internal URL               | Local URL             | Description                                                |
 | ---------------- | ------------- | -------------------------- | --------------------- | ---------------------------------------------------------- |
-| `marketplace-client` | `3000`        | http://marketplace-client:3000 | http://localhost:3000 | [Commons Client](https://github.com/nevermined-io/marketplace) |
-| `marketplace-server` | `4000`        | http://marketplace-server:4000 | http://locahost:4000  | [Commons Server](https://github.com/nevermined-io/marketplace) |
+| `marketplace-client` | `3000`        | http://marketplace-client:3000 | http://localhost:3000 | [Marketplace Client](https://github.com/nevermined-io/marketplace) |
+| `marketplace-server` | `4000`        | http://marketplace-server:4000 | http://locahost:4000  | [Marketplace Server](https://github.com/nevermined-io/marketplace) |
 
 ### Metadata API
 
@@ -293,7 +293,7 @@ you will have available a keeper node in the local and private Spree Network wit
 Use one of the above accounts to populate `PROVIDER_ADDRESS`, `PROVIDER_PASSWORD` and `PROVIDER_KEYFILE` in `start_nevermined.sh`.
 This account will is used in `gateway` and `events-handler` as the `provider` account which is important for processing the
 service agreements flow. The `PROVIDER_KEYFILE` must be placed in the `accounts` folder and must match the ethereum
-address from `PROVIDER_ADDRESS`. The `PROVIDER_ADDRESS` is also set in `commons` instance so that published assets get
+address from `PROVIDER_ADDRESS`. The `PROVIDER_ADDRESS` is also set in `marketplace` instance so that published assets get
 assigned the correct provider address.
 
 ## Compute Stack
