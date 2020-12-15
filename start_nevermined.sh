@@ -117,7 +117,7 @@ export COMPUTE_NAMESPACE="nevermined-compute"
 export CLI_VOLUME_PATH="/root/.local/share/nevermined-cli/data" # This will be exported via volume
 export CLI_ENABLED=false
 
-export GATEWAY_IPFS_GATEWAY=https://ipfs.keyko.io
+export GATEWAY_IPFS_GATEWAY=https://ipfs.nevermined.io
 
 # Set a valid parity address and password to have seamless interaction with the `keeper`
 # it has to exist on the secret store signing node and as well on the keeper node
