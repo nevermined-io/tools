@@ -48,8 +48,8 @@ export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.1}
 export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-latest}
 export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.2.0}
-export NODE_IMAGE=${NODE_IMAGE:-openethereum/openethereum}
-export NODE_VERSION=${NODE_VERSION:-v3.1.0}
+export OPENETH_IMAGE=${OPENETH_IMAGE:-openethereum/openethereum}
+export OPENETH_VERSION=${OPENETH_VERSION:-v3.1.0}
 export SS_VERSION=${SS_VERSION:-master}
 export SS_IMAGE=${SS_IMAGE:-oceanprotocol/parity-ethereum}
 
@@ -385,8 +385,8 @@ while :; do
         #     printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
         #     ;;
         --secret-store)
-            export NODE_IMAGE="parity/parity"
-            export NODE_VERSION="v2.7.2-stable"
+            export OPENETH_IMAGE="parity/parity"
+            export OPENETH_VERSION="v2.7.2-stable"
             COMPOSE_FILES=""
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
