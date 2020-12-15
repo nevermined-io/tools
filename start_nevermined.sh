@@ -39,20 +39,20 @@ export GATEWAY_ENV_FILE="${DIR}/gateway.env"
 DIR="${DIR/ /\\ }"
 COMPOSE_DIR="${DIR}/compose-files"
 
-# Default versions of Metadata API, Gateway, Keeper Contracts and Commons
-export METADATA_VERSION=${METADATA_VERSION:-v0.2.0}
-export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.4.4}
+# Default versions of Metadata API, Gateway, Keeper Contracts and Marketplace
+export METADATA_VERSION=${METADATA_VERSION:-v0.2.1}
+export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.4.7}
 export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.2.3}
-export KEEPER_VERSION=${KEEPER_VERSION:-v0.5.0}
+export KEEPER_VERSION=${KEEPER_VERSION:-v0.5.2}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.1}
-export COMMONS_SERVER_VERSION=${COMMONS_SERVER_VERSION:-v2.3.1}
-export COMMONS_CLIENT_VERSION=${COMMONS_CLIENT_VERSION:-v2.3.1}
+export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-latest}
+export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.2.0}
 export PARITY_VERSION=${PARITY_VERSION:-v2.7.2-stable}
 export SS_VERSION=${SS_VERSION:-master}
 export SS_IMAGE=${SS_IMAGE:-oceanprotocol/parity-ethereum}
 
-export CLI_VERSION=${CLI_VERSION:-latest}
+export CLI_VERSION=${CLI_VERSION:-v0.4.4}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
 
 export PROJECT_NAME="nevermined"
@@ -117,7 +117,7 @@ export COMPUTE_NAMESPACE="nevermined-compute"
 export CLI_VOLUME_PATH="/root/.local/share/nevermined-cli/data" # This will be exported via volume
 export CLI_ENABLED=false
 
-export GATEWAY_IPFS_GATEWAY=https://ipfs.keyko.io
+export GATEWAY_IPFS_GATEWAY=https://ipfs.nevermined.io
 
 # Set a valid parity address and password to have seamless interaction with the `keeper`
 # it has to exist on the secret store signing node and as well on the keeper node
@@ -137,10 +137,10 @@ if [ ${IP} = "localhost" ]; then
     export SIGNING_NODE_URL=http://secret-store-signing-node:8545
     export METADATA_URI=http://metadata:5000
     export FAUCET_URL=http://faucet:3001
-    export COMMONS_SERVER_URL=http://localhost:4000
-    export COMMONS_CLIENT_URL=http://localhost:3000
-    export COMMONS_KEEPER_RPC_HOST=http://localhost:8545
-    export COMMONS_SECRET_STORE_URL=http://localhost:12001
+    export MARKETPLACE_SERVER_URL=http://localhost:4000
+    export MARKETPLACE_CLIENT_URL=http://localhost:3000
+    export MARKETPLACE_KEEPER_RPC_HOST=http://localhost:8545
+    export MARKETPLACE_SECRET_STORE_URL=http://localhost:12001
     export GATEWAY_URL=http://localhost:8030
     export COMPUTE_API_URL=http://172.17.0.1:8050
 
@@ -149,10 +149,10 @@ else
     export SIGNING_NODE_URL=http://${IP}:8545
     export METADATA_URI=http://${IP}:5000
     export FAUCET_URL=http://${IP}:3001
-    export COMMONS_SERVER_URL=http://${IP}:4000
-    export COMMONS_CLIENT_URL=http://${IP}:3000
-    export COMMONS_KEEPER_RPC_HOST=http://${IP}:8545
-    export COMMONS_SECRET_STORE_URL=http://${IP}:12001
+    export MARKETPLACE_SERVER_URL=http://${IP}:4000
+    export MARKETPLACE_CLIENT_URL=http://${IP}:3000
+    export MARKETPLACE_KEEPER_RPC_HOST=http://${IP}:8545
+    export MARKETPLACE_SECRET_STORE_URL=http://${IP}:12001
     export GATEWAY_URL=http://${IP}:8030
     export COMPUTE_API_URL=http://${IP}:8050
 
@@ -161,12 +161,12 @@ fi
 # Default Faucet options
 export FAUCET_TIMESPAN=${FAUCET_TIMESPAN:-24}
 
-#commons
-export COMMONS_GATEWAY_URL=${GATEWAY_URL}
-export COMMONS_METADATA_URI=${METADATA_URI}
-export COMMONS_FAUCET_URL=${FAUCET_URL}
-export COMMONS_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
-export COMMONS_IPFS_NODE_URI=https://ipfs.ipdb.com:443
+# Marketplace
+export MARKETPLACE_GATEWAY_URL=${GATEWAY_URL}
+export MARKETPLACE_METADATA_URI=${METADATA_URI}
+export MARKETPLACE_FAUCET_URL=${FAUCET_URL}
+export MARKETPLACE_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
+export MARKETPLACE_IPFS_NODE_URI=https://ipfs.ipdb.com:443
 
 # Export User UID and GID
 export LOCAL_USER_ID=$(id -u)
@@ -303,7 +303,7 @@ show_banner
 COMPOSE_FILES=""
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/commons.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
@@ -348,9 +348,9 @@ while :; do
             export KEEPER_VERSION="latest"
             # TODO: Change label on Docker to refer `latest` to `master`
             export FAUCET_VERSION="latest"
-	        export COMMONS_SERVER_VERSION="latest"
-	        export COMMONS_CLIENT_VERSION="latest"
-	        export COMPUTE_API_VERSION="latest"
+	          export MARKETPLACE_SERVER_VERSION="latest"
+	          export MARKETPLACE_CLIENT_VERSION="latest"
+	          export COMPUTE_API_VERSION="latest"
             printf $COLOR_Y'Switched to latest components...\n\n'$COLOR_RESET
             ;;
         --force-pull)
@@ -360,9 +360,9 @@ while :; do
         #################################################
         # Exclude switches
         #################################################
-	    --no-commons)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/commons.yml/}"
-            printf $COLOR_Y'Starting without Commons...\n\n'$COLOR_RESET
+	    --no-marketplace)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/marketplace.yml/}"
+            printf $COLOR_Y'Starting without Marketplace...\n\n'$COLOR_RESET
             ;;
         --no-cli)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/cli.yml/}"
