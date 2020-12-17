@@ -1,5 +1,5 @@
 [parity]
-chain = "/home/parity/config/chain.json"
+chain = "/home/openethereum/config/chain.json"
 
 [rpc]
 interface = "0.0.0.0"
@@ -8,7 +8,7 @@ hosts = ["all"]
 apis = ["web3", "eth", "net", "parity", "traces", "rpc", "personal", "parity_accounts", "signer", "parity_set"]
 
 [account]
-password = ["/home/parity/validator.pwd"]
+password = ["/home/openethereum/validator.pwd"]
 
 [mining]
 engine_signer = "0x00bd138abd70e2f00903268f3db08f2d25677c9e"

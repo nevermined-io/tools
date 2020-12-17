@@ -40,17 +40,18 @@ DIR="${DIR/ /\\ }"
 COMPOSE_DIR="${DIR}/compose-files"
 
 # Default versions of Metadata API, Gateway, Keeper Contracts and Marketplace
-export METADATA_VERSION=${METADATA_VERSION:-v0.2.1}
-export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.4.7}
+export METADATA_VERSION=${METADATA_VERSION:-latest}
+export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.5.0}
 export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.2.3}
-export KEEPER_VERSION=${KEEPER_VERSION:-v0.5.2}
+export KEEPER_VERSION=${KEEPER_VERSION:-v0.6.0}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.1}
 export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-latest}
 export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.2.0}
-export PARITY_VERSION=${PARITY_VERSION:-v2.7.2-stable}
-export SS_VERSION=${SS_VERSION:-master}
-export SS_IMAGE=${SS_IMAGE:-oceanprotocol/parity-ethereum}
+export OPENETH_IMAGE=${OPENETH_IMAGE:-openethereum/openethereum}
+export OPENETH_VERSION=${OPENETH_VERSION:-v3.1.0}
+export SS_VERSION=${SS_VERSION:-latest}
+export SS_IMAGE=${SS_IMAGE:-neverminedio/secret-store}
 
 export CLI_VERSION=${CLI_VERSION:-v0.4.4}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
@@ -379,6 +380,7 @@ while :; do
             ;;
         --no-secret-store)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store_signing_node.yml/}"
             printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
             ;;
         --no-faucet)
