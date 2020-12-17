@@ -50,8 +50,8 @@ export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.2.0}
 export OPENETH_IMAGE=${OPENETH_IMAGE:-openethereum/openethereum}
 export OPENETH_VERSION=${OPENETH_VERSION:-v3.1.0}
-export SS_VERSION=${SS_VERSION:-master}
-export SS_IMAGE=${SS_IMAGE:-oceanprotocol/parity-ethereum}
+export SS_VERSION=${SS_VERSION:-latest}
+export SS_IMAGE=${SS_IMAGE:-neverminedio/secret-store}
 
 export CLI_VERSION=${CLI_VERSION:-v0.4.4}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
@@ -308,9 +308,8 @@ COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
-# Add again when the secret-store is working again with openethereum.
-# COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
-# COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/cli.yml"
 DOCKER_COMPOSE_EXTRA_OPTS="${DOCKER_COMPOSE_EXTRA_OPTS:-}"
@@ -379,26 +378,11 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata.yml/}"
             printf $COLOR_Y'Starting without Metadata API...\n\n'$COLOR_RESET
             ;;
-        # --no-secret-store)
-        #     COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store.yml/}"
-        #     COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store_signing_node.yml/}"
-        #     printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
-        #     ;;
-        --secret-store)
-            export OPENETH_IMAGE="parity/parity"
-            export OPENETH_VERSION="v2.7.2-stable"
-            COMPOSE_FILES=""
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/cli.yml"
-            printf $COLOR_Y'Starting with Secret Store...\n\n'$COLOR_RESET
+        --no-secret-store)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store_signing_node.yml/}"
+            printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
+            ;;
         --no-faucet)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/faucet.yml/}"
             printf $COLOR_Y'Starting without Faucet...\n\n'$COLOR_RESET

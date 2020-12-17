@@ -10,8 +10,7 @@ services:
         ipv4_address: 172.15.0.17
     depends_on:
       - keeper-node
-      # Bring back when the secret-store run again
-      # - secret-store-signing-node
+      - secret-store-signing-node
     env_file:
       - ${GATEWAY_ENV_FILE}
     environment:

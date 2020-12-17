@@ -1,9 +1,9 @@
 [parity]
-chain = "/etc/parity/secretstore/chain.json"
+chain = "/etc/openethereum/secret-store/chain.json"
 base_path = "/parity_data"
 
-[ui]
-disable = true
+#[ui]
+#disable = true
 
 [rpc]
 disable = false
@@ -28,15 +28,15 @@ disable = true
 port = 30303
 discovery = true
 
-[ipfs]
-enable = false
+#[ipfs]
+#enable = false
 
-[snapshots]
-disable_periodic = true
+#[snapshots]
+#disable_periodic = enable
 
 [secretstore]
 self_secret = "a1345ed0b2d1e193aead673e33dac56515af128a"
-disable = false
+#disable = false
 disable_http = false      # This node will expose a Secret Store HTTP API
 http_interface = "all"  # The HTTP API is available locally only
 http_port = 12001          # The Secret Store HTTP API is available at this port
@@ -50,5 +50,5 @@ port = 12000               # port used to communicated with other Secret Store n
 path = "/parity_data/secret_store"
 
 [account]
-password = ["/etc/parity/secretstore/password"]
+password = ["/etc/openethereum/secret-store/password"]
 
