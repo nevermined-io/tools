@@ -41,7 +41,7 @@ COMPOSE_DIR="${DIR}/compose-files"
 
 # Default versions of Metadata API, Gateway, Keeper Contracts and Marketplace
 export METADATA_VERSION=${METADATA_VERSION:-latest}
-export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.4.7}
+export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.5.0}
 export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.2.3}
 export KEEPER_VERSION=${KEEPER_VERSION:-v0.6.0}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.1}
