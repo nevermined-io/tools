@@ -14,6 +14,7 @@ services:
     environment:
       FAUCET_NODE: ${KEEPER_RPC_URL}
       FAUCET_TIMESPAN: ${FAUCET_TIMESPAN}
+      FAUCET_PRIVATE_KEY: ${FAUCET_PRIVATE_KEY}
       NODE_ENV: 'production'
       ELASTIC_URL: ${DB_URI}
       ELASTIC_USER: ${DB_USERNAME}
