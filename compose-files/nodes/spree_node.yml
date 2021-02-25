@@ -23,6 +23,7 @@ services:
       - ../networks/spree/authorities/validator0.json:/home/openethereum/.local/keys/spree/validator.json
       - ../networks/spree/keys:/home/openethereum/.local/keys/spree
       - ../networks/spree/authorities/validator0.pwd:/home/openethereum/validator.pwd:ro
+      - ${KEEPER_ARTIFACTS_FOLDER}:/nevermined-contracts/artifacts/
     ports:
       - 8545:8545
     networks:
