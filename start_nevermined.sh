@@ -396,6 +396,12 @@ while :; do
             export CONFIGURE_ACL="false"
             printf $COLOR_Y'Disabling acl validation in secret-store...\n\n'$COLOR_RESET
             ;;
+        --spree-embedded-contracts)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
+            export OPENETH_IMAGE="neverminedio/contracts-spree"
+            export OPENETH_VERSION="latest"
+            printf $COLOR_Y'Using embedded spree contracts...\n\n'$COLOR_RESET
+            ;;
         #################################################
         # Only Secret Store
         #################################################
