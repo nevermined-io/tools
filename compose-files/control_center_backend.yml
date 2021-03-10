@@ -1,0 +1,16 @@
+version: '3'
+services:
+  control-center-backend:
+    container_name: nevermined-control-center-backend
+    image: 741b3ff2de1e
+    ports:
+      - 3020:3020
+    networks:
+      backend:
+        ipv4_address: 172.15.0.32
+    environment:
+      JTW_SECRET: ${JTW_SECRET}
+      COMPUTE_API_URL: ${COMPUTE_API_URL}
+    volumes:
+      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermined-contracts:ro
+      - ${ACCOUNTS_FOLDER}:/accounts
