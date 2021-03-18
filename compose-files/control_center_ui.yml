@@ -1,0 +1,15 @@
+version: '3'
+services:
+  control-center-ui:
+    container_name: nevermined-control-center-ui
+    image: neverminedio/control-center-ui:$CONTROL_CENTER_UI_VERSION
+    ports:
+      - 3021:3021
+    networks:
+      backend:
+        ipv4_address: 172.15.0.33
+    environment:
+      CONTROL_CENTER_BACKEND_URL: ${CONTROL_CENTER_BACKEND_URL}
+    volumes:
+      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermined-contracts:ro
+      - ${ACCOUNTS_FOLDER}:/accounts

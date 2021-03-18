@@ -42,6 +42,7 @@ COMPOSE_DIR="${DIR}/compose-files"
 # Default versions of Metadata API, Gateway, Keeper Contracts and Marketplace
 export METADATA_VERSION=${METADATA_VERSION:-latest}
 export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
+export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
 export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.5.0}
 export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.2.3}
 export KEEPER_VERSION=${KEEPER_VERSION:-v0.6.0}
@@ -139,6 +140,7 @@ if [ ${IP} = "localhost" ]; then
     export SIGNING_NODE_URL=http://secret-store-signing-node:8545
     export METADATA_URI=http://metadata:5000
     export CONTROL_CENTER_BACKEND_URI=http://localhost:3020
+    export CONTROL_CENTER_UI_URI=http://localhost:3021
     export FAUCET_URL=http://faucet:3001
     export MARKETPLACE_SERVER_URL=http://localhost:4000
     export MARKETPLACE_CLIENT_URL=http://localhost:3000
@@ -152,6 +154,7 @@ else
     export SIGNING_NODE_URL=http://${IP}:8545
     export METADATA_URI=http://${IP}:5000
     export CONTROL_CENTER_BACKEND_URI=http://${IP}:3020
+    export CONTROL_CENTER_UI_URI=http://${IP}:3021
     export FAUCET_URL=http://${IP}:3001
     export MARKETPLACE_SERVER_URL=http://${IP}:4000
     export MARKETPLACE_CLIENT_URL=http://${IP}:3000
@@ -349,6 +352,7 @@ while :; do
         --latest)
             export METADATA_VERSION="latest"
             export CONTROL_CENTER_BACKEND_VERSION="latest"
+            export CONTROL_CENTER_UI_VERSION="latest"
             export GATEWAY_VERSION="latest"
             export EVENTS_HANDLER_VERSION="latest"
             export KEEPER_VERSION="latest"
@@ -465,7 +469,8 @@ while :; do
         #################################################
         --control-center)
 			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/control_center_backend.yml"
-            printf $COLOR_Y'Starting with Control center backend ...\n\n'$COLOR_RESET
+			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/control_center_ui.yml"
+            printf $COLOR_Y'Starting with Control center ...\n\n'$COLOR_RESET
             ;;
         #################################################
         # Contract/Storage switches
