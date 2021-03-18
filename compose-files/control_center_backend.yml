@@ -2,7 +2,7 @@ version: '3'
 services:
   control-center-backend:
     container_name: nevermined-control-center-backend
-    image: 741b3ff2de1e
+    image: neverminedio/control-center-backend:$CONTROL_CENTER_BACKEND_VERSION
     ports:
       - 3020:3020
     networks:
