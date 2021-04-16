@@ -315,8 +315,6 @@ COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/cli.yml"
 DOCKER_COMPOSE_EXTRA_OPTS="${DOCKER_COMPOSE_EXTRA_OPTS:-}"
@@ -387,11 +385,6 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata.yml/}"
             printf $COLOR_Y'Starting without Metadata API...\n\n'$COLOR_RESET
             ;;
-        --no-secret-store)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store.yml/}"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store_signing_node.yml/}"
-            printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
-            ;;
         --no-faucet)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/faucet.yml/}"
             printf $COLOR_Y'Starting without Faucet...\n\n'$COLOR_RESET
@@ -410,9 +403,13 @@ while :; do
             export OPENETH_VERSION=${KEEPER_VERSION}
             printf $COLOR_Y'Using embedded spree contracts...\n\n'$COLOR_RESET
             ;;
-        #################################################
-        # Only Secret Store
-        #################################################
+        --secret-store)
+            # Enable Secret store
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
+            configure_secret_store
+            printf $COLOR_Y'Starting with Secret Store...\n\n'$COLOR_RESET
+            ;;
         --only-secret-store)
             COMPOSE_FILES=""
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
@@ -485,8 +482,6 @@ while :; do
         # spins up a new ganache blockchain
         --local-ganache-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/ganache_node.yml"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store.yml/}"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store_signing_node.yml/}"
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="development"
             printf $COLOR_Y'Starting with local Ganache node...\n\n'$COLOR_RESET
@@ -528,8 +523,6 @@ while :; do
         --local-rinkeby-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/rinkeby_node.yml"
             # No contracts deployment, secret store & faucet
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/secret_store.yml/}"
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="rinkeby"
             export KEEPER_DEPLOY_CONTRACTS="false"
@@ -586,7 +579,6 @@ while :; do
         *)
             [ ${CHECK_ELASTIC_VM_COUNT} = "true" ] && check_max_map_count
             printf $COLOR_Y'Starting Nevermined...\n\n'$COLOR_RESET
-            configure_secret_store
             [ -n "${NODE_COMPOSE_FILE}" ] && COMPOSE_FILES+=" -f ${NODE_COMPOSE_FILE}"
             [ ${KEEPER_DEPLOY_CONTRACTS} = "true" ] && clean_local_contracts
             [ ${FORCEPULL} = "true" ] && eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" pull
