@@ -278,7 +278,7 @@ function clean_local_contracts {
 }
 
 function remove_unnecesary_contracts {
-    rm -f ${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)
+    rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
 }
 
 function check_max_map_count {
