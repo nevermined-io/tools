@@ -585,7 +585,6 @@ while :; do
             eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans &
             [ ${LDAP_START} = "true" ] && initialize_openldap 2>&1 | print_log "openldap" &
             [ ${COMPUTE_START} = "true" ] && start_compute_api 2>&1 | print_log "minikube" &
-
             # give control back to docker-compose
             %1
 
