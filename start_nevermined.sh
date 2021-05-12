@@ -277,10 +277,6 @@ function clean_local_contracts {
     rm -f "${KEEPER_ARTIFACTS_FOLDER}/*.development.json"
 }
 
-function remove_unnecesary_contracts {
-    rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
-}
-
 function check_max_map_count {
   vm_max_map_count=$(docker run --rm busybox sysctl -q vm.max_map_count)
   vm_max_map_count=${vm_max_map_count##* }
@@ -589,8 +585,6 @@ while :; do
             eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans &
             [ ${LDAP_START} = "true" ] && initialize_openldap 2>&1 | print_log "openldap" &
             [ ${COMPUTE_START} = "true" ] && start_compute_api 2>&1 | print_log "minikube" &
-            remove_unnecesary_contracts &
-
             # give control back to docker-compose
             %1
 

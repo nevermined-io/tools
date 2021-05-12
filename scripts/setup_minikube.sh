@@ -42,7 +42,9 @@ if [[ $PLATFORM == $LINUX ]]; then
   fi
 fi
 
-
+remove_unnecesary_contracts() {
+    rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
+}
 
 main() {
 
@@ -245,6 +247,7 @@ configure_nevermined_compute() {
     $K create namespace $COMPUTE_NAMESPACE
   fi
 
+  remove_unnecesary_contracts
   $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}
   $K apply -n $COMPUTE_NAMESPACE -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/install.yaml
 
