@@ -43,7 +43,7 @@ if [[ $PLATFORM == $LINUX ]]; then
 fi
 
 remove_unnecesary_contracts() {
-    rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
+    rm -f ${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)
 }
 
 main() {
