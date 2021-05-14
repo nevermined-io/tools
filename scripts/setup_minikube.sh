@@ -43,7 +43,7 @@ if [[ $PLATFORM == $LINUX ]]; then
 fi
 
 remove_unnecesary_contracts() {
-    rm -f ${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)
+    rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
 }
 
 main() {
@@ -241,13 +241,15 @@ install_kubectl_minikube_others() {
 configure_nevermined_compute() {
 
   echo -e "${COLOR_B}Configuring Nevermined Compute...${COLOR_RESET}"
+  remove_unnecesary_contracts
+  echo -e "${COLOR_B}Removing contracts for other networks...${COLOR_RESET}"
+
 
   if ! $K get namespace $COMPUTE_NAMESPACE; then
     echo -e "Creating namespace $COMPUTE_NAMESPACE"
     $K create namespace $COMPUTE_NAMESPACE
   fi
 
-  remove_unnecesary_contracts
   $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}
   $K apply -n $COMPUTE_NAMESPACE -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/install.yaml
 
