@@ -9,6 +9,7 @@ until [ $COMMAND_STATUS -eq 0 ] || [ $RETRY_COUNT -eq 120 ]; do
   cat $KEEPER_ARTIFACTS_FOLDER/ready
   COMMAND_STATUS=$?
   if [ $COMMAND_STATUS -eq 0 ]; then
+    rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
     break
   fi
   sleep 5

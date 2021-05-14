@@ -244,7 +244,6 @@ configure_nevermined_compute() {
   remove_unnecesary_contracts
   echo -e "${COLOR_B}Removing contracts for other networks...${COLOR_RESET}"
 
-
   if ! $K get namespace $COMPUTE_NAMESPACE; then
     echo -e "Creating namespace $COMPUTE_NAMESPACE"
     $K create namespace $COMPUTE_NAMESPACE
