@@ -243,7 +243,6 @@ configure_nevermined_compute() {
   echo -e "${COLOR_B}Configuring Nevermined Compute...${COLOR_RESET}"
   remove_unnecesary_contracts
   echo -e "${COLOR_B}Removing contracts for other networks...${COLOR_RESET}"
-  echo ls ${KEEPER_ARTIFACTS_FOLDER}
 
   if ! $K get namespace $COMPUTE_NAMESPACE; then
     echo -e "Creating namespace $COMPUTE_NAMESPACE"
