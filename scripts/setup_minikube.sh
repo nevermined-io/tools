@@ -42,6 +42,9 @@ if [[ $PLATFORM == $LINUX ]]; then
   fi
 fi
 
+remove_unnecesary_contracts() {
+    rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
+}
 
 main() {
 
@@ -185,7 +188,7 @@ install_kubectl_minikube_others() {
     if [[ $PLATFORM == $OSX ]]; then
       curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
     elif [[ $PLATFORM == $LINUX ]]; then
-      curl -Lo minikube https://github.com/kubernetes/minikube/releases/download/v1.19.0/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
+      curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
     fi
 
     minikube start
@@ -238,7 +241,9 @@ install_kubectl_minikube_others() {
 configure_nevermined_compute() {
 
   echo -e "${COLOR_B}Configuring Nevermined Compute...${COLOR_RESET}"
-
+  remove_unnecesary_contracts
+  echo -e "${COLOR_B}Removing contracts for other networks...${COLOR_RESET}"
+  echo ls ${KEEPER_ARTIFACTS_FOLDER}
 
   if ! $K get namespace $COMPUTE_NAMESPACE; then
     echo -e "Creating namespace $COMPUTE_NAMESPACE"
