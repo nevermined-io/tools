@@ -49,11 +49,14 @@ export KEEPER_VERSION=${KEEPER_VERSION:-v0.6.2}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.1}
 export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-latest}
 export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
+export BAZAART_SERVER_VERSION=${BAZAART_SERVER_VERSION:-latest}
+export BAZAART_CLIENT_VERSION=${BAZAART_CLIENT_VERSION:-latest}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.2.0}
 export OPENETH_IMAGE=${OPENETH_IMAGE:-openethereum/openethereum}
 export OPENETH_VERSION=${OPENETH_VERSION:-v3.2.6}
 export SS_VERSION=${SS_VERSION:-latest}
 export SS_IMAGE=${SS_IMAGE:-neverminedio/secret-store}
+export MINIO_VERSION=${MINIO_VERSION:-latest}
 
 export CLI_VERSION=${CLI_VERSION:-v0.5.0}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
@@ -138,7 +141,7 @@ export ACCOUNTS_FOLDER="../accounts"
 if [ ${IP} = "localhost" ]; then
     export SECRET_STORE_URL=http://secret-store:12001
     export SIGNING_NODE_URL=http://secret-store-signing-node:8545
-    export METADATA_URI=http://metadata:5000
+    export METADATA_URI=http://172.17.0.1:5000
     export CONTROL_CENTER_BACKEND_URI=http://localhost:3020
     export CONTROL_CENTER_UI_URI=http://localhost:3021
     export FAUCET_URL=http://faucet:3001
@@ -146,8 +149,13 @@ if [ ${IP} = "localhost" ]; then
     export MARKETPLACE_CLIENT_URL=http://localhost:3000
     export MARKETPLACE_KEEPER_RPC_HOST=http://localhost:8545
     export MARKETPLACE_SECRET_STORE_URL=http://localhost:12001
+    export BAZAART_SERVER_URL=http://localhost:4002
+    export BAZAART_CLIENT_URL=http://localhost:3002
+    export BAZAART_KEEPER_RPC_HOST=http://localhost:8545
+    export BAZAART_SECRET_STORE_URL=http://localhost:12001
     export GATEWAY_URL=http://localhost:8030
     export COMPUTE_API_URL=http://172.17.0.1:8050
+    export MINIO_URL=http://172.17.0.1:9000
 
 else
     export SECRET_STORE_URL=http://${IP}:12001
@@ -160,8 +168,13 @@ else
     export MARKETPLACE_CLIENT_URL=http://${IP}:3000
     export MARKETPLACE_KEEPER_RPC_HOST=http://${IP}:8545
     export MARKETPLACE_SECRET_STORE_URL=http://${IP}:12001
+    export BAZAART_SERVER_URL=http://${IP}:4002
+    export BAZAART_CLIENT_URL=http://${IP}:3002
+    export BAZAART_KEEPER_RPC_HOST=http://${IP}:8545
+    export BAZAART_SECRET_STORE_URL=http://${IP}:12001
     export GATEWAY_URL=http://${IP}:8030
     export COMPUTE_API_URL=http://${IP}:8050
+    export MINIO_URL=http://${IP}:9000
 
 fi
 
@@ -175,6 +188,17 @@ export MARKETPLACE_METADATA_URI=${METADATA_URI}
 export MARKETPLACE_FAUCET_URL=${FAUCET_URL}
 export MARKETPLACE_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
 export MARKETPLACE_IPFS_NODE_URI=https://ipfs.ipdb.com:443
+
+
+# Bazaart
+export BAZAART_GATEWAY_URL=${GATEWAY_URL}
+export BAZAART_METADATA_URI=${METADATA_URI}
+export BAZAART_FAUCET_URL=${FAUCET_URL}
+export BAZAART_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
+export BAZAART_IPFS_NODE_URI=https://ipfs.ipdb.com:443
+export BAZAART_S3_ACCESS_KEY_ID='minioadmin'
+export BAZAART_S3_SECRET_ACCESS_KEY='minioadmin'
+export BAZAART_S3_ENDPOINT=${MINIO_URL}
 
 # Export User UID and GID
 export LOCAL_USER_ID=$(id -u)
@@ -417,6 +441,11 @@ while :; do
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
             NODE_COMPOSE_FILE=""
             printf $COLOR_Y'Starting only Secret Store...\n\n'$COLOR_RESET
+            ;;
+        --bazaart)
+            # Enable bazaart
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/bazaart.yml"
+            printf $COLOR_Y'Starting with Bazaart...\n\n'$COLOR_RESET
             ;;
         #################################################
         # MongoDB
