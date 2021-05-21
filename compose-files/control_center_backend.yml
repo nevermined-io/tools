@@ -12,5 +12,5 @@ services:
       JTW_SECRET: ${JTW_SECRET}
       COMPUTE_API_URL: ${COMPUTE_API_URL}
     volumes:
-      - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermined-contracts:ro
+      - ${KEEPER_ARTIFACTS_FOLDER}:/node_modules/@nevermined-io/contracts/artifacts/:ro
       - ${ACCOUNTS_FOLDER}:/accounts
