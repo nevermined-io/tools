@@ -64,6 +64,7 @@ export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
 export PROJECT_NAME="nevermined"
 export FORCEPULL="false"
 export COMPUTE_START="false"
+export CONTROL_CENTER="false"
 export LDAP_START="false"
 
 
@@ -245,6 +246,10 @@ function start_compute_api {
 
 function initialize_openldap {
     eval ./scripts/wait_for_openldap.sh
+}
+
+function register_services_control_center {
+    eval ./scripts/register_services.sh
 }
 
 function get_acl_address {
@@ -496,6 +501,7 @@ while :; do
         --control-center)
 			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/control_center_backend.yml"
 			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/control_center_ui.yml"
+            export CONTROL_CENTER="true"
             printf $COLOR_Y'Starting with Control center ...\n\n'$COLOR_RESET
             ;;
         #################################################
@@ -613,6 +619,7 @@ while :; do
             [ ${FORCEPULL} = "true" ] && eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" pull
             eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans &
             [ ${LDAP_START} = "true" ] && initialize_openldap 2>&1 | print_log "openldap" &
+            [ ${CONTROL_CENTER} = "true" ] && register_services_control_center 2>&1 | print_log "services registered" &
             [ ${COMPUTE_START} = "true" ] && start_compute_api 2>&1 | print_log "minikube" &
             # give control back to docker-compose
             %1
