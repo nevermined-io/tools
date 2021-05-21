@@ -22,6 +22,7 @@
          * [Secret Store](#secret-store)
          * [Faucet](#faucet)
          * [Dashboard](#dashboard)
+         * [Bazaart](#bazaart)
       * [Spree Network](#spree-network)
       * [Compute Stack](#compute-stack)
          * [Spree Mnemonic](#spree-mnemonic)
@@ -118,6 +119,7 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--ldap`                   | Start an OpenLdap instance use for keeping the users and groups authentication.                 |
 | `--events-handler`         | Start up with the `events-handler` Building Block.                                     |
 | `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                          |
+| `--bazaart`              | Start up with the `bazaart` for the Nevermined arts marketplace.                                          |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                  |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
@@ -166,6 +168,19 @@ This Building Block can be disabled by setting the `--no-marketplace` flag.
 | ---------------- | ------------- | -------------------------- | --------------------- | ---------------------------------------------------------- |
 | `marketplace-client` | `3000`        | http://marketplace-client:3000 | http://localhost:3000 | [Marketplace Client](https://github.com/nevermined-io/marketplace) |
 | `marketplace-server` | `4000`        | http://marketplace-server:4000 | http://locahost:4000  | [Marketplace Server](https://github.com/nevermined-io/marketplace) |
+
+
+### Bazaart
+
+When passing `--bazaart` option it will start two containers (client & server). If the Bazaart is running, you can open the **Bazaart Frontend**
+application in your browser:
+
+[http://localhost:3002](http://localhost:3002)
+
+| Hostname         | External Port | Internal URL               | Local URL             | Description                                                |
+| ---------------- | ------------- | -------------------------- | --------------------- | ---------------------------------------------------------- |
+| `bazaart-client` | `3002`        | http://bazaart-client:3002 | http://localhost:3002 | [Bazaart Client](https://github.com/nevermined-io/cryptoarts) |
+| `bazaart-server` | `4002`        | http://bazaart-server:4002 | http://locahost:4002  | [Bazaart Server](https://github.com/nevermined-io/cryptoarts) |
 
 ### Metadata API
 
