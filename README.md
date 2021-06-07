@@ -75,9 +75,9 @@ The startup script comes with a set of options for customizing various things.
 
 The default versions are always a combination of component versions which are considered stable.
 
-| Metadata API | Gateway    | Gateway Events | Contracts    | Faucet   |
+| Metadata API | Gateway    | Contracts    | Faucet   |
 | -------- | -------- | -------------- | --------- | -------- |
-| `v0.2.0` | `v0.4.4` | `v0.2.3`       | `v0.5.0` | `v0.2.1` |
+	| `v0.2.1` | `v0.8.3` | `v1.0.0` | `v0.2.1` |
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
@@ -86,7 +86,6 @@ You can override the Docker image tag used for a particular component by setting
 
 - `METADATA_VERSION`
 - `GATEWAY_VERSION`
-- `EVENTS_HANDLER_VERSION`
 - `KEEPER_VERSION`
 - `MARKETPLACE_CLIENT_VERSION`
 - `MARKETPLACE_SERVER_VERSION`
@@ -95,7 +94,7 @@ You can override the Docker image tag used for a particular component by setting
 For example:
 
 ```bash
-export GATEWAY_VERSION=v0.4.3
+export GATEWAY_VERSION=v0.8.3
 ./start_nevermined.sh
 ```
 

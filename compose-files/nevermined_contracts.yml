@@ -3,6 +3,9 @@ services:
   nevermined-contracts:
     container_name: nevermined-contracts
     image: neverminedio/contracts:$KEEPER_VERSION
+#    build:
+#      context: /home/aitor/Projects/Nevermined/contracts
+#      dockerfile: Dockerfile
     networks:
       backend:
         ipv4_address: 172.15.0.14
