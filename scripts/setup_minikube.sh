@@ -15,6 +15,7 @@ if [[ -f $__DIR/constants.rc ]]; then
     set +o allexport
 fi
 
+MINIKUBE_VERSION=${MINIKUBE_VERSION:-v1.12.0}
 MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-kvm2}
 MINIKUBE_RECREATE=${MINIKUBE_RECREATE:-true}
 DEPLOY_MINIKUBE=${DEPLOY_MINIKUBE:-true}
@@ -186,9 +187,9 @@ install_kubectl_minikube_others() {
   if ! [ -x "$(command -v minikube)" ] ; then
     echo -e "${COLOR_Y}Installing minikube...${COLOR_RESET}"
     if [[ $PLATFORM == $OSX ]]; then
-      curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
+      curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
     elif [[ $PLATFORM == $LINUX ]]; then
-      curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
+      curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
     fi
 
     minikube start
@@ -250,7 +251,7 @@ configure_nevermined_compute() {
   fi
 
   $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}
-  $K apply -n $COMPUTE_NAMESPACE -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/install.yaml
+  $K apply -n $COMPUTE_NAMESPACE -f https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/install.yaml
 
   # Install argo artifacts
   helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts
