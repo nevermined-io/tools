@@ -3,10 +3,7 @@ set -eo pipefail
 
 export LC_ALL=en_US.UTF-8
 
-__PWD=$PWD
 __DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-__PARENT_DIR=$(dirname $__DIR)
-
 
 if [[ -f $__DIR/constants.rc ]]; then
     echo -e "Loading config from $__DIR/constants.rc"
@@ -16,7 +13,6 @@ if [[ -f $__DIR/constants.rc ]]; then
 fi
 
 MINIKUBE_VERSION=${MINIKUBE_VERSION:-v1.12.0}
-MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-kvm2}
 MINIKUBE_RECREATE=${MINIKUBE_RECREATE:-true}
 DEPLOY_MINIKUBE=${DEPLOY_MINIKUBE:-true}
 CONFIGURE_K8S_COMPUTE=${CONFIGURE_K8S_COMPUTE:-true}
@@ -28,19 +24,20 @@ KUBERNETES_VERSION=${KUBERNETES_VERSION:-1.17.0}
 MINIKUBE_HOME="/usr/local/bin"
 MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION "
 
-
 K="kubectl"
 SUDO=""
 
 PLATFORM=$(uname)
-OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
-
-if [[ $PLATFORM == $LINUX ]]; then
+if [[ $PLATFORM == "Linux" ]]; then
+  MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-kvm2}
+  OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
   if [[ $OS_NAME =~ (Ubuntu|Debian) ]]; then
     DIST_TYPE="Ubuntu"
   elif [[ $OS_NAME =~ (CentOS|Fedora|Red Hat) ]]; then
     DIST_TYPE="CentOS"
   fi
+elif [[ $PLATFORM == "Darwin" ]]; then
+  MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-docker}
 fi
 
 remove_unnecesary_contracts() {
@@ -48,7 +45,6 @@ remove_unnecesary_contracts() {
 }
 
 main() {
-
   echo -e "${COLOR_M}"waiting for artifacts migration. This script should only be started after nevermined-tools"${COLOR_RESET}"
   eval $__DIR/wait_for_migration_keeper_artifacts.sh
 
@@ -73,23 +69,16 @@ main() {
   if [ "$CONFIGURE_K8S_COMPUTE" = true ]; then
     configure_nevermined_compute
   fi
-
 }
 
-
 #### Functions
-
-
 # Set minikube startup parameters
 set_minikube_parameters() {
     MINIKUBE_CMD=$MINIKUBE_CMD" --vm-driver="$MINIKUBE_DRIVER
 }
 
-
 reset_minikube() {
-
   echo -e "Stop and delete previous minikube instance"
-
   if [ -x "$(command -v minikube)" ] ; then
     minikube_status=$($SUDO $MINIKUBE_HOME/minikube status | grep 'host:' | awk '{print $2}') || echo -e "Minikube is not running"
 
@@ -101,13 +90,10 @@ reset_minikube() {
 
     echo -e "${COLOR_C}Delete existing k8s cluster...${COLOR_RESET}"
     $SUDO $MINIKUBE_HOME/minikube delete
-
   fi
-
 }
 
 deploy_minikube() {
-
   # start minikube with desired settings
   echo -e "${COLOR_M}"minikube will now try to start the local k8s cluster"${COLOR_RESET}"
   $MINIKUBE_CMD
@@ -122,36 +108,29 @@ deploy_minikube() {
   fi
 }
 
-
 install_helm() {
-
   if ! [ -x "$(command -v helm)" ]; then
     echo -e "${COLOR_Y}Installing helm...${COLOR_RESET}"
-    if [[ $PLATFORM == $OSX ]]; then
+    if [[ $PLATFORM == "Darwin" ]]; then
       brew install helm
-    elif [[ $PLATFORM == $LINUX ]]; then
+    elif [[ $PLATFORM == "Linux" ]]; then
       curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
       chmod 700 /tmp/get_helm.sh
       /tmp/get_helm.sh
     fi
   fi
   helm version
-
 }
 
 install_kubectl_minikube_others() {
-
-# Installing kubectl if needed
+  # Installing kubectl if needed
   if ! [ -x "$(command -v kubectl)" ]; then
     echo -e "${COLOR_Y}Installing kubectl...${COLOR_RESET}"
-    if [[ $PLATFORM == $OSX ]]; then
-
+    if [[ $PLATFORM == "Darwin" ]]; then
       if [ "$INSTALL_KUBECTL" = true ]; then
         brew install kubectl
       fi
-
-    elif [[ $PLATFORM == $LINUX ]]; then
-
+    elif [[ $PLATFORM == "Linux" ]]; then
       if [[ $DIST_TYPE == "Ubuntu" ]]; then
         sudo swapoff -a
         sudo systemctl enable docker.service
@@ -173,25 +152,21 @@ install_kubectl_minikube_others() {
       fi
 
       sudo addgroup libvirtd
-      sudo adduser `id -un` kvm
-      sudo adduser `id -un` libvirtd
+      sudo adduser "$(id -un)" kvm
+      sudo adduser "$(id -un)" libvirtd
       virsh list --all
     fi
-
     echo -e "${COLOR_G}[OK]${COLOR_RESET}"
   fi
-
-
 
 # Installing minikube if needed
   if ! [ -x "$(command -v minikube)" ] ; then
     echo -e "${COLOR_Y}Installing minikube...${COLOR_RESET}"
-    if [[ $PLATFORM == $OSX ]]; then
-      curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
-    elif [[ $PLATFORM == $LINUX ]]; then
+    if [[ $PLATFORM == "Darwin" ]]; then
+      curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-Darwin-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
+    elif [[ $PLATFORM == "Linux" ]]; then
       curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
     fi
-
     minikube start
 
     # Temporary fix to be able to mount volumes
@@ -205,9 +180,9 @@ install_kubectl_minikube_others() {
   fi
 
   # Installing argo with minio if needed
+  # TODO: No wat argo cmd to exists
   if ! [ -x "$(command -v argo)" ] ; then
     echo -e "${COLOR_Y}Installing argo...${COLOR_RESET}"
-
     $MINIKUBE_CMD
 
     helm repo add argo https://argoproj.github.io/argo-helm
@@ -221,10 +196,10 @@ install_kubectl_minikube_others() {
     echo -e "${COLOR_G}"Notice: argo was successfully installed"${COLOR_RESET}"
 
 #
-#    if [[ $PLATFORM == $OSX ]]; then
+#    if [[ $PLATFORM == "Darwin" ]]; then
 #      brew install argoproj/tap/argo
 #
-#    elif [[ $PLATFORM == $LINUX ]]; then
+#    elif [[ $PLATFORM == "Linux" ]]; then
 #      # Download the binary
 #      curl -sLO https://github.com/argoproj/argo/releases/download/v2.8.1/argo-linux-amd64
 #      # Make binary executable
@@ -233,14 +208,10 @@ install_kubectl_minikube_others() {
 #      sudo mv ./argo-linux-amd64 /usr/local/bin/argo
 #
 #    fi
-
   fi
-
 }
 
-
 configure_nevermined_compute() {
-
   echo -e "${COLOR_B}Configuring Nevermined Compute...${COLOR_RESET}"
   remove_unnecesary_contracts
   echo -e "${COLOR_B}Removing contracts for other networks...${COLOR_RESET}"
@@ -288,7 +259,6 @@ configure_nevermined_compute() {
 
   echo -e "${COLOR_G}Argo Workflows at: http://localhost:2746/workflows/ ${COLOR_RESET}\n"
   echo -e "${COLOR_G}Minio at: http://localhost:8060 ${COLOR_RESET}\n"
-
 }
 
 main "$@"
