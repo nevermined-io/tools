@@ -26,7 +26,7 @@ INSTALL_HELM=${INSTALL_HELM:-true}
 ARGO_VERSION=${ARGO_VERSION:-0.9.8}
 KUBERNETES_VERSION=${KUBERNETES_VERSION:-1.17.0}
 MINIKUBE_HOME="/usr/local/bin"
-MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION "
+MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION --extra-config kube-proxy.conntrack.maxPerCore=0"
 
 
 K="kubectl"
