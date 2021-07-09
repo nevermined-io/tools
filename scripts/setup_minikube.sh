@@ -279,7 +279,10 @@ configure_nevermined_compute() {
       -p '{"imagePullSecrets": [{"name": "regcred"}]}'
 
   # wait for services and setup port forward
-  sleep 5
+  until kubectl get pods -n nevermined-compute -l app=argo-server -o name | grep argo-server; do
+    echo -e "Waiting for pod argo-server to be created"
+    sleep 5
+  done
   $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=argo-server --timeout=120s
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
 
