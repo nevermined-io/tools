@@ -283,10 +283,10 @@ configure_nevermined_compute() {
     echo -e "Waiting for pod argo-server to be created"
     sleep 5
   done
-  $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=argo-server --timeout=120s
+  $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=argo-server --timeout=300s
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
 
-  $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=minio --timeout=120s
+  $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=minio --timeout=300s
   $K -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/argo-artifacts 8060:9000 &
 
   echo -e "${COLOR_G}Argo Workflows at: http://localhost:2746/workflows/ ${COLOR_RESET}\n"
