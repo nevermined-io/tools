@@ -3,6 +3,8 @@
 # Nevermined Tools
 > Swiss army knife used for running Nevermined Data Platform
 
+[![Tests](https://github.com/nevermined-io/tools/workflows/Test%20Nevermined%20Tools/badge.svg)](https://github.com/nevermined-io/sdk-py/actions)
+
 ---
 
    * [Nevermined Tools](#nevermined-tools)
@@ -75,9 +77,9 @@ The startup script comes with a set of options for customizing various things.
 
 The default versions are always a combination of component versions which are considered stable.
 
-| Metadata API | Gateway    | Contracts    | Faucet   |
-| -------- | -------- | -------------- | --------- | -------- |
-	| `v0.2.1` | `v0.8.3` | `v1.0.0` | `v0.2.1` |
+| Metadata API | Gateway  | Contracts | Faucet   |
+| ------------ | -------- | --------- | -------- |  |
+| `v0.2.1`     | `v0.8.3` | `v1.0.0`  | `v0.2.1` |
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
@@ -104,33 +106,33 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 
 ### All Options
 
-| Option                     | Description                                                                                     |
-| -------------------------- | ----------------------------------------------------------------------------------------------- |
-| `--latest`                 | Pull Docker images tagged with `latest`.                                                        |
-| `--no-marketplace`         | Start up without the `marketplace` Building Block. Helpful when you are developing the `marketplace`.      |
-| `--no-metadata`            | Start up without the `metadata` Building Block.                                           |
-| `--no-gateway`             | Start up without the `gateway` Building Block.                                              |
-| `--no-secret-store`        | Start up without the `secret-store` Building Block.                                       |
-| `--no-faucet`              | Start up without the `faucet` Building Block.                                             |
-| `--no-elastic`             | Start up without ElasticSearch.                                             |
-| `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                               |
-| `--compute`                | Start up with the Nevermined compute components.                 |
-| `--ldap`                   | Start an OpenLdap instance use for keeping the users and groups authentication.                 |
-| `--events-handler`         | Start up with the `events-handler` Building Block.                                     |
-| `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                          |
-| `--bazaart`              | Start up with the `bazaart` for the Nevermined arts marketplace.                                          |
-| `--local-ganache-node`     | Runs a local `ganache` node.                                                                    |
-| `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                  |
-| `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                          |
-| `--local-rinkeby-node`   | Runs a local parity node and connects the node to the `rinkeby` testnet network  |
+| Option                     | Description                                                                                           |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `--latest`                 | Pull Docker images tagged with `latest`.                                                              |
+| `--no-marketplace`         | Start up without the `marketplace` Building Block. Helpful when you are developing the `marketplace`. |
+| `--no-metadata`            | Start up without the `metadata` Building Block.                                                       |
+| `--no-gateway`             | Start up without the `gateway` Building Block.                                                        |
+| `--no-secret-store`        | Start up without the `secret-store` Building Block.                                                   |
+| `--no-faucet`              | Start up without the `faucet` Building Block.                                                         |
+| `--no-elastic`             | Start up without ElasticSearch.                                                                       |
+| `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                                     |
+| `--compute`                | Start up with the Nevermined compute components.                                                      |
+| `--ldap`                   | Start an OpenLdap instance use for keeping the users and groups authentication.                       |
+| `--events-handler`         | Start up with the `events-handler` Building Block.                                                    |
+| `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                              |
+| `--bazaart`                | Start up with the `bazaart` for the Nevermined arts marketplace.                                      |
+| `--local-ganache-node`     | Runs a local `ganache` node.                                                                          |
+| `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                        |
+| `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                                |
+| `--local-rinkeby-node`     | Runs a local parity node and connects the node to the `rinkeby` testnet network                       |
 | `--local-integration-node` | Runs a local parity node and connects the node to the `integration` network.                          |
-| `--local-staging-node`     | Runs a local parity node and connects the node to the `staging` network.                           |
-| `--local-production-node`  | Runs a local parity node and connects the node to the `production` network  |
-| `--reuse-ganache-database` | Configures a running `ganache` node to use a persistent database.                               |
-| `--force-pull`             | Force pulling the latest revision of the used Docker images.                                    |
-| `--purge`                  | Removes the Docker containers, volumes, artifact folder and networks used by the script.        |
-| `--exposeip`               | Binds the components to that specific ip. Exemple: ./start_nevermined.sh --exposeip 192.168.0.1      |
-| `--deattached`             | Starts the Docker containers in deattached mode      |
+| `--local-staging-node`     | Runs a local parity node and connects the node to the `staging` network.                              |
+| `--local-production-node`  | Runs a local parity node and connects the node to the `production` network                            |
+| `--reuse-ganache-database` | Configures a running `ganache` node to use a persistent database.                                     |
+| `--force-pull`             | Force pulling the latest revision of the used Docker images.                                          |
+| `--purge`                  | Removes the Docker containers, volumes, artifact folder and networks used by the script.              |
+| `--exposeip`               | Binds the components to that specific ip. Exemple: ./start_nevermined.sh --exposeip 192.168.0.1       |
+| `--deattached`             | Starts the Docker containers in deattached mode                                                       |
 
 
 
@@ -163,8 +165,8 @@ application in your browser:
 
 This Building Block can be disabled by setting the `--no-marketplace` flag.
 
-| Hostname         | External Port | Internal URL               | Local URL             | Description                                                |
-| ---------------- | ------------- | -------------------------- | --------------------- | ---------------------------------------------------------- |
+| Hostname             | External Port | Internal URL                   | Local URL             | Description                                                        |
+| -------------------- | ------------- | ------------------------------ | --------------------- | ------------------------------------------------------------------ |
 | `marketplace-client` | `3000`        | http://marketplace-client:3000 | http://localhost:3000 | [Marketplace Client](https://github.com/nevermined-io/marketplace) |
 | `marketplace-server` | `4000`        | http://marketplace-server:4000 | http://locahost:4000  | [Marketplace Server](https://github.com/nevermined-io/marketplace) |
 
@@ -176,8 +178,8 @@ application in your browser:
 
 [http://localhost:3002](http://localhost:3002)
 
-| Hostname         | External Port | Internal URL               | Local URL             | Description                                                |
-| ---------------- | ------------- | -------------------------- | --------------------- | ---------------------------------------------------------- |
+| Hostname         | External Port | Internal URL               | Local URL             | Description                                                   |
+| ---------------- | ------------- | -------------------------- | --------------------- | ------------------------------------------------------------- |
 | `bazaart-client` | `3002`        | http://bazaart-client:3002 | http://localhost:3002 | [Bazaart Client](https://github.com/nevermined-io/cryptoarts) |
 | `bazaart-server` | `4002`        | http://bazaart-server:4002 | http://locahost:4002  | [Bazaart Server](https://github.com/nevermined-io/cryptoarts) |
 
@@ -188,8 +190,8 @@ use Elasticsearch for its database engine. You can use the `--mongodb` option to
 
 This Building Block can be disabled by setting the `--no-metadata` flag.
 
-| Hostname        | External Port | Internal URL         | Local URL             | Description                                           |
-| --------------- | ------------- | -------------------- | --------------------- | ----------------------------------------------------- |
+| Hostname        | External Port | Internal URL         | Local URL             | Description                                               |
+| --------------- | ------------- | -------------------- | --------------------- | --------------------------------------------------------- |
 | `metadata`      | `5000`        | http://metadata:5000 | http://localhost:5000 | [metadata](https://github.com/nevermined-io/metadata-api) |
 | `elasticsearch` |               |                      |                       | The Elasticsearch used by Metadata API                    |
 | `mongodb`       |               |                      |                       | The MongoDB used by Metadata API                          |
@@ -198,9 +200,9 @@ This Building Block can be disabled by setting the `--no-metadata` flag.
 
 By default it will start one container. This Building Block can be disabled by setting the `--no-gateway` flag.
 
-| Hostname | External Port | Internal URL      | Local URL             | Description                                     |
-| -------- | ------------- | ----------------- | --------------------- | ----------------------------------------------- |
-| `gateway`  | `8030`        | http://gateway:8030 | http://localhost:8030 | [Gateway](https://github.com/nevermined-io/gateway) |
+| Hostname  | External Port | Internal URL        | Local URL             | Description                                         |
+| --------- | ------------- | ------------------- | --------------------- | --------------------------------------------------- |
+| `gateway` | `8030`        | http://gateway:8030 | http://localhost:8030 | [Gateway](https://github.com/nevermined-io/gateway) |
 
 ### Events Handler
 
@@ -214,9 +216,9 @@ Events Handler doesn't start by default. This Building Block can be enabled by s
 
 By default it will start one container. This Building Block can be enabled by setting the `--compute` flag.
 
-| Hostname | External Port | Internal URL      | Local URL             | Description                                     |
-| -------- | ------------- | ----------------- | --------------------- | ----------------------------------------------- |
-| `compute-api`  | `8050`        | http://compute-api:8050 | http://localhost:8050 | [Compute API](https://github.com/nevermined-io/compute-api) |
+| Hostname      | External Port | Internal URL            | Local URL             | Description                                                 |
+| ------------- | ------------- | ----------------------- | --------------------- | ----------------------------------------------------------- |
+| `compute-api` | `8050`        | http://compute-api:8050 | http://localhost:8050 | [Compute API](https://github.com/nevermined-io/compute-api) |
 
 
 ### Keeper Node
@@ -230,14 +232,14 @@ You can find a detailed explanation of how to use this in the [script options](#
 
 This node can be one of the following types (with the default being `spree`):
 
-| Node      | Description                                                                                                                                                                                                          |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ganache` | Runs a local [ganache-cli](https://github.com/trufflesuite/ganache-cli) node that is not persistent by default. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node. |
-| `spree`   | This is the default. Runs a local node of the Spree Network. See [Spree Network](#spree-network) for details. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node.   |
-| `rinkeby` | Runs a local node connected to the Ethereum [Rinkeby Testnet](https://www.rinkeby.io/).                                                                     |
-| `integration` | Runs a local node connected to the Integration Network.                                                                     |
-| `staging` | Runs a local node connected to the Staging Network.                                                                     |
-| `production`    | Runs a local node connected to the Production Network.                                                                     |
+| Node          | Description                                                                                                                                                                                                              |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ganache`     | Runs a local [ganache-cli](https://github.com/trufflesuite/ganache-cli) node that is not persistent by default. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node. |
+| `spree`       | This is the default. Runs a local node of the Spree Network. See [Spree Network](#spree-network) for details. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node.   |
+| `rinkeby`     | Runs a local node connected to the Ethereum [Rinkeby Testnet](https://www.rinkeby.io/).                                                                                                                                  |
+| `integration` | Runs a local node connected to the Integration Network.                                                                                                                                                                  |
+| `staging`     | Runs a local node connected to the Staging Network.                                                                                                                                                                      |
+| `production`  | Runs a local node connected to the Production Network.                                                                                                                                                                   |
 
 ### Secret Store
 
@@ -245,7 +247,7 @@ By default it will start three containers. This Building Block can be disabled b
 
 | Hostname                    | External Ports   | Internal URL                          | Local URL              | Description                                                                                   |
 | --------------------------- | ---------------- | ------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------- |
-| `secret-store`              | `12000`, `32771` | http://secret-store:12000             | http://localhost:12000 | An instance of the  Secret Store                                                         |
+| `secret-store`              | `12000`, `32771` | http://secret-store:12000             | http://localhost:12000 | An instance of the  Secret Store                                                              |
 | `secret-store-cors-proxy`   | `12001`          | http://secret-store-cors-proxy:12001  | http://localhost:12001 | An NGINX proxy to enable CORS on the secret store                                             |
 | `secret-store-signing-node` | `9545`           | http://secret-store-signing-node:9545 | http://localhost:9545  | A Parity Ethereum node to `sign` messages for the secret store and to `decrypt` and `encrypt` |
 
@@ -267,9 +269,9 @@ If the `--ldap` flag is given an OpenLdap service will be started.
 - User: `admin`
 - Password: `nevermined`
 
-| Hostname | External Port | Internal URL      | Local URL             | Description                                     |
-| -------- | ------------- | ----------------- | --------------------- | ----------------------------------------------- |
-| `openldap`  | `1389`        | ldap://openldap:389 | ldap://localhost:1389 | [OpenLdap](https://github.com/dinkel/docker-openldap) |
+| Hostname   | External Port | Internal URL        | Local URL             | Description                                           |
+| ---------- | ------------- | ------------------- | --------------------- | ----------------------------------------------------- |
+| `openldap` | `1389`        | ldap://openldap:389 | ldap://localhost:1389 | [OpenLdap](https://github.com/dinkel/docker-openldap) |
 
 
 ### Dashboard
