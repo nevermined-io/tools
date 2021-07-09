@@ -15,7 +15,7 @@ if [[ -f $__DIR/constants.rc ]]; then
     set +o allexport
 fi
 
-MINIKUBE_VERSION=${MINIKUBE_VERSION:-v1.12.0}
+MINIKUBE_VERSION=${MINIKUBE_VERSION:-v1.22.0}
 MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-kvm2}
 MINIKUBE_RECREATE=${MINIKUBE_RECREATE:-true}
 DEPLOY_MINIKUBE=${DEPLOY_MINIKUBE:-true}
@@ -24,10 +24,9 @@ COMPUTE_NAMESPACE=${COMPUTE_NAMESPACE:-nevermined-compute}
 INSTALL_KUBECTL=${INSTALL_KUBECTL:-true}
 INSTALL_HELM=${INSTALL_HELM:-true}
 ARGO_VERSION=${ARGO_VERSION:-0.9.8}
-KUBERNETES_VERSION=${KUBERNETES_VERSION:-1.17.0}
+KUBERNETES_VERSION=${KUBERNETES_VERSION:-1.21.2}
 MINIKUBE_HOME="/usr/local/bin"
-MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION "
-
+MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION --mount=true --mount-string=$__PARENT_DIR/accounts:/accounts"
 
 K="kubectl"
 SUDO=""
@@ -251,7 +250,7 @@ configure_nevermined_compute() {
   fi
 
   $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}
-  $K apply -n $COMPUTE_NAMESPACE -f https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/install.yaml
+  $K apply -n $COMPUTE_NAMESPACE -f https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/quick-start-minimal.yaml
 
   # Install argo artifacts
   helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts --set resources.requests.memory=1Gi

@@ -230,8 +230,6 @@ function start_compute_api {
     eval ./scripts/setup_minikube.sh
 
     # start the compute-api
-    minikube start --mount-string="${DIR}/accounts:/accounts" --mount
-
     COMPUTE_API_DEPLOYMENT="${DIR}/scripts/compute-api-deployment.yaml"
     envsubst < $COMPUTE_API_DEPLOYMENT | kubectl apply -n $COMPUTE_NAMESPACE -f -
 
