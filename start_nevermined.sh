@@ -226,7 +226,6 @@ function print_log() {
 
 
 function start_compute_api {
-    export MINIKUBE_DRIVER=docker
     eval ./scripts/setup_minikube.sh
 
     # start the compute-api
