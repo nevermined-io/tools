@@ -16,17 +16,15 @@ if [[ -f $__DIR/constants.rc ]]; then
 fi
 
 MINIKUBE_VERSION=${MINIKUBE_VERSION:-v1.22.0}
-MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-kvm2}
 MINIKUBE_RECREATE=${MINIKUBE_RECREATE:-true}
 DEPLOY_MINIKUBE=${DEPLOY_MINIKUBE:-true}
 CONFIGURE_K8S_COMPUTE=${CONFIGURE_K8S_COMPUTE:-true}
 COMPUTE_NAMESPACE=${COMPUTE_NAMESPACE:-nevermined-compute}
 INSTALL_KUBECTL=${INSTALL_KUBECTL:-true}
 INSTALL_HELM=${INSTALL_HELM:-true}
-ARGO_VERSION=${ARGO_VERSION:-0.9.8}
 KUBERNETES_VERSION=${KUBERNETES_VERSION:-1.21.2}
 MINIKUBE_HOME="/usr/local/bin"
-MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION --mount=true --mount-string=$__PARENT_DIR/accounts:/accounts"
+MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION --mount=true --mount-string=$__PARENT_DIR/accounts:/accounts --driver=docker --network=host"
 
 K="kubectl"
 SUDO=""
@@ -81,7 +79,7 @@ main() {
 
 # Set minikube startup parameters
 set_minikube_parameters() {
-    MINIKUBE_CMD=$MINIKUBE_CMD" --vm-driver="$MINIKUBE_DRIVER
+    MINIKUBE_CMD=$MINIKUBE_CMD
 }
 
 
@@ -203,38 +201,6 @@ install_kubectl_minikube_others() {
     echo -e "${COLOR_G}"Notice: minikube was successfully installed"${COLOR_RESET}"
   fi
 
-  # Installing argo with minio if needed
-  if ! [ -x "$(command -v argo)" ] ; then
-    echo -e "${COLOR_Y}Installing argo...${COLOR_RESET}"
-
-    $MINIKUBE_CMD
-
-    helm repo add argo https://argoproj.github.io/argo-helm
-    helm repo add stable https://charts.helm.sh/stable
-    helm repo update
-    helm uninstall argo || true
-    helm uninstall argo-artifacts || true
-    helm install argo argo/argo --version $ARGO_VERSION
-    # Test installation
-    $K --namespace default get services -o wide | grep argo-server
-    echo -e "${COLOR_G}"Notice: argo was successfully installed"${COLOR_RESET}"
-
-#
-#    if [[ $PLATFORM == $OSX ]]; then
-#      brew install argoproj/tap/argo
-#
-#    elif [[ $PLATFORM == $LINUX ]]; then
-#      # Download the binary
-#      curl -sLO https://github.com/argoproj/argo/releases/download/v2.8.1/argo-linux-amd64
-#      # Make binary executable
-#      chmod +x argo-linux-amd64
-#      # Move binary to path
-#      sudo mv ./argo-linux-amd64 /usr/local/bin/argo
-#
-#    fi
-
-  fi
-
 }
 
 
@@ -249,8 +215,12 @@ configure_nevermined_compute() {
     $K create namespace $COMPUTE_NAMESPACE
   fi
 
+  helm repo add argo https://argoproj.github.io/argo-helm
+  helm repo add stable https://charts.helm.sh/stable
+  helm repo update
+
   $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}
-  $K apply -n $COMPUTE_NAMESPACE -f https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/quick-start-minimal.yaml
+  helm install -n $COMPUTE_NAMESPACE argo-workflows argo/argo-workflows #--version 0.2.7
 
   # Install argo artifacts
   helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts --set resources.requests.memory=1Gi
@@ -277,13 +247,8 @@ configure_nevermined_compute() {
   kubectl -n $COMPUTE_NAMESPACE patch serviceaccount default \
       -p '{"imagePullSecrets": [{"name": "regcred"}]}'
 
-  # wait for services and setup port forward
-  until kubectl get pods -n nevermined-compute -l app=argo-server -o name | grep argo-server; do
-    echo -e "Waiting for pod argo-server to be created"
-    sleep 5
-  done
-  $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=argo-server --timeout=300s
-  $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-server 2746:2746 &
+  $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app.kubernetes.io/name=argo-workflows-server --timeout=300s
+  $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-workflows-server 2746:2746 &
 
   $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=minio --timeout=300s
   $K -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/argo-artifacts 8060:9000 &
