@@ -203,21 +203,21 @@ install_kubectl_minikube_others() {
   fi
 
   # Installing argo with minio if needed
-  if ! [ -x "$(command -v argo)" ] ; then
-    echo -e "${COLOR_Y}Installing argo...${COLOR_RESET}"
+  # if ! [ -x "$(command -v argo)" ] ; then
+  #   echo -e "${COLOR_Y}Installing argo...${COLOR_RESET}"
 
-    $MINIKUBE_CMD
+  #   $MINIKUBE_CMD
 
-    helm repo add argo https://argoproj.github.io/argo-helm
-    helm repo add stable https://charts.helm.sh/stable
-    helm repo update
-    helm uninstall argo || true
-    helm uninstall argo-artifacts || true
-    helm install argo argo/argo --version $ARGO_VERSION
-    # Test installation
-    $K --namespace default get services -o wide | grep argo-server
-    echo -e "${COLOR_G}"Notice: argo was successfully installed"${COLOR_RESET}"
-  fi
+  #   helm repo add argo https://argoproj.github.io/argo-helm
+  #   helm repo add stable https://charts.helm.sh/stable
+  #   helm repo update
+  #   helm uninstall argo || true
+  #   helm uninstall argo-artifacts || true
+  #   helm install argo argo/argo --version $ARGO_VERSION
+  #   # Test installation
+  #   $K --namespace default get services -o wide | grep argo-server
+  #   echo -e "${COLOR_G}"Notice: argo was successfully installed"${COLOR_RESET}"
+  # fi
 
 }
 
