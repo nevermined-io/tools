@@ -22,7 +22,6 @@ CONFIGURE_K8S_COMPUTE=${CONFIGURE_K8S_COMPUTE:-true}
 COMPUTE_NAMESPACE=${COMPUTE_NAMESPACE:-nevermined-compute}
 INSTALL_KUBECTL=${INSTALL_KUBECTL:-true}
 INSTALL_HELM=${INSTALL_HELM:-true}
-ARGO_VERSION=${ARGO_VERSION:-v3.1.1}
 KUBERNETES_VERSION=${KUBERNETES_VERSION:-1.21.2}
 MINIKUBE_HOME="/usr/local/bin"
 MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION --mount=true --mount-string=$__PARENT_DIR/accounts:/accounts --driver=docker --network=host"
@@ -201,23 +200,6 @@ install_kubectl_minikube_others() {
     $SUDO $MINIKUBE_HOME/minikube config set WantKubectlDownloadMsg false
     echo -e "${COLOR_G}"Notice: minikube was successfully installed"${COLOR_RESET}"
   fi
-
-  # Installing argo with minio if needed
-  # if ! [ -x "$(command -v argo)" ] ; then
-  #   echo -e "${COLOR_Y}Installing argo...${COLOR_RESET}"
-
-  #   $MINIKUBE_CMD
-
-  #   helm repo add argo https://argoproj.github.io/argo-helm
-  #   helm repo add stable https://charts.helm.sh/stable
-  #   helm repo update
-  #   helm uninstall argo || true
-  #   helm uninstall argo-artifacts || true
-  #   helm install argo argo/argo --version $ARGO_VERSION
-  #   # Test installation
-  #   $K --namespace default get services -o wide | grep argo-server
-  #   echo -e "${COLOR_G}"Notice: argo was successfully installed"${COLOR_RESET}"
-  # fi
 
 }
 
