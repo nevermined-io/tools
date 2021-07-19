@@ -1,36 +1,36 @@
 [![banner](https://raw.githubusercontent.com/nevermined-io/assets/main/images/logo/banner_logo.png)](https://nevermined.io)
 
 # Nevermined Tools
+
 > Swiss army knife used for running Nevermined Data Platform
 
 [![Tests](https://github.com/nevermined-io/tools/workflows/Test%20Nevermined%20Tools/badge.svg)](https://github.com/nevermined-io/sdk-py/actions)
 
 ---
 
-   * [Nevermined Tools](#nevermined-tools)
-      * [Prerequisites](#prerequisites)
-      * [Get Started](#get-started)
-      * [Options](#options)
-         * [Component Versions](#component-versions)
-         * [All Options](#all-options)
-      * [Docker Building Blocks](#docker-building-blocks)
-         * [Command Line Interface (CLI)](#command-line-interface-cli)
-         * [Marketplace](#marketplace)
-         * [Metadata API](#metadata-api)
-         * [Gateway](#gateway)
-         * [Events Handler](#events-handler)
-         * [Compute API](#compute-api)
-         * [Keeper Node](#keeper-node)
-         * [Secret Store](#secret-store)
-         * [Faucet](#faucet)
-         * [Dashboard](#dashboard)
-         * [Bazaart](#bazaart)
-      * [Spree Network](#spree-network)
-      * [Compute Stack](#compute-stack)
-         * [Spree Mnemonic](#spree-mnemonic)
-      * [Attribution](#attribution)
-      * [License](#license)
-
+* [Nevermined Tools](#nevermined-tools)
+  * [Prerequisites](#prerequisites)
+  * [Get Started](#get-started)
+  * [Options](#options)
+    * [Component Versions](#component-versions)
+    * [All Options](#all-options)
+  * [Docker Building Blocks](#docker-building-blocks)
+    * [Command Line Interface (CLI)](#command-line-interface-cli)
+    * [Marketplace](#marketplace)
+    * [Metadata API](#metadata-api)
+    * [Gateway](#gateway)
+    * [Events Handler](#events-handler)
+    * [Compute API](#compute-api)
+    * [Keeper Node](#keeper-node)
+    * [Secret Store](#secret-store)
+    * [Faucet](#faucet)
+    * [Dashboard](#dashboard)
+    * [Bazaart](#bazaart)
+  * [Spree Network](#spree-network)
+  * [Compute Stack](#compute-stack)
+    * [Spree Mnemonic](#spree-mnemonic)
+  * [Attribution](#attribution)
+  * [License](#license)
 
 ---
 
@@ -38,12 +38,12 @@
 
 You need to have the newest versions of:
 
-- Linux or macOS. Windows is not currently supported. If you are on Windows, we recommend running the tools inside
+* Linux or macOS. Windows is not currently supported. If you are on Windows, we recommend running the tools inside
   a Linux VM. Another option might be to use the
   [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux).
-- [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/)
-- If you want to use Azure Storage (and you might not), then you must edit the file [`gateway.env`](gateway.env) to have
+* [Docker](https://www.docker.com/get-started)
+* [Docker Compose](https://docs.docker.com/compose/)
+* If you want to use Azure Storage (and you might not), then you must edit the file [`gateway.env`](gateway.env) to have
   your Azure credentials.
 
 ## Get Started
@@ -69,6 +69,30 @@ Docker things in your system first:
 docker system prune --all --volumes
 ```
 
+## Get Started on Mac
+
+Due to the differences between Mac and Linux networking and the imposed limitations by Docker, it might happen that the traditional
+_Get Started_ steps won't work on the new M1 Macs.
+
+We strongly adivse to try out the first path, but if you happen to have difficulties, follow the next steps:
+
+```bash
+git clone git@github.com:nevermined-io/tools.git nevermined-tools
+cd nevermined-tools
+
+./start_nevermined.sh --latest --no-marketplace
+```
+
+This way, a subset of the Nevermined stack will be run, with the Legacy Marketplace ommitted.
+
+The focal point of the setup is the Metadata API. To try the APIs out navigate to the Swagger API description at
+
+```url
+http://metadata:5000/api/v1/docs/
+```
+
+You can try it out with exploring the exposed endpoints & dummy requests.
+
 ## Options
 
 The startup script comes with a set of options for customizing various things.
@@ -78,7 +102,7 @@ The startup script comes with a set of options for customizing various things.
 The default versions are always a combination of component versions which are considered stable.
 
 | Metadata API | Gateway  | Contracts | Faucet   |
-| ------------ | -------- | --------- | -------- |  |
+| ------------ | -------- | --------- | -------- |
 | `v0.2.1`     | `v0.8.3` | `v1.0.0`  | `v0.2.1` |
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as
@@ -86,12 +110,12 @@ You can use the `--latest` option to pull the most recent Docker images for all 
 
 You can override the Docker image tag used for a particular component by setting its associated environment variable before calling `start_nevermined.sh`:
 
-- `METADATA_VERSION`
-- `GATEWAY_VERSION`
-- `KEEPER_VERSION`
-- `MARKETPLACE_CLIENT_VERSION`
-- `MARKETPLACE_SERVER_VERSION`
-- `FAUCET_VERSION`
+* `METADATA_VERSION`
+* `GATEWAY_VERSION`
+* `KEEPER_VERSION`
+* `MARKETPLACE_CLIENT_VERSION`
+* `MARKETPLACE_SERVER_VERSION`
+* `FAUCET_VERSION`
 
 For example:
 
@@ -134,8 +158,6 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--exposeip`               | Binds the components to that specific ip. Exemple: ./start_nevermined.sh --exposeip 192.168.0.1       |
 | `--deattached`             | Starts the Docker containers in deattached mode                                                       |
 
-
-
 ## Docker Building Blocks
 
 Barge consists of a set of building blocks that can be combined to form a local test environment. By default all
@@ -155,7 +177,6 @@ This will allow to interact with Nevermined using the `ncli` command.
 The CLI docker image uses volumes to store the accounts created and the assets downloaded.
 So if you want to get access to any of those you can find them in the `$HOME/.local/share/nevermined-cli/` directory.
 
-
 ### Marketplace
 
 By default it will start two containers (client & server). If the Marketplace is running, you can open the **Marketplace Frontend**
@@ -167,9 +188,8 @@ This Building Block can be disabled by setting the `--no-marketplace` flag.
 
 | Hostname             | External Port | Internal URL                   | Local URL             | Description                                                        |
 | -------------------- | ------------- | ------------------------------ | --------------------- | ------------------------------------------------------------------ |
-| `marketplace-client` | `3000`        | http://marketplace-client:3000 | http://localhost:3000 | [Marketplace Client](https://github.com/nevermined-io/marketplace) |
-| `marketplace-server` | `4000`        | http://marketplace-server:4000 | http://locahost:4000  | [Marketplace Server](https://github.com/nevermined-io/marketplace) |
-
+| `marketplace-client` | `3000`        | <http://marketplace-client:3000> | <http://localhost:3000> | [Marketplace Client](https://github.com/nevermined-io/marketplace) |
+| `marketplace-server` | `4000`        | <http://marketplace-server:4000> | <http://locahost:4000>  | [Marketplace Server](https://github.com/nevermined-io/marketplace) |
 
 ### Bazaart
 
@@ -180,8 +200,8 @@ application in your browser:
 
 | Hostname         | External Port | Internal URL               | Local URL             | Description                                                   |
 | ---------------- | ------------- | -------------------------- | --------------------- | ------------------------------------------------------------- |
-| `bazaart-client` | `3002`        | http://bazaart-client:3002 | http://localhost:3002 | [Bazaart Client](https://github.com/nevermined-io/cryptoarts) |
-| `bazaart-server` | `4002`        | http://bazaart-server:4002 | http://locahost:4002  | [Bazaart Server](https://github.com/nevermined-io/cryptoarts) |
+| `bazaart-client` | `3002`        | <http://bazaart-client:3002> | <http://localhost:3002> | [Bazaart Client](https://github.com/nevermined-io/cryptoarts) |
+| `bazaart-server` | `4002`        | <http://bazaart-server:4002> | <http://locahost:4002>  | [Bazaart Server](https://github.com/nevermined-io/cryptoarts) |
 
 ### Metadata API
 
@@ -192,7 +212,7 @@ This Building Block can be disabled by setting the `--no-metadata` flag.
 
 | Hostname        | External Port | Internal URL         | Local URL             | Description                                               |
 | --------------- | ------------- | -------------------- | --------------------- | --------------------------------------------------------- |
-| `metadata`      | `5000`        | http://metadata:5000 | http://localhost:5000 | [metadata](https://github.com/nevermined-io/metadata-api) |
+| `metadata`      | `5000`        | <http://metadata:5000> | <http://localhost:5000> | [metadata](https://github.com/nevermined-io/metadata-api) |
 | `elasticsearch` |               |                      |                       | The Elasticsearch used by Metadata API                    |
 | `mongodb`       |               |                      |                       | The MongoDB used by Metadata API                          |
 
@@ -202,7 +222,7 @@ By default it will start one container. This Building Block can be disabled by s
 
 | Hostname  | External Port | Internal URL        | Local URL             | Description                                         |
 | --------- | ------------- | ------------------- | --------------------- | --------------------------------------------------- |
-| `gateway` | `8030`        | http://gateway:8030 | http://localhost:8030 | [Gateway](https://github.com/nevermined-io/gateway) |
+| `gateway` | `8030`        | <http://gateway:8030> | <http://localhost:8030> | [Gateway](https://github.com/nevermined-io/gateway) |
 
 ### Events Handler
 
@@ -218,8 +238,7 @@ By default it will start one container. This Building Block can be enabled by se
 
 | Hostname      | External Port | Internal URL            | Local URL             | Description                                                 |
 | ------------- | ------------- | ----------------------- | --------------------- | ----------------------------------------------------------- |
-| `compute-api` | `8050`        | http://compute-api:8050 | http://localhost:8050 | [Compute API](https://github.com/nevermined-io/compute-api) |
-
+| `compute-api` | `8050`        | <http://compute-api:8050> | <http://localhost:8050> | [Compute API](https://github.com/nevermined-io/compute-api) |
 
 ### Keeper Node
 
@@ -228,7 +247,7 @@ You can find a detailed explanation of how to use this in the [script options](#
 
 | Hostname      | External Port | Internal URL            | Local URL             | Description          |
 | ------------- | ------------- | ----------------------- | --------------------- | -------------------- |
-| `keeper-node` | `8545`        | http://keeper-node:8545 | http://localhost:8545 | An Ethereum RPC node |
+| `keeper-node` | `8545`        | <http://keeper-node:8545> | <http://localhost:8545> | An Ethereum RPC node |
 
 This node can be one of the following types (with the default being `spree`):
 
@@ -247,9 +266,9 @@ By default it will start three containers. This Building Block can be disabled b
 
 | Hostname                    | External Ports   | Internal URL                          | Local URL              | Description                                                                                   |
 | --------------------------- | ---------------- | ------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------- |
-| `secret-store`              | `12000`, `32771` | http://secret-store:12000             | http://localhost:12000 | An instance of the  Secret Store                                                              |
-| `secret-store-cors-proxy`   | `12001`          | http://secret-store-cors-proxy:12001  | http://localhost:12001 | An NGINX proxy to enable CORS on the secret store                                             |
-| `secret-store-signing-node` | `9545`           | http://secret-store-signing-node:9545 | http://localhost:9545  | A Parity Ethereum node to `sign` messages for the secret store and to `decrypt` and `encrypt` |
+| `secret-store`              | `12000`, `32771` | <http://secret-store:12000>             | <http://localhost:12000> | An instance of the  Secret Store                                                              |
+| `secret-store-cors-proxy`   | `12001`          | <http://secret-store-cors-proxy:12001>  | <http://localhost:12001> | An NGINX proxy to enable CORS on the secret store                                             |
+| `secret-store-signing-node` | `9545`           | <http://secret-store-signing-node:9545> | <http://localhost:9545>  | A Parity Ethereum node to `sign` messages for the secret store and to `decrypt` and `encrypt` |
 
 ### Faucet
 
@@ -257,7 +276,7 @@ By default it will start two containers, one for Faucet server and one for its d
 
 | Hostname | External Port | Internal URL       | Local URL             | Description                                       |
 | -------- | ------------- | ------------------ | --------------------- | ------------------------------------------------- |
-| `faucet` | `3001`        | http://faucet:3001 | http://localhost:3001 | [Faucet](https://github.com/oceanprotocol/faucet) |
+| `faucet` | `3001`        | <http://faucet:3001> | <http://localhost:3001> | [Faucet](https://github.com/oceanprotocol/faucet) |
 
 By default the Faucet allows requests every 24hrs. To disable the timespan check you can pass `FAUCET_TIMESPAN=0` as
 environment variable before starting the script.
@@ -266,24 +285,23 @@ environment variable before starting the script.
 
 If the `--ldap` flag is given an OpenLdap service will be started.
 
-- User: `admin`
-- Password: `nevermined`
+* User: `admin`
+* Password: `nevermined`
 
 | Hostname   | External Port | Internal URL        | Local URL             | Description                                           |
 | ---------- | ------------- | ------------------- | --------------------- | ----------------------------------------------------- |
 | `openldap` | `1389`        | ldap://openldap:389 | ldap://localhost:1389 | [OpenLdap](https://github.com/dinkel/docker-openldap) |
 
-
 ### Dashboard
 
 This will start a `portainer` dashboard with the following admin credentials and connects to the local docker host. This Building Block can be enabled by setting the `--dashboard` flag.
 
-- User: `admin`
-- Password: `nevermined`
+* User: `admin`
+* Password: `nevermined`
 
 | Hostname    | External Port | Internal URL          | Local URL             | Description                                         |
 | ----------- | ------------- | --------------------- | --------------------- | --------------------------------------------------- |
-| `dashboard` | `9000`        | http://dashboard:9000 | http://localhost:9000 | [Portainer](https://github.com/portainer/portainer) |
+| `dashboard` | `9000`        | <http://dashboard:9000> | <http://localhost:9000> | [Portainer](https://github.com/portainer/portainer) |
 
 ## Spree Network
 
@@ -317,13 +335,12 @@ assigned the correct provider address.
 To facilitate the deployment in local of the Nevermined compute stack there is a script called `scripts/setup_minikube.sh`.
 This script will be in charge of:
 
-- Install Minikube
-- Install Helm
-- Install the Argo Helm chart
-- Configure the namespace and permissions
+* Install Minikube
+* Install Helm
+* Install the Argo Helm chart
+* Configure the namespace and permissions
 
 So if you want to run the compute stack locally, before running the `start_nevermined.sh` you can run the `scripts/setup_minikube.sh` script.
-
 
 ### Spree Mnemonic
 
