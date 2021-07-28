@@ -113,6 +113,13 @@ export DB_CLIENT_KEY=""
 export DB_CLIENT_CERT=""
 CHECK_ELASTIC_VM_COUNT=true
 
+# TODO: Disable this when work on arweave is done
+# Default external MetadataDB parameters with arweave
+export DB_MODULE_EXTERNAL="arweave"
+export DB_HOSTNAME_EXTERNAL="https://arweave.net"
+export DB_PORT_EXTERNAL="443"
+export DB_WALLET_FILE_PATH_EXTERNAL="./tests/resources/arweave-key-A1t0391IV20zpoKjhftup1ROdWBjBRGZrhx8pe55Uwc.json"
+
 export GATEWAY_WORKERS=${GATEWAY_WORKERS:-5}
 export GATEWAY_LOG_LEVEL="INFO"
 # allow oauth without https
