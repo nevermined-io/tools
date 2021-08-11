@@ -120,6 +120,12 @@ export DB_HOSTNAME_EXTERNAL="https://arweave.net"
 export DB_PORT_EXTERNAL="443"
 export DB_WALLET_FILE_PATH_EXTERNAL="./tests/resources/arweave-key-A1t0391IV20zpoKjhftup1ROdWBjBRGZrhx8pe55Uwc.json"
 
+# S3 integration
+export AWS_ACCESS_KEY="minioadmin"
+export AWS_SECRET_ACCESS_KEY="minioadmin"
+export AWS_DEFAULT_REGION="us-east-1"
+export AWS_ENDPOINT_URL="http://localhost:9000"
+
 export GATEWAY_WORKERS=${GATEWAY_WORKERS:-5}
 export GATEWAY_LOG_LEVEL="INFO"
 # allow oauth without https
