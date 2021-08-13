@@ -243,6 +243,8 @@ configure_nevermined_compute() {
   # make sure the service account exists
   kubectl -n $COMPUTE_NAMESPACE create serviceaccount default || true
 
+  sleep 10
+
   # set secret as default for downloading docker images on the default serviceaccount
   kubectl -n $COMPUTE_NAMESPACE patch serviceaccount default \
       -p '{"imagePullSecrets": [{"name": "regcred"}]}'
