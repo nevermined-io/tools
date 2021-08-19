@@ -1,0 +1,22 @@
+version: '3'
+services:
+  minio:
+    container_name: nevermined-minio
+    image: minio/minio:$MINIO_VERSION
+    command:
+      server /data
+      --console-address ":9001"
+    ports:
+      - 9000:9000
+      - 9001:9001
+    networks:
+      backend:
+        ipv4_address: 172.15.0.2
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
