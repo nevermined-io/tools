@@ -8,29 +8,32 @@
 
 ---
 
-* [Nevermined Tools](#nevermined-tools)
-  * [Prerequisites](#prerequisites)
-  * [Get Started](#get-started)
-  * [Options](#options)
-    * [Component Versions](#component-versions)
-    * [All Options](#all-options)
-  * [Docker Building Blocks](#docker-building-blocks)
-    * [Command Line Interface (CLI)](#command-line-interface-cli)
-    * [Marketplace](#marketplace)
-    * [Metadata API](#metadata-api)
-    * [Gateway](#gateway)
-    * [Events Handler](#events-handler)
-    * [Compute API](#compute-api)
-    * [Keeper Node](#keeper-node)
-    * [Secret Store](#secret-store)
-    * [Faucet](#faucet)
-    * [Dashboard](#dashboard)
-    * [Bazaart](#bazaart)
-  * [Spree Network](#spree-network)
-  * [Compute Stack](#compute-stack)
-    * [Spree Mnemonic](#spree-mnemonic)
-  * [Attribution](#attribution)
-  * [License](#license)
+- [Nevermined Tools](#nevermined-tools)
+  - [Prerequisites](#prerequisites)
+  - [Get Started](#get-started)
+  - [Get Started on Mac](#get-started-on-mac)
+  - [Options](#options)
+    - [Component Versions](#component-versions)
+    - [All Options](#all-options)
+  - [Docker Building Blocks](#docker-building-blocks)
+    - [Command Line Interface (CLI)](#command-line-interface-cli)
+    - [Marketplace](#marketplace)
+    - [Bazaart](#bazaart)
+    - [Minio](#minio)
+    - [Metadata API](#metadata-api)
+    - [Gateway](#gateway)
+    - [Events Handler](#events-handler)
+    - [Compute API](#compute-api)
+    - [Keeper Node](#keeper-node)
+    - [Secret Store](#secret-store)
+    - [Faucet](#faucet)
+    - [OpenLdap](#openldap)
+    - [Dashboard](#dashboard)
+  - [Spree Network](#spree-network)
+  - [Compute Stack](#compute-stack)
+    - [Spree Mnemonic](#spree-mnemonic)
+  - [Attribution](#attribution)
+  - [License](#license)
 
 ---
 
@@ -186,8 +189,8 @@ application in your browser:
 
 This Building Block can be disabled by setting the `--no-marketplace` flag.
 
-| Hostname             | External Port | Internal URL                   | Local URL             | Description                                                        |
-| -------------------- | ------------- | ------------------------------ | --------------------- | ------------------------------------------------------------------ |
+| Hostname             | External Port | Internal URL                     | Local URL               | Description                                                        |
+| -------------------- | ------------- | -------------------------------- | ----------------------- | ------------------------------------------------------------------ |
 | `marketplace-client` | `3000`        | <http://marketplace-client:3000> | <http://localhost:3000> | [Marketplace Client](https://github.com/nevermined-io/marketplace) |
 | `marketplace-server` | `4000`        | <http://marketplace-server:4000> | <http://locahost:4000>  | [Marketplace Server](https://github.com/nevermined-io/marketplace) |
 
@@ -198,10 +201,20 @@ application in your browser:
 
 [http://localhost:3002](http://localhost:3002)
 
-| Hostname         | External Port | Internal URL               | Local URL             | Description                                                   |
-| ---------------- | ------------- | -------------------------- | --------------------- | ------------------------------------------------------------- |
+| Hostname         | External Port | Internal URL                 | Local URL               | Description                                                   |
+| ---------------- | ------------- | ---------------------------- | ----------------------- | ------------------------------------------------------------- |
 | `bazaart-client` | `3002`        | <http://bazaart-client:3002> | <http://localhost:3002> | [Bazaart Client](https://github.com/nevermined-io/cryptoarts) |
 | `bazaart-server` | `4002`        | <http://bazaart-server:4002> | <http://locahost:4002>  | [Bazaart Server](https://github.com/nevermined-io/cryptoarts) |
+
+### Minio
+
+When passing `--minio` option it will start a minio container
+
+[http://localhost:9000](http://localhost:9000)
+
+| Hostname           | External Port | Internal URL                   | Local URL               | Description           |
+| ------------------ | ------------- | ------------------------------ | ----------------------- | --------------------- |
+| `nevermined-minio` | `9000`        | <http://nevermined-minio:9000> | <http://localhost:9000> | Minio used by bazaart |
 
 ### Metadata API
 
@@ -210,18 +223,18 @@ use Elasticsearch for its database engine. You can use the `--mongodb` option to
 
 This Building Block can be disabled by setting the `--no-metadata` flag.
 
-| Hostname        | External Port | Internal URL         | Local URL             | Description                                               |
-| --------------- | ------------- | -------------------- | --------------------- | --------------------------------------------------------- |
+| Hostname        | External Port | Internal URL           | Local URL               | Description                                               |
+| --------------- | ------------- | ---------------------- | ----------------------- | --------------------------------------------------------- |
 | `metadata`      | `5000`        | <http://metadata:5000> | <http://localhost:5000> | [metadata](https://github.com/nevermined-io/metadata-api) |
-| `elasticsearch` |               |                      |                       | The Elasticsearch used by Metadata API                    |
-| `mongodb`       |               |                      |                       | The MongoDB used by Metadata API                          |
+| `elasticsearch` |               |                        |                         | The Elasticsearch used by Metadata API                    |
+| `mongodb`       |               |                        |                         | The MongoDB used by Metadata API                          |
 
 ### Gateway
 
 By default it will start one container. This Building Block can be disabled by setting the `--no-gateway` flag.
 
-| Hostname  | External Port | Internal URL        | Local URL             | Description                                         |
-| --------- | ------------- | ------------------- | --------------------- | --------------------------------------------------- |
+| Hostname  | External Port | Internal URL          | Local URL               | Description                                         |
+| --------- | ------------- | --------------------- | ----------------------- | --------------------------------------------------- |
 | `gateway` | `8030`        | <http://gateway:8030> | <http://localhost:8030> | [Gateway](https://github.com/nevermined-io/gateway) |
 
 ### Events Handler
@@ -236,8 +249,8 @@ Events Handler doesn't start by default. This Building Block can be enabled by s
 
 By default it will start one container. This Building Block can be enabled by setting the `--compute` flag.
 
-| Hostname      | External Port | Internal URL            | Local URL             | Description                                                 |
-| ------------- | ------------- | ----------------------- | --------------------- | ----------------------------------------------------------- |
+| Hostname      | External Port | Internal URL              | Local URL               | Description                                                 |
+| ------------- | ------------- | ------------------------- | ----------------------- | ----------------------------------------------------------- |
 | `compute-api` | `8050`        | <http://compute-api:8050> | <http://localhost:8050> | [Compute API](https://github.com/nevermined-io/compute-api) |
 
 ### Keeper Node
@@ -245,8 +258,8 @@ By default it will start one container. This Building Block can be enabled by se
 Controlled by the `--local-*-node` config switches will start a container `keeper-node` that uses port `8545` to expose an rpc endpoint to the Ethereum Protocol.
 You can find a detailed explanation of how to use this in the [script options](#script-options) section of this document.
 
-| Hostname      | External Port | Internal URL            | Local URL             | Description          |
-| ------------- | ------------- | ----------------------- | --------------------- | -------------------- |
+| Hostname      | External Port | Internal URL              | Local URL               | Description          |
+| ------------- | ------------- | ------------------------- | ----------------------- | -------------------- |
 | `keeper-node` | `8545`        | <http://keeper-node:8545> | <http://localhost:8545> | An Ethereum RPC node |
 
 This node can be one of the following types (with the default being `spree`):
@@ -264,8 +277,8 @@ This node can be one of the following types (with the default being `spree`):
 
 By default it will start three containers. This Building Block can be disabled by setting the `--no-secret-store` flag.
 
-| Hostname                    | External Ports   | Internal URL                          | Local URL              | Description                                                                                   |
-| --------------------------- | ---------------- | ------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------- |
+| Hostname                    | External Ports   | Internal URL                            | Local URL                | Description                                                                                   |
+| --------------------------- | ---------------- | --------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------- |
 | `secret-store`              | `12000`, `32771` | <http://secret-store:12000>             | <http://localhost:12000> | An instance of the  Secret Store                                                              |
 | `secret-store-cors-proxy`   | `12001`          | <http://secret-store-cors-proxy:12001>  | <http://localhost:12001> | An NGINX proxy to enable CORS on the secret store                                             |
 | `secret-store-signing-node` | `9545`           | <http://secret-store-signing-node:9545> | <http://localhost:9545>  | A Parity Ethereum node to `sign` messages for the secret store and to `decrypt` and `encrypt` |
@@ -274,8 +287,8 @@ By default it will start three containers. This Building Block can be disabled b
 
 By default it will start two containers, one for Faucet server and one for its database (MongoDB). This Building Block can be disabled by setting the `--no-faucet` flag.
 
-| Hostname | External Port | Internal URL       | Local URL             | Description                                       |
-| -------- | ------------- | ------------------ | --------------------- | ------------------------------------------------- |
+| Hostname | External Port | Internal URL         | Local URL               | Description                                       |
+| -------- | ------------- | -------------------- | ----------------------- | ------------------------------------------------- |
 | `faucet` | `3001`        | <http://faucet:3001> | <http://localhost:3001> | [Faucet](https://github.com/oceanprotocol/faucet) |
 
 By default the Faucet allows requests every 24hrs. To disable the timespan check you can pass `FAUCET_TIMESPAN=0` as
@@ -299,8 +312,8 @@ This will start a `portainer` dashboard with the following admin credentials and
 * User: `admin`
 * Password: `nevermined`
 
-| Hostname    | External Port | Internal URL          | Local URL             | Description                                         |
-| ----------- | ------------- | --------------------- | --------------------- | --------------------------------------------------- |
+| Hostname    | External Port | Internal URL            | Local URL               | Description                                         |
+| ----------- | ------------- | ----------------------- | ----------------------- | --------------------------------------------------- |
 | `dashboard` | `9000`        | <http://dashboard:9000> | <http://localhost:9000> | [Portainer](https://github.com/portainer/portainer) |
 
 ## Spree Network

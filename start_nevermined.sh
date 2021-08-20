@@ -124,7 +124,12 @@ export DB_WALLET_FILE_PATH_EXTERNAL="./tests/resources/arweave-key-A1t0391IV20zp
 export AWS_ACCESS_KEY="minioadmin"
 export AWS_SECRET_ACCESS_KEY="minioadmin"
 export AWS_DEFAULT_REGION="us-east-1"
-export AWS_ENDPOINT_URL="http://localhost:9000"
+export AWS_ENDPOINT_URL="http://nevermined-minio:9000"
+
+# minio
+
+export MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
+export MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin}
 
 export GATEWAY_WORKERS=${GATEWAY_WORKERS:-5}
 export GATEWAY_LOG_LEVEL="INFO"
@@ -441,6 +446,10 @@ while :; do
             export OPENETH_IMAGE="neverminedio/contracts-spree"
             export OPENETH_VERSION=${KEEPER_VERSION}
             printf $COLOR_Y'Using embedded spree contracts...\n\n'$COLOR_RESET
+            ;;
+        --minio)
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/minio.yml"
+            printf $COLOR_Y'Using minio...\n\n'$COLOR_RESET
             ;;
         --secret-store)
             # Enable Secret store
