@@ -170,9 +170,9 @@ if [ ${IP} = "localhost" ]; then
     export MARKETPLACE_SECRET_STORE_URL=http://localhost:12001
     export BAZAART_SERVER_URL=http://localhost:4002
     export BAZAART_CLIENT_URL=http://localhost:3002
-    export BAZAART_KEEPER_RPC_HOST=http://localhost:8545
+    export BAZAART_KEEPER_RPC_HOST=http://172.17.0.1:8545
     export BAZAART_SECRET_STORE_URL=http://localhost:12001
-    export GATEWAY_URL=http://localhost:8030
+    export GATEWAY_URL=http://172.17.0.1:8030
     export COMPUTE_API_URL=http://172.17.0.1:8050
     export MINIO_URL=http://172.17.0.1:9000
 
@@ -469,6 +469,7 @@ while :; do
         --bazaart)
             # Enable bazaart
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/bazaart.yml"
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/minio.yml"
             printf $COLOR_Y'Starting with Bazaart...\n\n'$COLOR_RESET
             ;;
         #################################################
