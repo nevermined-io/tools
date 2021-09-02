@@ -49,13 +49,3 @@ services:
       REACT_APP_IPFS_NODE_URI: ${BAZAART_IPFS_NODE_URI}
     volumes:
       - ${KEEPER_ARTIFACTS_FOLDER}:/app/frontend/node_modules/@nevermined-io/contracts/artifacts/:ro
-
-  minio:
-    container_name: minio
-    image: minio/minio:${MINIO_VERSION}
-    command: server ./data
-    networks:
-      backend:
-        ipv4_address: 172.15.0.36
-    ports:
-      - 9000:9000
