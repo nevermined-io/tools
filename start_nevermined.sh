@@ -57,6 +57,7 @@ export OPENETH_VERSION=${OPENETH_VERSION:-v3.2.6}
 export SS_VERSION=${SS_VERSION:-latest}
 export SS_IMAGE=${SS_IMAGE:-neverminedio/secret-store}
 export MINIO_VERSION=${MINIO_VERSION:-latest}
+export KEEPER_PATH=${KEEPER_PATH:-/usr/local/nevermined-contracts}
 
 export CLI_VERSION=${CLI_VERSION:-v0.5.0}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
