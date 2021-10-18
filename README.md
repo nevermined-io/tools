@@ -20,6 +20,7 @@
     - [Marketplace](#marketplace)
     - [Bazaart](#bazaart)
     - [Minio](#minio)
+    - [The Graph](#the-graph)
     - [Metadata API](#metadata-api)
     - [Gateway](#gateway)
     - [Events Handler](#events-handler)
@@ -148,6 +149,8 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--events-handler`         | Start up with the `events-handler` Building Block.                                                    |
 | `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                              |
 | `--bazaart`                | Start up with the `bazaart` for the Nevermined arts marketplace.                                      |
+| `--minio`                  | Start up with the `minio` for the Nevermined arts marketplace.                                        |
+| `--graph`                  | Start up with the `grraph` node for the Nevermined events.                                            |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                          |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                        |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                                |
@@ -215,6 +218,16 @@ When passing `--minio` option it will start a minio container
 | Hostname           | External Port | Internal URL                   | Local URL               | Description           |
 | ------------------ | ------------- | ------------------------------ | ----------------------- | --------------------- |
 | `nevermined-minio` | `9000`        | <http://nevermined-minio:9000> | <http://localhost:9000> | Minio used by bazaart |
+
+### The Graph
+
+When passing `--graph` option it will start a graph-node container to index Nevermined events.
+
+[http://localhost:9000](http://localhost:9000)
+
+| Hostname           | External Port | Internal URL                   | Local URL               | Description                  |
+| ------------------ | ------------- | ------------------------------ | ----------------------- | ---------------------------- |
+| `nevermined-graph` | `9000`        | <http://nevermined-graph:9000> | <http://localhost:9000> | The Graph used by Nevermined |
 
 ### Metadata API
 
