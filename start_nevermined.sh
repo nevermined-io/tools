@@ -452,6 +452,10 @@ while :; do
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/minio.yml"
             printf $COLOR_Y'Using minio...\n\n'$COLOR_RESET
             ;;
+        --graph)
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/graph.yml"
+            printf $COLOR_Y'Using The Graph...\n\n'$COLOR_RESET
+            ;;
         --secret-store)
             # Enable Secret store
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
