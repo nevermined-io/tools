@@ -2,7 +2,7 @@ version: '3'
 services:
   keeper-node:
     container_name: nevermined-keeper-node
-    image: polygon:test
+    image: neverminedio/polygon-localnet:latest
     user: root
     command:
       --dev
