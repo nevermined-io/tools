@@ -604,7 +604,13 @@ while :; do
             export KEEPER_MNEMONIC="taxi music thumb unique chat sand crew more leg another off lamp"
             export KEEPER_NETWORK_NAME="spree"
             export KEEPER_DEPLOY_CONTRACTS="false"
-	    printf $COLOR_Y'Starting with local Spree node, and keeping existing contracts (no deployment)...\n\n'$COLOR_RESET
+	        printf $COLOR_Y'Starting with local Spree node, and keeping existing contracts (no deployment)...\n\n'$COLOR_RESET
+            ;;
+        --polygon)
+            export KEEPER_NETWORK_NAME="polygon-localnet"
+            export KEEPER_DEPLOY_CONTRACTS="false"
+            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/polygon_localnet.yml"
+            printf $COLOR_Y'Starting with local Polygon node...\n\n'$COLOR_RESET
             ;;
         #################################################
         # Cleaning switches

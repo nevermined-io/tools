@@ -1,0 +1,17 @@
+version: '3'
+services:
+  keeper-node:
+    container_name: nevermined-keeper-node
+    image: polygon:test
+    user: root
+    command:
+      --dev
+      --chain genesis.json
+      --jsonrpc 0.0.0.0:8545
+    volumes:
+      - ${KEEPER_ARTIFACTS_FOLDER}:/nevermined-contracts/artifacts/
+    ports:
+      - 8545:8545
+    networks:
+      backend:
+        ipv4_address: 172.15.0.12
