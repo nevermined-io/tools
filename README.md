@@ -150,7 +150,8 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                              |
 | `--bazaart`                | Start up with the `bazaart` for the Nevermined arts marketplace.                                      |
 | `--minio`                  | Start up with the `minio` for the Nevermined arts marketplace.                                        |
-| `--graph`                  | Start up with the `grraph` node for the Nevermined events.                                            |
+| `--graph`                  | Start up with the `graph` node for the Nevermined events.                                             |
+| `--polygon-localnet`       | Start up with the a polygon local node for the Nevermined events.                                     |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                          |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                        |
 | `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                                |
