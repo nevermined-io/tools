@@ -40,13 +40,13 @@ DIR="${DIR/ /\\ }"
 COMPOSE_DIR="${DIR}/compose-files"
 
 # Default versions of Metadata API, Gateway, Keeper Contracts and Marketplace
-export METADATA_VERSION=${METADATA_VERSION:-latest}
+export METADATA_VERSION=${METADATA_VERSION:-v0.4.0}
 export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
 export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
-export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.8.3}
+export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.8.18}
 export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.2.3}
-export KEEPER_VERSION=${KEEPER_VERSION:-v1.0.1}
-export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.1}
+export KEEPER_VERSION=${KEEPER_VERSION:-v1.2.1}
+export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.2}
 export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-latest}
 export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
 export BAZAART_SERVER_VERSION=${BAZAART_SERVER_VERSION:-latest}
@@ -59,7 +59,6 @@ export SS_IMAGE=${SS_IMAGE:-neverminedio/secret-store}
 export MINIO_VERSION=${MINIO_VERSION:-latest}
 export KEEPER_PATH=${KEEPER_PATH:-/usr/local/nevermined-contracts}
 
-export CLI_VERSION=${CLI_VERSION:-v0.5.0}
 export COMPOSE_UP_OPTIONS=${COMPOSE_UP_OPTIONS:""}
 
 export PROJECT_NAME="nevermined"
@@ -140,8 +139,6 @@ export AUTHLIB_INSECURE_TRANSPORT=true
 export EVENTS_HANDLER_LOG_LEVEL="INFO"
 export COMPUTE_API_LOG_LEVEL="ERROR"
 export COMPUTE_NAMESPACE="nevermined-compute"
-export CLI_VOLUME_PATH="/root/.local/share/nevermined-cli/data" # This will be exported via volume
-export CLI_ENABLED=false
 
 export GATEWAY_IPFS_GATEWAY=https://ipfs.nevermined.io
 
@@ -361,7 +358,6 @@ COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/cli.yml"
 DOCKER_COMPOSE_EXTRA_OPTS="${DOCKER_COMPOSE_EXTRA_OPTS:-}"
 
 while :; do
@@ -416,11 +412,6 @@ while :; do
 	    --no-marketplace)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/marketplace.yml/}"
             printf $COLOR_Y'Starting without Marketplace...\n\n'$COLOR_RESET
-            ;;
-        --no-cli)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/cli.yml/}"
-            CLI_ENABLED=true
-            printf $COLOR_Y'Starting without CLI...\n\n'$COLOR_RESET
             ;;
         --no-gateway)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway.yml/}"
