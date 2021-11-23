@@ -28,9 +28,9 @@ services:
       IPFS_GATEWAY: ${GATEWAY_IPFS_GATEWAY}
       COMPUTE_API_URL: ${COMPUTE_API_URL}
       AUTHLIB_INSECURE_TRANSPORT: ${AUTHLIB_INSECURE_TRANSPORT}
-      AWS_ACCESS_KEY: https://s3.eu-central-1.amazonaws.com
+      AWS_ACCESS_KEY: AKIAQ3QJX7774YLBUUIK
       AWS_SECRET_ACCESS_KEY: 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
-      AWS_ENDPOINT_URL: AKIAQ3QJX7774YLBUUIK
+      AWS_ENDPOINT_URL: https://s3.eu-central-1.amazonaws.com 
     volumes:
       - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermined-contracts:ro
       - ${ACCOUNTS_FOLDER}:/accounts
