@@ -78,6 +78,15 @@ docker system prune --all --volumes
 Due to the differences between Mac and Linux networking and the imposed limitations by Docker, it might happen that the traditional
 _Get Started_ steps won't work on the new M1 Macs.
 
+Additionally in MacOS you will need to export the variable `IP` to your hosts ip. This ip must be resolved by your host instance and the containers.
+The IP assigned in your local network should work. If your Mac has only one network interface, you can get run:
+
+```bash
+export IP=$(ipconfig getifaddr en0)
+```
+
+If you have multiple network interfaces (i.e.: ethernet and wireless), use `en0` if you are connected using ethernet/cable, or `en1` if you are connected using wireless.
+
 We strongly adivse to try out the first path, but if you happen to have difficulties, follow the next steps:
 
 ```bash
