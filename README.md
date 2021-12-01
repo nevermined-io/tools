@@ -116,7 +116,7 @@ The default versions are always a combination of component versions which are co
 
 | Metadata API | Gateway  | Contracts | Faucet   |
 | ------------ | -------- | --------- | -------- |
-| `v0.4.0`     | `v0.8.18` | `v1.2.1`  | `v0.2.2` |
+| `v0.4.0`     | `v0.8.18` | `v1.2.4`  | `v0.2.2` |
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
