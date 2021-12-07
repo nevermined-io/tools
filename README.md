@@ -78,6 +78,15 @@ docker system prune --all --volumes
 Due to the differences between Mac and Linux networking and the imposed limitations by Docker, it might happen that the traditional
 _Get Started_ steps won't work on the new M1 Macs.
 
+Additionally in MacOS you will need to export the variable `IP` to your hosts ip. This ip must be resolved by your host instance and the containers.
+The IP assigned in your local network should work. If your Mac has only one network interface, you can get run:
+
+```bash
+export IP=$(ipconfig getifaddr en0)
+```
+
+If you have multiple network interfaces (i.e.: ethernet and wireless), use `en0` if you are connected using ethernet/cable, or `en1` if you are connected using wireless.
+
 We strongly adivse to try out the first path, but if you happen to have difficulties, follow the next steps:
 
 ```bash
@@ -107,7 +116,7 @@ The default versions are always a combination of component versions which are co
 
 | Metadata API | Gateway  | Contracts | Faucet   |
 | ------------ | -------- | --------- | -------- |
-| `v0.2.1`     | `v0.8.3` | `v1.0.0`  | `v0.2.1` |
+| `v0.4.0`     | `v0.9.1` | `v1.3.0`  | `v0.2.2` |
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
@@ -173,16 +182,19 @@ building blocks will be started by the `start_nevermined.sh` script.
 ### Command Line Interface (CLI)
 
 The command line interface allows to interact with your Nevermined environment in an easy way.
-If you want to use the CLI in your shell we recommend to setup the following alias in your host:
+If you want to use the CLI in your shell we recommend to install in your local environment using the command:
 
 ```bash
-alias ncli="docker exec -it nevermined-cli java -jar cli-shaded.jar $NEVERMINED_OPTIONS"
+yarn global add @nevermined-io/cli
+
+OR 
+
+npm install -g @nevermined-io/cli
 ```
 
 This will allow to interact with Nevermined using the `ncli` command.
 
-The CLI docker image uses volumes to store the accounts created and the assets downloaded.
-So if you want to get access to any of those you can find them in the `$HOME/.local/share/nevermined-cli/` directory.
+For more information about different options and/or configuration please visit the [CLI repository](https://github.com/nevermined-io/cli).
 
 ### Marketplace
 
