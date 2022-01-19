@@ -588,6 +588,14 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
             printf $COLOR_Y'Starting with local Polygon node...\n\n'$COLOR_RESET
             ;;
+        # spins up spree
+        --local-spree-node)
+            export KEEPER_NETWORK_NAME="spree"
+            export KEEPER_DEPLOY_CONTRACTS="false"
+            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
+            printf $COLOR_Y'Starting with local Spree node...\n\n'$COLOR_RESET
+            ;;
         #################################################
         # Cleaning switches
         #################################################
