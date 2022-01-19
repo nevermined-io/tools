@@ -52,8 +52,6 @@ export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
 export BAZAART_SERVER_VERSION=${BAZAART_SERVER_VERSION:-latest}
 export BAZAART_CLIENT_VERSION=${BAZAART_CLIENT_VERSION:-latest}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.3.0}
-export OPENETH_IMAGE=${OPENETH_IMAGE:-openethereum/openethereum}
-export OPENETH_VERSION=${OPENETH_VERSION:-v3.2.6}
 export SS_VERSION=${SS_VERSION:-latest}
 export SS_IMAGE=${SS_IMAGE:-neverminedio/secret-store}
 export MINIO_VERSION=${MINIO_VERSION:-latest}
@@ -397,9 +395,9 @@ while :; do
             export KEEPER_VERSION="latest"
             # TODO: Change label on Docker to refer `latest` to `master`
             export FAUCET_VERSION="latest"
-	          export MARKETPLACE_SERVER_VERSION="latest"
-	          export MARKETPLACE_CLIENT_VERSION="latest"
-	          export COMPUTE_API_VERSION="latest"
+	        export MARKETPLACE_SERVER_VERSION="latest"
+	        export MARKETPLACE_CLIENT_VERSION="latest"
+	        export COMPUTE_API_VERSION="latest"
             printf $COLOR_Y'Switched to latest components...\n\n'$COLOR_RESET
             ;;
         --force-pull)
@@ -435,8 +433,6 @@ while :; do
             ;;
         --spree-embedded-contracts)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
-            export OPENETH_IMAGE="neverminedio/contracts-spree"
-            export OPENETH_VERSION=${KEEPER_VERSION}
             printf $COLOR_Y'Using embedded spree contracts...\n\n'$COLOR_RESET
             ;;
         --minio)
@@ -581,26 +577,12 @@ while :; do
             printf $COLOR_Y'Starting with local Rinkeby node...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store ...\n\n'$COLOR_RESET
             ;;
-        # spins up spree local testnet
-        --local-spree-node)
-            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
-            # use this seed only on spree!
-            export KEEPER_MNEMONIC="taxi music thumb unique chat sand crew more leg another off lamp"
-            export KEEPER_NETWORK_NAME="spree"
-            printf $COLOR_Y'Starting with local Spree node...\n\n'$COLOR_RESET
-            ;;
-        --local-spree-no-deploy)
-            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
-            # use this seed only on spree!
-            export KEEPER_MNEMONIC="taxi music thumb unique chat sand crew more leg another off lamp"
-            export KEEPER_NETWORK_NAME="spree"
-            export KEEPER_DEPLOY_CONTRACTS="false"
-	        printf $COLOR_Y'Starting with local Spree node, and keeping existing contracts (no deployment)...\n\n'$COLOR_RESET
-            ;;
+        # spins up polygon sdk
         --polygon)
             export KEEPER_NETWORK_NAME="polygon-localnet"
             export KEEPER_DEPLOY_CONTRACTS="false"
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/polygon_localnet.yml"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
             printf $COLOR_Y'Starting with local Polygon node...\n\n'$COLOR_RESET
             ;;
         #################################################
