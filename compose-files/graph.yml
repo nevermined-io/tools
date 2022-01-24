@@ -2,7 +2,7 @@ version: '3'
 services:
   graph-node:
     container_name: nevermined-graph
-    image: graphprotocol/graph-node:v0.24.2
+    image: graphprotocol/graph-node:v0.25.0
     ports:
       - '9000:8000'
       - '9001:8001'
