@@ -2,7 +2,7 @@ version: '3'
 services:
   graph-node:
     container_name: nevermined-graph
-    image: graphprotocol/graph-node:v0.25.0
+    image: neverminedio/graph-node:latest
     ports:
       - '9000:8000'
       - '9001:8001'
@@ -12,6 +12,7 @@ services:
     depends_on:
       - ipfs
       - postgres
+      - keeper-node
     environment:
       postgres_host: postgres
       postgres_user: graph-node
@@ -20,6 +21,11 @@ services:
       ipfs: 'ipfs:5001'
       ethereum: "spree:${KEEPER_RPC_URL}"
       GRAPH_LOG: info
+      IPFS_URL: 'http://ipfs:5001'
+      GRAPH_NODE_URL: 'http://localhost:8020'
+      KEEPER_NETWORK_NAME: ${KEEPER_NETWORK_NAME}
+    volumes:
+      - ${KEEPER_ARTIFACTS_FOLDER}:/nevermined-contracts:ro
     networks:
       backend:
         ipv4_address: 172.15.0.19
