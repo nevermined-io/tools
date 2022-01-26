@@ -358,6 +358,7 @@ COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/graph.yml"
 DOCKER_COMPOSE_EXTRA_OPTS="${DOCKER_COMPOSE_EXTRA_OPTS:-}"
 
 while :; do
@@ -443,9 +444,9 @@ while :; do
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/minio.yml"
             printf $COLOR_Y'Using minio...\n\n'$COLOR_RESET
             ;;
-        --graph)
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/graph.yml"
-            printf $COLOR_Y'Using The Graph...\n\n'$COLOR_RESET
+        --no-graph)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/graph.yml/}"
+            printf $COLOR_Y'Starting without the graph API...\n\n'$COLOR_RESET
             ;;
         --secret-store)
             # Enable Secret store
