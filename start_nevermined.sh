@@ -141,7 +141,7 @@ export EVENTS_HANDLER_LOG_LEVEL="INFO"
 export COMPUTE_API_LOG_LEVEL="ERROR"
 export COMPUTE_NAMESPACE="nevermined-compute"
 
-export GATEWAY_IPFS_GATEWAY=https://ipfs.nevermined.io
+export GATEWAY_IPFS_GATEWAY="https://dweb.link/ipfs/:cid"
 
 # Set a valid parity address and password to have seamless interaction with the `keeper`
 # it has to exist on the secret store signing node and as well on the keeper node
