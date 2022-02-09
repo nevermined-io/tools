@@ -32,6 +32,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_ENDPOINT_URL: ${AWS_ENDPOINT_URL}
       ESTUARY_TOKEN: ${ESTUARY_TOKEN}
+      ESTUARY_GATEWAY: ${ESTUARY_GATEWAY}
     volumes:
       - ${KEEPER_ARTIFACTS_FOLDER}:/usr/local/nevermined-contracts:ro
       - ${ACCOUNTS_FOLDER}:/accounts
