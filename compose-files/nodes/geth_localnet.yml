@@ -1,0 +1,20 @@
+version: '3'
+services:
+  keeper-node:
+    container_name: nevermined-keeper-node
+    image: neverminedio/geth-localnet:latest
+    user: root
+    command:
+      --dev
+      --http
+      --datadir /chain-data
+      --http.corsdomain "*"
+      --http.vhosts "*"
+      --http.addr 0.0.0.0
+    volumes:
+      - ${KEEPER_ARTIFACTS_FOLDER}:/nevermined-contracts/artifacts/
+    ports:
+      - 8545:8545
+    networks:
+      backend:
+        ipv4_address: 172.15.0.12
