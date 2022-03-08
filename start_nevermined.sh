@@ -590,6 +590,14 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
             printf $COLOR_Y'Starting with local Polygon node...\n\n'$COLOR_RESET
             ;;
+        # spins up geth dev mode
+        --geth)
+            export KEEPER_NETWORK_NAME="geth-localnet"
+            export KEEPER_DEPLOY_CONTRACTS="false"
+            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/geth_localnet.yml"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
+            printf $COLOR_Y'Starting with local Geth node...\n\n'$COLOR_RESET
+            ;;
         # spins up spree
         --local-spree-node)
             export KEEPER_NETWORK_NAME="spree"
