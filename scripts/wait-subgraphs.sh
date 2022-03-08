@@ -1,3 +1,5 @@
+#!/bin/bash
+
 RETRY_COUNT=0
 HTTP_CODE=0
 GRAPH_NODE_URL=${GRAPH_NODE_URL:-http://localhost:9000}
