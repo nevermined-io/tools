@@ -37,4 +37,4 @@ jobs:
 
         # wait for the compute api to be online.
         # the compute api is the last service to come online
-        ./scripts/wait_subgraphs.sh
+        ./scripts/wait-subgraphs.sh
