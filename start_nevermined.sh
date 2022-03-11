@@ -45,7 +45,7 @@ export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
 export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
 export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.11.1}
 export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.2.3}
-export KEEPER_VERSION=${KEEPER_VERSION:-v1.3.3}
+export KEEPER_VERSION=${KEEPER_VERSION:-1.3.6}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.2}
 export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-latest}
 export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
@@ -532,6 +532,15 @@ while :; do
         # Node type switches
         #################################################
         # spins up a new ganache blockchain
+        --no-node)
+            export NODE_COMPOSE_FILE=""
+            export KEEPER_MNEMONIC=''
+            export KEEPER_NETWORK_NAME="development"
+            export KEEPER_DEPLOY_CONTRACTS="false"
+            printf $COLOR_Y'Starting without Keeper node...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting without Secret Store signing node...\n\n'$COLOR_RESET
+            ;;
         --local-ganache-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/ganache_node.yml"
             export KEEPER_MNEMONIC=''

@@ -4,7 +4,7 @@ services:
     container_name: nevermined-keeper-node
     image: trufflesuite/ganache-cli:latest
     command:
-      -d
+      ${GANACHE_COMMAND_OPTIONS:--d}
     ports:
       - 8545:8545
     networks:
