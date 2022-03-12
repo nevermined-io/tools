@@ -87,7 +87,7 @@ if [ ${IP} = "localhost" ]; then
 else
     export KEEPER_RPC_HOST=${IP}
 fi
-export KEEPER_RPC_PORT="8545"
+export KEEPER_RPC_PORT="${KEEPER_RPC_PORT:-8545}"
 export KEEPER_RPC_URL="http://"${KEEPER_RPC_HOST}:${KEEPER_RPC_PORT}
 # Use this seed only on Spree! (Spree is the default.)
 export KEEPER_MNEMONIC="${KEEPER_MNEMONIC:-taxi music thumb unique chat sand crew more leg another off lamp}"
