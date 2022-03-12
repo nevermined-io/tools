@@ -74,7 +74,7 @@ export KEEPER_OWNER_ROLE_ADDRESS="${KEEPER_OWNER_ROLE_ADDRESS}"
 export KEEPER_DEPLOY_CONTRACTS="true"
 export KEEPER_ARTIFACTS_FOLDER="${NEVERMINED_HOME}/nevermined-contracts/artifacts"
 # Specify which ethereum client to run or connect to: development, integration or staging
-export KEEPER_NETWORK_NAME="spree"
+export KEEPER_NETWORK_NAME="${KEEPER_NETWORK_NAME:-spree}"
 export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
 
 # Ganache specific option, these two options have no effect when not running ganache-cli
@@ -544,7 +544,7 @@ while :; do
         --local-ganache-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/ganache_node.yml"
             export KEEPER_MNEMONIC=''
-            export KEEPER_NETWORK_NAME="development"
+            export KEEPER_NETWORK_NAME="${KEEPER_NETWORK_NAME:-development}"
             printf $COLOR_Y'Starting with local Ganache node...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store signing node...\n\n'$COLOR_RESET
