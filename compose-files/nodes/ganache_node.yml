@@ -6,7 +6,7 @@ services:
     command:
       ${GANACHE_COMMAND_OPTIONS:--d}
     ports:
-      - ${KEEPER_RPC_PORT:${KEEPER_RPC_PORT}
+      - ${KEEPER_RPC_PORT}:${KEEPER_RPC_PORT}
     networks:
       backend:
         ipv4_address: 172.15.0.12
