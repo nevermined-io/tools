@@ -543,7 +543,7 @@ while :; do
             ;;
         --local-ganache-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/ganache_node.yml"
-            export KEEPER_MNEMONIC=''
+#            export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="${KEEPER_NETWORK_NAME:-development}"
             printf $COLOR_Y'Starting with local Ganache node...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
