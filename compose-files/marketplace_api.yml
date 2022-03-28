@@ -1,0 +1,20 @@
+version: '3'
+services:
+  nevermined-metadata:
+    container_name: nevermined-marketplace-api    
+    image: neverminedio/marketplace-api:${MARKETPLACE_API_VERSION:-latest}
+    ports:
+      - 3100:3100
+    networks:
+      backend:
+        ipv4_address: 172.15.0.22
+    depends_on:
+      - elasticsearch
+    environment:
+      NODE_ENV: 'production'
+      PROFILE: 'production'
+      JWT_SECRET_KEY: ${MARKETPLACE_API_JWT_SECRET_KEY}
+      ENABLE_HTTPS_REDIRECT: ${ENABLE_HTTPS_REDIRECT}
+      ELASTIC_NODE: ${DB_URI}
+      ELASTIC_USERNAME: ${DB_USERNAME}
+      ELASTIC_PASSWORD: ${DB_PASSWORD}
