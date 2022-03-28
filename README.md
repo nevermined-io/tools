@@ -114,9 +114,9 @@ The startup script comes with a set of options for customizing various things.
 
 The default versions are always a combination of component versions which are considered stable.
 
-| Metadata API | Gateway  | Contracts | Faucet   |
-| ------------ | -------- | --------- | -------- |
-| `v0.4.0`     | `v0.9.1` | `v1.3.0`  | `v0.2.2` |
+| Metadata API | Gateway   | Contracts | Faucet   | Marketplace API   |
+| ------------ | --------- | --------- | -------- | ----------------- |
+| `v0.4.0`     | `v0.12.6` | `v1.3.8`  | `v0.2.2` | `latest`          |
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
@@ -124,6 +124,7 @@ You can use the `--latest` option to pull the most recent Docker images for all 
 You can override the Docker image tag used for a particular component by setting its associated environment variable before calling `start_nevermined.sh`:
 
 * `METADATA_VERSION`
+* `MARKETPLACE_API_VERSION`
 * `GATEWAY_VERSION`
 * `KEEPER_VERSION`
 * `MARKETPLACE_CLIENT_VERSION`
@@ -133,7 +134,7 @@ You can override the Docker image tag used for a particular component by setting
 For example:
 
 ```bash
-export GATEWAY_VERSION=v0.8.3
+export GATEWAY_VERSION=v0.12.5
 ./start_nevermined.sh
 ```
 
@@ -155,9 +156,7 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                                     |
 | `--compute`                | Start up with the Nevermined compute components.                                                      |
 | `--ldap`                   | Start an OpenLdap instance use for keeping the users and groups authentication.                       |
-| `--events-handler`         | Start up with the `events-handler` Building Block.                                                    |
 | `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                              |
-| `--bazaart`                | Start up with the `bazaart` for the Nevermined arts marketplace.                                      |
 | `--minio`                  | Start up with the `minio` for the Nevermined arts marketplace.                                        |
 | `--graph`                  | Start up with the `graph` node for the Nevermined events.                                             |
 | `--polygon-localnet`       | Start up with the a polygon local node for the Nevermined events.                                     |
@@ -210,17 +209,6 @@ This Building Block can be disabled by setting the `--no-marketplace` flag.
 | `marketplace-client` | `3000`        | <http://marketplace-client:3000> | <http://localhost:3000> | [Marketplace Client](https://github.com/nevermined-io/marketplace) |
 | `marketplace-server` | `4000`        | <http://marketplace-server:4000> | <http://locahost:4000>  | [Marketplace Server](https://github.com/nevermined-io/marketplace) |
 
-### Bazaart
-
-When passing `--bazaart` option it will start two containers (client & server). If the Bazaart is running, you can open the **Bazaart Frontend**
-application in your browser:
-
-[http://localhost:3002](http://localhost:3002)
-
-| Hostname         | External Port | Internal URL                 | Local URL               | Description                                                   |
-| ---------------- | ------------- | ---------------------------- | ----------------------- | ------------------------------------------------------------- |
-| `bazaart-client` | `3002`        | <http://bazaart-client:3002> | <http://localhost:3002> | [Bazaart Client](https://github.com/nevermined-io/cryptoarts) |
-| `bazaart-server` | `4002`        | <http://bazaart-server:4002> | <http://locahost:4002>  | [Bazaart Server](https://github.com/nevermined-io/cryptoarts) |
 
 ### Minio
 
@@ -255,6 +243,17 @@ This Building Block can be disabled by setting the `--no-metadata` flag.
 | `elasticsearch` |               |                        |                         | The Elasticsearch used by Metadata API                    |
 | `mongodb`       |               |                        |                         | The MongoDB used by Metadata API                          |
 
+### Marketplace API
+
+The Marketplace API is a RESTful micro-service that will replace and augment the Metadata API functionalities. 
+When passing `--marketplace-api` option it will start the [Marketplace API](https://github.com/nevermined-io/marketplace-api) container. If the API is running, you can open the **API Swagger interface** in your browser:
+
+[http://localhost:3100/api/v1/docs](http://localhost:3100)
+
+| Hostname         | External Port | Internal URL                 | Local URL               | Description                                                   |
+| ---------------- | ------------- | ---------------------------- | ----------------------- | ------------------------------------------------------------- |
+| `marketplace-api` | `3100`        | <http://marketplace-api:3100> | <http://locahost:3100>  | [Marketplace API](https://github.com/nevermined-io/marketplace-api) |
+
 ### Gateway
 
 By default it will start one container. This Building Block can be disabled by setting the `--no-gateway` flag.
@@ -262,14 +261,6 @@ By default it will start one container. This Building Block can be disabled by s
 | Hostname  | External Port | Internal URL          | Local URL               | Description                                         |
 | --------- | ------------- | --------------------- | ----------------------- | --------------------------------------------------- |
 | `gateway` | `8030`        | <http://gateway:8030> | <http://localhost:8030> | [Gateway](https://github.com/nevermined-io/gateway) |
-
-### Events Handler
-
-Events Handler doesn't start by default. This Building Block can be enabled by setting the `--events-handler` flag.
-
-| Hostname         | External Port | Internal URL | Local URL | Description                                                       |
-| ---------------- | ------------- | ------------ | --------- | ----------------------------------------------------------------- |
-| `events-handler` |               |              |           | [Events-handler](https://github.com/nevermined-io/gateway-events) |
 
 ### Compute API
 
@@ -395,7 +386,7 @@ It keeps the same Apache v2 License and adds some improvements. See [NOTICE file
 ## License
 
 ```
-Copyright 2020 Keyko GmbH
+Copyright 2022 Nevermined AG
 This product includes software developed at
 BigchainDB GmbH and Ocean Protocol (https://www.oceanprotocol.com/)
 
