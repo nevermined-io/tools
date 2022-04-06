@@ -45,7 +45,7 @@ export MARKETPLACE_API_VERSION=${MARKETPLACE_API_VERSION:-latest}
 export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
 export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
 export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.12.6}
-export KEEPER_VERSION=${KEEPER_VERSION:-v1.3.8}
+export KEEPER_VERSION=${KEEPER_VERSION:-v1.3.12}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.2}
 export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-latest}
 export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
@@ -381,7 +381,7 @@ while :; do
             export CONTROL_CENTER_UI_VERSION="latest"
             export GATEWAY_VERSION="latest"
             export MARKETPLACE_API_VERSION="latest"
-            export KEEPER_VERSION="latest"
+            # export KEEPER_VERSION="latest"
             # TODO: Change label on Docker to refer `latest` to `master`
             export FAUCET_VERSION="latest"
 	        export MARKETPLACE_SERVER_VERSION="latest"
