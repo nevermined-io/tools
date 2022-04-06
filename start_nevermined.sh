@@ -108,7 +108,7 @@ export DB_CA_CERTS=""
 export DB_CLIENT_KEY=""
 export DB_CLIENT_CERT=""
 export MARKETPLACE_API_JWT_SECRET_KEY="secret"
-export ENABLE_HTTPS_REDIRECT="true"
+export ENABLE_HTTPS_REDIRECT="false"
 
 CHECK_ELASTIC_VM_COUNT=true
 
