@@ -153,12 +153,12 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--no-secret-store`        | Start up without the `secret-store` Building Block.                                                   |
 | `--no-faucet`              | Start up without the `faucet` Building Block.                                                         |
 | `--no-elastic`             | Start up without ElasticSearch.                                                                       |
+| `--no-graph`               | Start up without the `graph` node for the Nevermined events.                                     |
 | `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                                     |
 | `--compute`                | Start up with the Nevermined compute components.                                                      |
 | `--ldap`                   | Start an OpenLdap instance use for keeping the users and groups authentication.                       |
 | `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                              |
-| `--minio`                  | Start up with the `minio` for the Nevermined arts marketplace.                                        |
-| `--graph`                  | Start up with the `graph` node for the Nevermined events.                                             |
+| `--minio`                  | Start up with the `minio` for the Nevermined arts marketplace.                                                            |
 | `--polygon-localnet`       | Start up with the a polygon local node for the Nevermined events.                                     |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                          |
 | `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                        |
