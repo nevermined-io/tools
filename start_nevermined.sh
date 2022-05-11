@@ -41,6 +41,7 @@ COMPOSE_DIR="${DIR}/compose-files"
 
 # Default versions of Metadata API, Gateway, Keeper Contracts and Marketplace
 export METADATA_VERSION=${METADATA_VERSION:-v0.4.0}
+export MARKETPLACE_API_VERSION=${MARKETPLACE_API_VERSION:-latest}
 export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
 export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
 export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.11.1}
@@ -109,6 +110,8 @@ export DB_VERIFY_CERTS="false"
 export DB_CA_CERTS=""
 export DB_CLIENT_KEY=""
 export DB_CLIENT_CERT=""
+export MARKETPLACE_API_JWT_SECRET_KEY="secret"
+export ENABLE_HTTPS_REDIRECT="false"
 CHECK_ELASTIC_VM_COUNT=true
 
 # TODO: Disable this when work on arweave is done
@@ -161,6 +164,7 @@ if [ ${IP} = "localhost" ]; then
     export SECRET_STORE_URL=http://secret-store:12001
     export SIGNING_NODE_URL=http://secret-store-signing-node:8545
     export METADATA_URI=http://172.17.0.1:5000
+    export MARKETPLACE_API_URL=http://172.17.0.1:3100
     export CONTROL_CENTER_BACKEND_URI=http://localhost:3020
     export CONTROL_CENTER_UI_URI=http://localhost:3021
     export FAUCET_URL=http://faucet:3001
@@ -180,6 +184,7 @@ else
     export SECRET_STORE_URL=http://${IP}:12001
     export SIGNING_NODE_URL=http://${IP}:8545
     export METADATA_URI=http://${IP}:5000
+    export MARKETPLACE_API_URL=http://${IP}:3100
     export CONTROL_CENTER_BACKEND_URI=http://${IP}:3020
     export CONTROL_CENTER_UI_URI=http://${IP}:3021
     export FAUCET_URL=http://${IP}:3001
@@ -372,6 +377,7 @@ while :; do
         #################################################
         --debug)
             export GATEWAY_LOG_LEVEL="DEBUG"
+            export MARKETPLACE_API_LOG_LEVEL="DEBUG"
             export EVENTS_HANDLER_LOG_LEVEL="DEBUG"
             ;;
         #################################################
@@ -398,6 +404,7 @@ while :; do
             export GATEWAY_VERSION="latest"
             export EVENTS_HANDLER_VERSION="latest"
             export KEEPER_VERSION="latest"
+            export MARKETPLACE_API_VERSION="latest"
             # TODO: Change label on Docker to refer `latest` to `master`
             export FAUCET_VERSION="latest"
 	        export MARKETPLACE_SERVER_VERSION="latest"
@@ -497,6 +504,13 @@ while :; do
             printf $COLOR_Y'Starting OpenLdap...\n\n'$COLOR_RESET
             echo "Loading LDIF from ${LDAP_PREPOPULATE_FOLDER}...\n\n"
             export LDAP_START="true"
+            ;;
+        #################################################
+        # Marketplace API
+        #################################################
+        --marketplace-api)
+			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace_api.yml"
+            printf $COLOR_Y'Starting with Marketplace API...\n\n'$COLOR_RESET
             ;;
         #################################################
         # Events Handler
