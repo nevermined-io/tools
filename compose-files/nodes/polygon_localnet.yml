@@ -1,12 +1,12 @@
-version: '3'
+version: "3"
 services:
   keeper-node:
     container_name: nevermined-keeper-node
     image: neverminedio/polygon-localnet:${KEEPER_VERSION}
     user: root
-    command:
-      --dev
+    command: --dev
       --chain genesis.json
+      --data-dir test-chain
       --jsonrpc 0.0.0.0:8545
     volumes:
       - ${KEEPER_ARTIFACTS_FOLDER}:/nevermined-contracts/artifacts/
