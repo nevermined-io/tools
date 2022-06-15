@@ -45,11 +45,11 @@ export MARKETPLACE_API_VERSION=${MARKETPLACE_API_VERSION:-latest}
 export SUBGRAPH_VERSION=${SUBGRAPH_VERSION:-latest}
 export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
 export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
-export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.12.8}
-export KEEPER_VERSION=${KEEPER_VERSION:-v1.3.12}
+export GATEWAY_VERSION=${GATEWAY_VERSION:-v1.0.0-rc3}
+export KEEPER_VERSION=${KEEPER_VERSION:-v2.0.0}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.2}
-export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-latest}
-export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
+export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-v0.1.4}
+export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-v0.1.4t}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.3.0}
 export SS_VERSION=${SS_VERSION:-latest}
 export SS_IMAGE=${SS_IMAGE:-neverminedio/secret-store}
@@ -74,6 +74,7 @@ export KEEPER_DEPLOY_CONTRACTS="true"
 export KEEPER_ARTIFACTS_FOLDER="${NEVERMINED_HOME}/nevermined-contracts/artifacts"
 # Specify which ethereum client to run or connect to: development, integration or staging
 export KEEPER_NETWORK_NAME="spree"
+export KEEPER_DEPLOY_CONTRACTS="false"
 export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
 
 # Ganache specific option, these two options have no effect when not running ganache-cli
@@ -337,12 +338,16 @@ function cleanup_processes {
 check_if_owned_by_root
 show_banner
 
+
+#
+# DEFAULT CONTAINERS
+#
+
 COMPOSE_FILES=""
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace_api.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/graph.yml"
@@ -479,12 +484,12 @@ while :; do
             export LDAP_START="true"
             ;;
         #################################################
-        # Marketplace API
+        # Metadata API (deprecated in favor of Marketplace API)
         #################################################
-        --marketplace-api)
-			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace_api.yml"
-            printf $COLOR_Y'Starting with Marketplace API...\n\n'$COLOR_RESET
-            ;;
+        --metadata-api)
+			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
+            printf $COLOR_Y'Starting with Metadata API...\n\n'$COLOR_RESET
+            ;;        
         #################################################
         # Dashboard
         #################################################
