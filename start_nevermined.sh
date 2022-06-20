@@ -73,7 +73,7 @@ export KEEPER_OWNER_ROLE_ADDRESS="${KEEPER_OWNER_ROLE_ADDRESS}"
 export KEEPER_DEPLOY_CONTRACTS="true"
 export KEEPER_ARTIFACTS_FOLDER="${NEVERMINED_HOME}/nevermined-contracts/artifacts"
 # Specify which ethereum client to run or connect to: development, integration or staging
-export KEEPER_NETWORK_NAME="spree"
+export KEEPER_NETWORK_NAME="${KEEPER_NETWORK_NAME:-spree}"
 export KEEPER_DEPLOY_CONTRACTS="false"
 export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
 
@@ -87,7 +87,7 @@ if [ ${IP} = "localhost" ]; then
 else
     export KEEPER_RPC_HOST=${IP}
 fi
-export KEEPER_RPC_PORT="8545"
+export KEEPER_RPC_PORT="${KEEPER_RPC_PORT:-8545}"
 export KEEPER_RPC_URL="http://"${KEEPER_RPC_HOST}:${KEEPER_RPC_PORT}
 # Use this seed only on Spree! (Spree is the default.)
 export KEEPER_MNEMONIC="${KEEPER_MNEMONIC:-taxi music thumb unique chat sand crew more leg another off lamp}"
@@ -111,7 +111,6 @@ export DB_CLIENT_KEY=""
 export DB_CLIENT_CERT=""
 export MARKETPLACE_API_JWT_SECRET_KEY="secret"
 export ENABLE_HTTPS_REDIRECT="false"
-
 CHECK_ELASTIC_VM_COUNT=true
 
 # TODO: Disable this when work on arweave is done
@@ -387,7 +386,7 @@ while :; do
             export CONTROL_CENTER_UI_VERSION="latest"
             export GATEWAY_VERSION="latest"
             export MARKETPLACE_API_VERSION="latest"
-            # export KEEPER_VERSION="latest"
+            export KEEPER_VERSION="latest"
             # TODO: Change label on Docker to refer `latest` to `master`
             export FAUCET_VERSION="latest"
 	        export MARKETPLACE_SERVER_VERSION="latest"
@@ -489,7 +488,7 @@ while :; do
         --metadata-api)
 			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
             printf $COLOR_Y'Starting with Metadata API...\n\n'$COLOR_RESET
-            ;;        
+            ;;
         #################################################
         # Dashboard
         #################################################
@@ -528,8 +527,8 @@ while :; do
             ;;
         --local-ganache-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/ganache_node.yml"
-            export KEEPER_MNEMONIC=''
-            export KEEPER_NETWORK_NAME="development"
+#            export KEEPER_MNEMONIC=''
+            export KEEPER_NETWORK_NAME="${KEEPER_NETWORK_NAME:-development}"
             printf $COLOR_Y'Starting with local Ganache node...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
             printf $COLOR_Y'Starting without Secret Store signing node...\n\n'$COLOR_RESET
