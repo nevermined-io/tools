@@ -1,14 +1,14 @@
-version: "3"
+version: '3'
 services:
   graph-node:
     container_name: nevermined-graph
-    image: neverminedio/graph-node:${SUBGRAPH_VERSION:-latest}
+    image: neverminedio/graph-node:latest
     ports:
-      - "9000:8000"
-      - "9001:8001"
-      - "9020:8020"
-      - "9030:8030"
-      - "9040:8040"
+      - '9000:8000'
+      - '9001:8001'
+      - '9020:8020'
+      - '9030:8030'
+      - '9040:8040'
     depends_on:
       - ipfs
       - postgres
@@ -18,11 +18,11 @@ services:
       postgres_user: graph-node
       postgres_pass: let-me-in
       postgres_db: graph-node
-      ipfs: "ipfs:5001"
+      ipfs: 'ipfs:5001'
       ethereum: "spree:${KEEPER_RPC_URL}"
       GRAPH_LOG: info
-      IPFS_URL: "http://ipfs:5001"
-      GRAPH_NODE_URL: "http://localhost:8020"
+      IPFS_URL: 'http://ipfs:5001'
+      GRAPH_NODE_URL: 'http://localhost:8020'
       KEEPER_NETWORK_NAME: ${KEEPER_NETWORK_NAME}
     volumes:
       - ${KEEPER_ARTIFACTS_FOLDER}:/nevermined-contracts:ro
@@ -33,7 +33,7 @@ services:
     container_name: nevermined-ipfs
     image: ipfs/go-ipfs:v0.4.23
     ports:
-      - "5001:5001"
+      - '5001:5001'
     networks:
       backend:
         ipv4_address: 172.15.0.20
@@ -41,7 +41,7 @@ services:
     container_name: nevermined-postgres
     image: postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
     environment:
       POSTGRES_USER: graph-node

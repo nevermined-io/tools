@@ -2,7 +2,7 @@ version: '3'
 services:
   keeper-node:
     container_name: nevermined-keeper-node
-    image: neverminedio/geth-localnet:${KEEPER_VERSION}
+    image: neverminedio/geth-localnet::${KEEPER_VERSION}
     user: root
     command:
       --dev

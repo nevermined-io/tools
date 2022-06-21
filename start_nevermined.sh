@@ -40,16 +40,18 @@ DIR="${DIR/ /\\ }"
 COMPOSE_DIR="${DIR}/compose-files"
 
 # Default versions of Metadata API, Gateway, Keeper Contracts and Marketplace
-export METADATA_VERSION=${METADATA_VERSION:-v0.5.5}
+export METADATA_VERSION=${METADATA_VERSION:-v0.4.0}
 export MARKETPLACE_API_VERSION=${MARKETPLACE_API_VERSION:-latest}
-export SUBGRAPH_VERSION=${SUBGRAPH_VERSION:-latest}
 export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
 export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
-export GATEWAY_VERSION=${GATEWAY_VERSION:-latest}
-export KEEPER_VERSION=${KEEPER_VERSION:-v2.0.0}
+export GATEWAY_VERSION=${GATEWAY_VERSION:-v0.11.1}
+export EVENTS_HANDLER_VERSION=${EVENTS_HANDLER_VERSION:-v0.2.3}
+export KEEPER_VERSION=${KEEPER_VERSION:-v1.3.3}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.2}
-export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-v0.1.4}
-export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-v0.1.4}
+export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-latest}
+export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-latest}
+export BAZAART_SERVER_VERSION=${BAZAART_SERVER_VERSION:-latest}
+export BAZAART_CLIENT_VERSION=${BAZAART_CLIENT_VERSION:-latest}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.3.0}
 export SS_VERSION=${SS_VERSION:-latest}
 export SS_IMAGE=${SS_IMAGE:-neverminedio/secret-store}
@@ -74,7 +76,6 @@ export KEEPER_DEPLOY_CONTRACTS="true"
 export KEEPER_ARTIFACTS_FOLDER="${NEVERMINED_HOME}/nevermined-contracts/artifacts"
 # Specify which ethereum client to run or connect to: development, integration or staging
 export KEEPER_NETWORK_NAME="${KEEPER_NETWORK_NAME:-spree}"
-export KEEPER_DEPLOY_CONTRACTS="false"
 export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
 
 # Ganache specific option, these two options have no effect when not running ganache-cli
@@ -140,6 +141,7 @@ export GATEWAY_LOG_LEVEL="INFO"
 # allow oauth without https
 export AUTHLIB_INSECURE_TRANSPORT=true
 
+export EVENTS_HANDLER_LOG_LEVEL="INFO"
 export COMPUTE_API_LOG_LEVEL="ERROR"
 export COMPUTE_NAMESPACE="nevermined-compute"
 
@@ -170,6 +172,10 @@ if [ ${IP} = "localhost" ]; then
     export MARKETPLACE_CLIENT_URL=http://localhost:3000
     export MARKETPLACE_KEEPER_RPC_HOST=http://localhost:8545
     export MARKETPLACE_SECRET_STORE_URL=http://localhost:12001
+    export BAZAART_SERVER_URL=http://localhost:4002
+    export BAZAART_CLIENT_URL=http://localhost:3002
+    export BAZAART_KEEPER_RPC_HOST=http://172.17.0.1:8545
+    export BAZAART_SECRET_STORE_URL=http://localhost:12001
     export GATEWAY_URL=http://172.17.0.1:8030
     export COMPUTE_API_URL=http://172.17.0.1:8050
     export MINIO_URL=http://172.17.0.1:9000
@@ -186,6 +192,10 @@ else
     export MARKETPLACE_CLIENT_URL=http://${IP}:3000
     export MARKETPLACE_KEEPER_RPC_HOST=http://${IP}:8545
     export MARKETPLACE_SECRET_STORE_URL=http://${IP}:12001
+    export BAZAART_SERVER_URL=http://${IP}:4002
+    export BAZAART_CLIENT_URL=http://${IP}:3002
+    export BAZAART_KEEPER_RPC_HOST=http://${IP}:8545
+    export BAZAART_SECRET_STORE_URL=http://${IP}:12001
     export GATEWAY_URL=http://${IP}:8030
     export COMPUTE_API_URL=http://${IP}:8050
     export MINIO_URL=http://${IP}:9000
@@ -203,6 +213,16 @@ export MARKETPLACE_FAUCET_URL=${FAUCET_URL}
 export MARKETPLACE_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
 export MARKETPLACE_IPFS_NODE_URI=https://ipfs.ipdb.com:443
 
+
+# Bazaart
+export BAZAART_GATEWAY_URL=${GATEWAY_URL}
+export BAZAART_METADATA_URI=${METADATA_URI}
+export BAZAART_FAUCET_URL=${FAUCET_URL}
+export BAZAART_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
+export BAZAART_IPFS_NODE_URI=https://ipfs.ipdb.com:443
+export BAZAART_S3_ACCESS_KEY_ID='minioadmin'
+export BAZAART_S3_SECRET_ACCESS_KEY='minioadmin'
+export BAZAART_S3_ENDPOINT=${MINIO_URL}
 
 # Export User UID and GID
 export LOCAL_USER_ID=$(id -u)
@@ -337,16 +357,12 @@ function cleanup_processes {
 check_if_owned_by_root
 show_banner
 
-
-#
-# DEFAULT CONTAINERS
-#
-
 COMPOSE_FILES=""
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace_api.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/graph.yml"
@@ -362,6 +378,7 @@ while :; do
         --debug)
             export GATEWAY_LOG_LEVEL="DEBUG"
             export MARKETPLACE_API_LOG_LEVEL="DEBUG"
+            export EVENTS_HANDLER_LOG_LEVEL="DEBUG"
             ;;
         #################################################
         # Log level
@@ -385,8 +402,9 @@ while :; do
             export CONTROL_CENTER_BACKEND_VERSION="latest"
             export CONTROL_CENTER_UI_VERSION="latest"
             export GATEWAY_VERSION="latest"
-            export MARKETPLACE_API_VERSION="latest"
+            export EVENTS_HANDLER_VERSION="latest"
             export KEEPER_VERSION="latest"
+            export MARKETPLACE_API_VERSION="latest"
             # TODO: Change label on Docker to refer `latest` to `master`
             export FAUCET_VERSION="latest"
 	        export MARKETPLACE_SERVER_VERSION="latest"
@@ -452,7 +470,12 @@ while :; do
             NODE_COMPOSE_FILE=""
             printf $COLOR_Y'Starting only Secret Store...\n\n'$COLOR_RESET
             ;;
-
+        --bazaart)
+            # Enable bazaart
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/bazaart.yml"
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/minio.yml"
+            printf $COLOR_Y'Starting with Bazaart...\n\n'$COLOR_RESET
+            ;;
         #################################################
         # MongoDB
         #################################################
@@ -483,11 +506,18 @@ while :; do
             export LDAP_START="true"
             ;;
         #################################################
-        # Metadata API (deprecated in favor of Marketplace API)
+        # Marketplace API
         #################################################
-        --metadata-api)
-			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
-            printf $COLOR_Y'Starting with Metadata API...\n\n'$COLOR_RESET
+        --marketplace-api)
+			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace_api.yml"
+            printf $COLOR_Y'Starting with Marketplace API...\n\n'$COLOR_RESET
+            ;;
+        #################################################
+        # Events Handler
+        #################################################
+        --events-handler)
+			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/events_handler.yml"
+            printf $COLOR_Y'Starting with Events Handler...\n\n'$COLOR_RESET
             ;;
         #################################################
         # Dashboard

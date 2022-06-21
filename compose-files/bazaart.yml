@@ -1,0 +1,51 @@
+version: '3'
+services:
+  bazaart-server:
+    container_name: nevermined-bazaart-server
+    image: neverminedio/bazaart_server:$BAZAART_SERVER_VERSION
+    networks:
+      backend:
+        ipv4_address: 172.15.0.34
+    ports:
+      - 4002:4000
+    depends_on:
+      - minio
+    environment:
+      IPFS_GATEWAY_URI: ${BAZAART_IPFS_GATEWAY_URI}
+      S3_ACCESS_KEY_ID: ${BAZAART_S3_ACCESS_KEY_ID}
+      S3_SECRET_ACCESS_KEY: ${BAZAART_S3_SECRET_ACCESS_KEY}
+      S3_ENDPOINT: ${BAZAART_S3_ENDPOINT}
+      # Filecoin integration
+      # POWERGATE_HOST: ${BAZAART_POWERGATE_HOST}
+      # POWERGATE_TOKEN: ${BAZAART_POWERGATE_TOKEN}
+
+  bazaart-client:
+    container_name: nevermined-bazaart-client
+    image: neverminedio/bazaart_client:$BAZAART_CLIENT_VERSION
+    networks:
+      backend:
+        ipv4_address: 172.15.0.35
+    ports:
+      - 3002:3000
+    depends_on:
+      - keeper-node
+      - nevermined-metadata
+      - gateway
+      - bazaart-server
+    environment:
+      LISTEN_ADDRESS: '0.0.0.0'
+      LOCAL_CONTRACTS: ${KEEPER_DEPLOY_CONTRACTS}
+      CI: 'true'
+      REACT_APP_ALLOW_PRICING: 'true'
+      REACT_APP_SHOW_REQUEST_TOKENS_BUTTON: 'true'
+      REACT_APP_METADATA_URI: ${BAZAART_METADATA_URI}
+      REACT_APP_GATEWAY_ADDRESS: ${PROVIDER_ADDRESS}
+      REACT_APP_SERVICE_URI: ${BAZAART_SERVER_URL}
+      REACT_APP_NODE_URI: ${BAZAART_KEEPER_RPC_HOST}
+      REACT_APP_GATEWAY_URI: ${BAZAART_GATEWAY_URL}
+      REACT_APP_SECRET_STORE_URI: ${BAZAART_SECRET_STORE_URL}
+      REACT_APP_FAUCET_URI: ${BAZAART_FAUCET_URL}
+      REACT_APP_IPFS_GATEWAY_URI: ${BAZAART_IPFS_GATEWAY_URI}
+      REACT_APP_IPFS_NODE_URI: ${BAZAART_IPFS_NODE_URI}
+    volumes:
+      - ${KEEPER_ARTIFACTS_FOLDER}:/app/frontend/node_modules/@nevermined-io/contracts/artifacts/:ro

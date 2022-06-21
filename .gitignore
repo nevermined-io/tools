@@ -18,4 +18,3 @@ networks/secret-store/config/config.toml
 
 # Logs
 *.log
-node_modules
