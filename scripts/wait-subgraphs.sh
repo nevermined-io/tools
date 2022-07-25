@@ -4,8 +4,11 @@ RETRY_COUNT=0
 HTTP_CODE=0
 GRAPH_NODE_URL=${GRAPH_NODE_URL:-http://localhost:9000}
 
+NEVERMINED_HOME=${NEVERMINED_HOME:-"${HOME}/.nevermined"}
+KEEPER_ARTIFACTS_FOLDER=${KEEPER_ARTIFACTS_FOLDER:-"${NEVERMINED_HOME}/nevermined-contracts/artifacts"}
+
 # get contract version
-VERSION=$(jq ".version" node_modules/@nevermined-io/contracts/artifacts/DIDRegistry.$NETWORK.json)
+VERSION=$(jq ".version" $KEEPER_ARTIFACTS_FOLDER/DIDRegistry.$NETWORK.json)
 # remove dots and quotes
 VERSION=$(echo ${VERSION//./} | tr -d '"')
 
