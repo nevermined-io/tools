@@ -387,8 +387,7 @@ while :; do
             export CONTROL_CENTER_UI_VERSION="latest"
             export GATEWAY_VERSION="latest"
             export MARKETPLACE_API_VERSION="latest"
-            # export KEEPER_VERSION="latest"
-            # TODO: Change label on Docker to refer `latest` to `master`
+            export KEEPER_VERSION="latest"
             export FAUCET_VERSION="latest"
 	        export MARKETPLACE_SERVER_VERSION="latest"
 	        export MARKETPLACE_CLIENT_VERSION="latest"
@@ -489,7 +488,7 @@ while :; do
         --metadata-api)
 			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
             printf $COLOR_Y'Starting with Metadata API...\n\n'$COLOR_RESET
-            ;;        
+            ;;
         #################################################
         # Dashboard
         #################################################

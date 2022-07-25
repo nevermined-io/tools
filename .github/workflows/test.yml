@@ -32,9 +32,8 @@ jobs:
         docker login -u ${{ secrets.NEVERMINED_DOCKER_USERNAME }} -p ${{ secrets.NEVERMINED_DOCKER_TOKEN}}
         rm -rf "${HOME}/.nevermined/nevermined-contracts/artifacts"
 
-        # start nevermined with the compute stack
-        ./start_nevermined.sh --latest --no-marketplace --local-spree-node --compute --spree-embedded-contracts &
+        ./start_nevermined.sh --latest --spree-embedded-contracts &
 
-        # wait for the compute api to be online.
-        # the compute api is the last service to come online
-        ./scripts/wait-subgraphs.sh
+        # wait for subgraphs
+        ./scripts/wait_for_migration_keeper_artifacts.sh
+        ./scripts/wait-subgraphs.sh spree
