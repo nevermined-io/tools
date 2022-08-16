@@ -10,7 +10,7 @@ KEEPER_ARTIFACTS_FOLDER=${KEEPER_ARTIFACTS_FOLDER:-"${NEVERMINED_HOME}/nevermine
 # get contract version
 VERSION=$(jq ".version" $KEEPER_ARTIFACTS_FOLDER/DIDRegistry.$NETWORK.json)
 # remove dots and quotes
-VERSION=$(echo ${VERSION//./} | tr -d '"')
+VERSION=$(echo ${VERSION%%.*} | tr -d '"')
 
 SUBGRAPH=whitelistingcondition
 SUBGRAPH_URL=$GRAPH_NODE_URL/subgraphs/name/nevermined-io/development$NETWORK$VERSION$SUBGRAPH
