@@ -1,0 +1,39 @@
+version: '3'
+services:
+  gateway:
+    container_name: nevermined-gateway
+    image: neverminedio/gateway-ts:$GATEWAY_VERSION
+    ports:
+      - 8030:8030
+    networks:
+      backend:
+        ipv4_address: 172.15.0.17
+    depends_on:
+      - keeper-node
+    env_file:
+      - ${GATEWAY_ENV_FILE}
+    environment:
+      KEEPER_URL: ${KEEPER_RPC_URL}
+      KEEPER_PATH: ${KEEPER_PATH}
+      PARITY_URL: ${SIGNING_NODE_URL}
+      LOCAL_CONTRACTS: ${KEEPER_DEPLOY_CONTRACTS}
+      SECRET_STORE_URL: ${SECRET_STORE_URL}
+      PROVIDER_ADDRESS: ${PROVIDER_ADDRESS}
+      PROVIDER_PASSWORD: ${PROVIDER_PASSWORD}
+      PROVIDER_KEYFILE: ${PROVIDER_KEYFILE}
+      RSA_PRIVKEY_FILE: ${RSA_PRIVKEY_FILE}
+      RSA_PUBKEY_FILE: ${RSA_PUBKEY_FILE}
+      LOG_LEVEL: ${GATEWAY_LOG_LEVEL}
+      GATEWAY_WORKERS: ${GATEWAY_WORKERS}
+      IPFS_GATEWAY: ${GATEWAY_IPFS_GATEWAY}
+      COMPUTE_API_URL: ${COMPUTE_API_URL}
+      AUTHLIB_INSECURE_TRANSPORT: ${AUTHLIB_INSECURE_TRANSPORT}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_ENDPOINT_URL: ${AWS_ENDPOINT_URL}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      ESTUARY_TOKEN: ${ESTUARY_TOKEN}
+      ESTUARY_GATEWAY: ${ESTUARY_GATEWAY}
+    volumes:
+      - ${KEEPER_ARTIFACTS_FOLDER}:/artifacts
+      - ${ACCOUNTS_FOLDER}:/accounts

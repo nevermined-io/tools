@@ -409,6 +409,11 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway.yml/}"
             printf $COLOR_Y'Starting without Gateway...\n\n'$COLOR_RESET
             ;;
+        --new-gateway)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway.yml/}"
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway_new.yml"
+            printf $COLOR_Y'Starting with new Gateway...\n\n'$COLOR_RESET
+            ;;
         --no-metadata)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata.yml/}"
             printf $COLOR_Y'Starting without Metadata API...\n\n'$COLOR_RESET
