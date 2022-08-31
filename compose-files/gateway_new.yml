@@ -36,4 +36,5 @@ services:
       ESTUARY_GATEWAY: ${ESTUARY_GATEWAY}
     volumes:
       - ${KEEPER_ARTIFACTS_FOLDER}:/artifacts
+      - ${KEEPER_CIRCUITS_FOLDER}:/circuits
       - ${ACCOUNTS_FOLDER}:/accounts
