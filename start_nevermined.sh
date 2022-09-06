@@ -414,7 +414,7 @@ while :; do
             # The TS will start by default, we keep this option to support backward compatibility
             printf $COLOR_Y'Starting with Typescript Gateway...\n\n'$COLOR_RESET
             ;;
-        --python-gateway)
+        --legacy-gateway | --python-gateway)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway_ts.yml/}"
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway_python.yml"
             printf $COLOR_Y'Starting with Python Legacy Gateway...\n\n'$COLOR_RESET
