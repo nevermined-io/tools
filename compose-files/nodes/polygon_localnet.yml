@@ -10,6 +10,7 @@ services:
       --jsonrpc 0.0.0.0:8545
     volumes:
       - ${KEEPER_ARTIFACTS_FOLDER}:/nevermined-contracts/artifacts/
+      - ${KEEPER_CIRCUITS_FOLDER}:/nevermined-contracts/circuits/
     ports:
       - 8545:8545
     networks:
