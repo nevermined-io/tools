@@ -591,7 +591,7 @@ while :; do
             printf $COLOR_Y'Starting with local Polygon node...\n\n'$COLOR_RESET
             ;;
         # spins up geth dev mode
-        --geth | --local-node | --spree-embedded-contracts)
+        --geth | --local-node)
             export KEEPER_NETWORK_NAME="geth-localnet"
             export KEEPER_DEPLOY_CONTRACTS="false"
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/geth_localnet.yml"
