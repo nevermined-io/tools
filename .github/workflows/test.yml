@@ -32,8 +32,8 @@ jobs:
         docker login -u ${{ secrets.NEVERMINED_DOCKER_USERNAME }} -p ${{ secrets.NEVERMINED_DOCKER_TOKEN}}
         rm -rf "${HOME}/.nevermined/nevermined-contracts/artifacts"
 
-        ./start_nevermined.sh --latest --spree-embedded-contracts &
+        ./start_nevermined.sh --latest &
 
         # wait for subgraphs
         ./scripts/wait_for_migration_keeper_artifacts.sh
-        ./scripts/wait-subgraphs.sh spree
+        ./scripts/wait-subgraphs.sh geth-localnet

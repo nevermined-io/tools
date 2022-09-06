@@ -46,7 +46,7 @@ export SUBGRAPH_VERSION=${SUBGRAPH_VERSION:-latest}
 export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
 export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
 export GATEWAY_VERSION=${GATEWAY_VERSION:-latest}
-export KEEPER_VERSION=${KEEPER_VERSION:-v2.0.0}
+export KEEPER_VERSION=${KEEPER_VERSION:-v2.0.5}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.2}
 export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-v0.1.4}
 export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-v0.1.4}
@@ -73,9 +73,9 @@ export KEEPER_OWNER_ROLE_ADDRESS="${KEEPER_OWNER_ROLE_ADDRESS}"
 export KEEPER_DEPLOY_CONTRACTS="true"
 export KEEPER_ARTIFACTS_FOLDER="${NEVERMINED_HOME}/nevermined-contracts/artifacts"
 # Specify which ethereum client to run or connect to: development, integration or staging
-export KEEPER_NETWORK_NAME="spree"
+export KEEPER_NETWORK_NAME="geth-localnet"
 export KEEPER_DEPLOY_CONTRACTS="false"
-export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
+export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/geth_localnet.yml"
 
 # Ganache specific option, these two options have no effect when not running ganache-cli
 export GANACHE_DATABASE_PATH="${DIR}"
@@ -89,7 +89,7 @@ else
 fi
 export KEEPER_RPC_PORT="8545"
 export KEEPER_RPC_URL="http://"${KEEPER_RPC_HOST}:${KEEPER_RPC_PORT}
-# Use this seed only on Spree! (Spree is the default.)
+# Use this seed only on local networks! (Local is the default.)
 export KEEPER_MNEMONIC="${KEEPER_MNEMONIC:-taxi music thumb unique chat sand crew more leg another off lamp}"
 
 # Enable acl-contract validation in Secret-store
@@ -304,6 +304,7 @@ function check_if_owned_by_root {
 function clean_local_contracts {
     rm -f "${KEEPER_ARTIFACTS_FOLDER}/ready"
     rm -f "${KEEPER_ARTIFACTS_FOLDER}/*.spree.json"
+    rm -f "${KEEPER_ARTIFACTS_FOLDER}/*.geth-localnet.json"
     rm -f "${KEEPER_ARTIFACTS_FOLDER}/*.development.json"
 }
 
@@ -348,7 +349,7 @@ COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace_api.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway_ts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/graph.yml"
 DOCKER_COMPOSE_EXTRA_OPTS="${DOCKER_COMPOSE_EXTRA_OPTS:-}"
@@ -406,14 +407,18 @@ while :; do
             printf $COLOR_Y'Starting without Marketplace...\n\n'$COLOR_RESET
             ;;
         --no-gateway)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway_ts.yml/}"
             printf $COLOR_Y'Starting without Gateway...\n\n'$COLOR_RESET
             ;;
-        --new-gateway)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway.yml/}"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway_new.yml"
-            printf $COLOR_Y'Starting with new Gateway...\n\n'$COLOR_RESET
+        --new-gateway | --gateway)
+            # The TS will start by default, we keep this option to support backward compatibility
+            printf $COLOR_Y'Starting with Typescript Gateway...\n\n'$COLOR_RESET
             ;;
+        --python-gateway)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway_ts.yml/}"
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway_python.yml"
+            printf $COLOR_Y'Starting with Python Legacy Gateway...\n\n'$COLOR_RESET
+            ;;            
         --no-metadata)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata.yml/}"
             printf $COLOR_Y'Starting without Metadata API...\n\n'$COLOR_RESET
@@ -429,10 +434,6 @@ while :; do
         --no-acl-contract)
             export CONFIGURE_ACL="false"
             printf $COLOR_Y'Disabling acl validation in secret-store...\n\n'$COLOR_RESET
-            ;;
-        --spree-embedded-contracts)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
-            printf $COLOR_Y'Using embedded spree contracts...\n\n'$COLOR_RESET
             ;;
         --minio)
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/minio.yml"
@@ -589,20 +590,12 @@ while :; do
             printf $COLOR_Y'Starting with local Polygon node...\n\n'$COLOR_RESET
             ;;
         # spins up geth dev mode
-        --geth)
+        --geth | --local-node | --spree-embedded-contracts)
             export KEEPER_NETWORK_NAME="geth-localnet"
             export KEEPER_DEPLOY_CONTRACTS="false"
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/geth_localnet.yml"
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
             printf $COLOR_Y'Starting with local Geth node...\n\n'$COLOR_RESET
-            ;;
-        # spins up spree
-        --local-spree-node)
-            export KEEPER_NETWORK_NAME="spree"
-            export KEEPER_DEPLOY_CONTRACTS="false"
-            export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/spree_node.yml"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/nevermined_contracts.yml/}"
-            printf $COLOR_Y'Starting with local Spree node...\n\n'$COLOR_RESET
             ;;
         #################################################
         # Cleaning switches
