@@ -4,39 +4,37 @@
 
 > Swiss army knife used for running Nevermined Data Platform
 
-[![Tests](https://github.com/nevermined-io/tools/workflows/Test%20Nevermined%20Tools/badge.svg)](https://github.com/nevermined-io/sdk-py/actions)
+[![Tests](https://github.com/nevermined-io/tools/workflows/Test%20Nevermined%20Tools/badge.svg)](https://github.com/nevermined-io/tools/actions)
 
 ---
 
-- [Nevermined Tools](#nevermined-tools)
-  - [Prerequisites](#prerequisites)
-  - [Get Started](#get-started)
-  - [Get Started on Mac](#get-started-on-mac)
-  - [Options](#options)
-    - [Component Versions](#component-versions)
-    - [All Options](#all-options)
-  - [Docker Building Blocks](#docker-building-blocks)
-    - [Command Line Interface (CLI)](#command-line-interface-cli)
-    - [Marketplace](#marketplace)
-    - [Bazaart](#bazaart)
-    - [Minio](#minio)
-    - [The Graph](#the-graph)
-    - [Metadata API](#metadata-api)
-    - [Gateway](#gateway)
-    - [Events Handler](#events-handler)
-    - [Compute API](#compute-api)
-    - [Keeper Node](#keeper-node)
-    - [Secret Store](#secret-store)
-    - [Faucet](#faucet)
-    - [OpenLdap](#openldap)
-    - [Dashboard](#dashboard)
-  - [Spree Network](#spree-network)
-  - [Compute Stack](#compute-stack)
-    - [Spree Mnemonic](#spree-mnemonic)
-  - [Attribution](#attribution)
-  - [License](#license)
+* [Nevermined Tools](#nevermined-tools)
+   * [Prerequisites](#prerequisites)
+   * [Get Started](#get-started)
+   * [Get Started on Mac](#get-started-on-mac)
+   * [Options](#options)
+      * [Component Versions](#component-versions)
+      * [All Options](#all-options)
+   * [Docker Building Blocks](#docker-building-blocks)
+      * [Command Line Interface (CLI)](#command-line-interface-cli)
+      * [Marketplace](#marketplace)
+      * [Minio](#minio)
+      * [The Graph](#the-graph)
+      * [Metadata API](#metadata-api)
+      * [Marketplace API](#marketplace-api)
+      * [Gateway](#gateway)
+      * [Compute API](#compute-api)
+      * [Keeper Node](#keeper-node)
+      * [Secret Store](#secret-store)
+      * [Faucet](#faucet)
+      * [OpenLdap](#openldap)
+      * [Dashboard](#dashboard)
+   * [Local Network](#local-network)
+   * [Compute Stack](#compute-stack)
+   * [Local Mnemonic](#local-mnemonic)
+   * [Attribution](#attribution)
+   * [License](#license)
 
----
 
 ## Prerequisites
 
@@ -62,7 +60,7 @@ cd nevermined-tools
 ```
 
 That will run the current default versions of Metadata API, Gateway, Events Handler, Marketplace, Contracts, and Faucet.
-It will also run a local Spree network (i.e. `--local-spree-node`).
+It will also run a local network (i.e. `--local-node`).
 
 <img width="486" alt="Welcome to Nevermined" src="Welcome_to_nevermined.png">
 
@@ -161,8 +159,7 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--minio`                  | Start up with the `minio` for the Nevermined arts marketplace.                                                            |
 | `--polygon-localnet`       | Start up with the a polygon local node for the Nevermined events.                                     |
 | `--local-ganache-node`     | Runs a local `ganache` node.                                                                          |
-| `--local-spree-node`       | Runs a node of the local `spree` network. This is the default.                                        |
-| `--local-spree-no-deploy`  | Runs a node of the local `spree` network, without contract deployment.                                |
+| `--local-node` or `--geth` | Runs a node of the local `geth-localnet` network. This is the default.                                        |
 | `--local-rinkeby-node`     | Runs a local parity node and connects the node to the `rinkeby` testnet network                       |
 | `--local-integration-node` | Runs a local parity node and connects the node to the `integration` network.                          |
 | `--local-staging-node`     | Runs a local parity node and connects the node to the `staging` network.                              |
@@ -260,7 +257,7 @@ By default it will start one container. This Building Block can be disabled by s
 
 | Hostname  | External Port | Internal URL          | Local URL               | Description                                         |
 | --------- | ------------- | --------------------- | ----------------------- | --------------------------------------------------- |
-| `gateway` | `8030`        | <http://gateway:8030> | <http://localhost:8030> | [Gateway](https://github.com/nevermined-io/gateway) |
+| `gateway` | `8030`        | <http://gateway:8030> | <http://localhost:8030> | [Gateway](https://github.com/nevermined-io/gateway-ts) |
 
 ### Compute API
 
@@ -279,12 +276,12 @@ You can find a detailed explanation of how to use this in the [script options](#
 | ------------- | ------------- | ------------------------- | ----------------------- | -------------------- |
 | `keeper-node` | `8545`        | <http://keeper-node:8545> | <http://localhost:8545> | An Ethereum RPC node |
 
-This node can be one of the following types (with the default being `spree`):
+This node can be one of the following types (with the default being `geth-localnet`):
 
 | Node          | Description                                                                                                                                                                                                              |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `ganache`     | Runs a local [ganache-cli](https://github.com/trufflesuite/ganache-cli) node that is not persistent by default. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node. |
-| `spree`       | This is the default. Runs a local node of the Spree Network. See [Spree Network](#spree-network) for details. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node.   |
+| `geth-localnet`       | This is the default. Runs a local node of the `geth-localnode` Network. The contracts from the desired `nevermined-contracts` version will be deployed upon launch of this node.   |
 | `rinkeby`     | Runs a local node connected to the Ethereum [Rinkeby Testnet](https://www.rinkeby.io/).                                                                                                                                  |
 | `integration` | Runs a local node connected to the Integration Network.                                                                                                                                                                  |
 | `staging`     | Runs a local node connected to the Staging Network.                                                                                                                                                                      |
@@ -333,26 +330,26 @@ This will start a `portainer` dashboard with the following admin credentials and
 | ----------- | ------------- | ----------------------- | ----------------------- | --------------------------------------------------- |
 | `dashboard` | `9000`        | <http://dashboard:9000> | <http://localhost:9000> | [Portainer](https://github.com/portainer/portainer) |
 
-## Spree Network
+## Local Network
 
-If you run the `./start_nevermined.sh` script with the `--local-spree-node` option (please see [Keeper Node](#keeper-node) section of this document for more details),
-you will have available a keeper node in the local and private Spree Network with the following accounts enabled:
+If you run the `./start_nevermined.sh` script with the `--local` or `--geth` option (please see [Keeper Node](#keeper-node) section of this document for more details),
+you will have available a keeper node in the local and private network with the following accounts enabled:
 
 | Account                                      | Type     | Password/Key                 | Balance          |
 | -------------------------------------------- | -------- | ---------------------------- | ---------------- |
 | `0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e` | key      | node0                        | 1000000000 Ether |
 | `0x068Ed00cF0441e4829D9784fCBe7b9e26D4BD8d0` | key      | secret                       | 1000000000 Ether |
 | `0xA99D43d86A0758d5632313b8fA3972B6088A21BB` | key      | secret                       | 1000000000 Ether |
-| `0xe2DD09d719Da89e5a3D0F2549c7E24566e947260` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
-| `0xBE5449a6A97aD46c8558A3356267Ee5D2731ab5e` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
-| `0xA78deb2Fa79463945C247991075E2a0e98Ba7A09` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
-| `0x02354A1F160A3fd7ac8b02ee91F04104440B28E7` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
-| `0xe17D2A07EFD5b112F4d675ea2d122ddb145d117B` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
-| `0xA32C84D2B44C041F3a56afC07a33f8AC5BF1A071` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
-| `0xFF3fE9eb218EAe9ae1eF9cC6C4db238B770B65CC` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
-| `0x529043886F21D9bc1AE0feDb751e34265a246e47` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
-| `0xe08A1dAe983BC701D05E492DB80e0144f8f4b909` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
-| `0xbcE5A3468386C64507D30136685A99cFD5603135` | mnemonic | [info here](#spree-mnemonic) | 1000000000 Ether |
+| `0xe2DD09d719Da89e5a3D0F2549c7E24566e947260` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
+| `0xBE5449a6A97aD46c8558A3356267Ee5D2731ab5e` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
+| `0xA78deb2Fa79463945C247991075E2a0e98Ba7A09` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
+| `0x02354A1F160A3fd7ac8b02ee91F04104440B28E7` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
+| `0xe17D2A07EFD5b112F4d675ea2d122ddb145d117B` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
+| `0xA32C84D2B44C041F3a56afC07a33f8AC5BF1A071` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
+| `0xFF3fE9eb218EAe9ae1eF9cC6C4db238B770B65CC` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
+| `0x529043886F21D9bc1AE0feDb751e34265a246e47` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
+| `0xe08A1dAe983BC701D05E492DB80e0144f8f4b909` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
+| `0xbcE5A3468386C64507D30136685A99cFD5603135` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
 
 Use one of the above accounts to populate `PROVIDER_ADDRESS`, `PROVIDER_PASSWORD` and `PROVIDER_KEYFILE` in `start_nevermined.sh`.
 This account will is used in `gateway` and `events-handler` as the `provider` account which is important for processing the
@@ -372,7 +369,7 @@ This script will be in charge of:
 
 So if you want to run the compute stack locally, before running the `start_nevermined.sh` you can run the `scripts/setup_minikube.sh` script.
 
-### Spree Mnemonic
+## Local Mnemonic
 
 The accounts from type mnemonic can be access with this seedphrase:
 
