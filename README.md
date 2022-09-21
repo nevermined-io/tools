@@ -50,26 +50,59 @@ You need to have the newest versions of:
 
 ## Get Started
 
-If you're new to the project, it's best to start with the defaults:
+Once you have all the pre-requisites installed, the first thing we need to do is download the software.
 
 ```bash
-git clone git@github.com:nevermined-io/tools.git nevermined-tools
-cd nevermined-tools
-
-./start_nevermined.sh
+$ git clone https://github.com/nevermined-io/tools.git
 ```
 
-That will run the current default versions of Metadata API, Gateway, Events Handler, Marketplace, Contracts, and Faucet.
-It will also run a local network (i.e. `--local-node`).
+If you don't have a Git client, you can download the software from the following URL and unpack in the folder you want:
+```
+https://github.com/nevermined-io/tools/archive/refs/heads/master.zip
+```
+
+Once Nevermined Tools is downloaded (and unpacked) you can go to the folder with the software and run it without any parameters.
+The following command will run the main components of a Nevermined deployment:
+
+* A local Ethereum node using Geth with the Nevermined [Smart Contracts](../architecture/contracts/) deployed on it
+* An instance of the [Marketplace API](../architecture/marketplace-api/) allowing to register assets Metadata
+* An instance of the [Gateway](../architecture/gateway/) giving access to off-chain data and services
+* An instance of a [Faucet](https://github.com/nevermined-io/faucet/) that can be used to get some ETH in the local network
+* An instance of a [SubGraph](https://github.com/nevermined-io/subgraph) node indexing all the events emitted by the Smart Contracts and exposing them via GraphQL
+
+```
+$ cd tools
+$ ./start_nevermined.sh
+```
+
+After running the command you should see something like this:
 
 <img width="486" alt="Welcome to Nevermined" src="Welcome_to_nevermined.png">
 
-It's overkill, but to be _sure_ that you use exactly the Docker images and volumes you want, you can prune all the
-Docker things in your system first:
+
+After a few minutes you can run the following command to check that all the Contracts were deployed and Nevermined is ready:
+
+```bash
+$ ./scripts/wait-nevermined.sh 
+
+Using conf dir: /home/aitor/.nevermined
+
+◯ Waiting for contracts to be generated...
+✔ Found new contract artifacts.
+[...]
+✔ Copied new contract artifacts and circuits.
+✔ Nevermined is up and runnning !!!.
+
+```
+
+### Cleaning your environment first (optional)
+
+It's overkill, but to be _sure_ that you use exactly the Docker images and volumes you want, you can prune all the Docker things in your system first:
 
 ```bash
 docker system prune --all --volumes
 ```
+
 
 ## Get Started on Mac
 
@@ -112,9 +145,9 @@ The startup script comes with a set of options for customizing various things.
 
 The default versions are always a combination of component versions which are considered stable.
 
-| Metadata API | Gateway   | Contracts | Faucet   | Marketplace API   |
-| ------------ | --------- | --------- | -------- | ----------------- |
-| `v0.4.0`     | `v0.12.6` | `v1.3.8`  | `v0.2.2` | `latest`          |
+| Contracts       | Marketplace API | Gateway   | Faucet   |
+| --------------- | --------- | -------- | ----------------- |
+| `v2.0.5`        | `latest`  | `latest` | `v0.2.2`          |
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
