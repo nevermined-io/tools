@@ -41,7 +41,7 @@ COMPOSE_DIR="${DIR}/compose-files"
 
 # Default versions of Metadata API, Gateway, Keeper Contracts and Marketplace
 export METADATA_VERSION=${METADATA_VERSION:-v0.5.5}
-export MARKETPLACE_API_VERSION=${MARKETPLACE_API_VERSION:-0.2.0}
+export MARKETPLACE_API_VERSION=${MARKETPLACE_API_VERSION:-latest}
 export SUBGRAPH_VERSION=${SUBGRAPH_VERSION:-latest}
 export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
 export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
@@ -388,7 +388,7 @@ while :; do
             export CONTROL_CENTER_BACKEND_VERSION="latest"
             export CONTROL_CENTER_UI_VERSION="latest"
             export GATEWAY_VERSION="latest"
-            export MARKETPLACE_API_VERSION="v0.2.0"
+            export MARKETPLACE_API_VERSION="latest"
             export KEEPER_VERSION="latest"
             export FAUCET_VERSION="latest"
 	        export MARKETPLACE_SERVER_VERSION="latest"
