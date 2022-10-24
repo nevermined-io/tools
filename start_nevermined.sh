@@ -33,20 +33,20 @@ done
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-export GATEWAY_ENV_FILE="${DIR}/gateway.env"
+export NODE_ENV_FILE="${DIR}/node.env"
 
-# Patch $DIR if spaces (GATEWAY_ENV_FILE does not need patch)
+# Patch $DIR if spaces (NODE_ENV_FILE does not need patch)
 DIR="${DIR/ /\\ }"
 COMPOSE_DIR="${DIR}/compose-files"
 
-# Default versions of Metadata API, Gateway, Keeper Contracts and Marketplace
+# Default versions of Metadata API, Node, Keeper Contracts and Marketplace
 export METADATA_VERSION=${METADATA_VERSION:-v0.5.5}
 export MARKETPLACE_API_VERSION=${MARKETPLACE_API_VERSION:-latest}
 export SUBGRAPH_VERSION=${SUBGRAPH_VERSION:-latest}
 export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
 export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
-export GATEWAY_VERSION=${GATEWAY_VERSION:-latest}
-export KEEPER_VERSION=${KEEPER_VERSION:-v2.0.5}
+export NODE_VERSION=${NODE_VERSION:-latest}
+export KEEPER_VERSION=${KEEPER_VERSION:-v2.1.0}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.2}
 export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-v0.1.4}
 export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-v0.1.4}
@@ -137,23 +137,23 @@ export ESTUARY_GATEWAY="https://shuttle-5.estuary.tech"
 export MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
 export MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin}
 
-export GATEWAY_WORKERS=${GATEWAY_WORKERS:-5}
-export GATEWAY_LOG_LEVEL="INFO"
+export NODE_WORKERS=${NODE_WORKERS:-5}
+export NODE_LOG_LEVEL="INFO"
 # allow oauth without https
 export AUTHLIB_INSECURE_TRANSPORT=true
 
 export COMPUTE_API_LOG_LEVEL="ERROR"
 export COMPUTE_NAMESPACE="nevermined-compute"
 
-export GATEWAY_IPFS_GATEWAY="https://dweb.link/ipfs/:cid"
+export NODE_IPFS_GATEWAY="https://dweb.link/ipfs/:cid"
 
 # Set a valid parity address and password to have seamless interaction with the `keeper`
 # it has to exist on the secret store signing node and as well on the keeper node
 export PROVIDER_ADDRESS=0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
 export PROVIDER_PASSWORD=secret
-# GATEWAY Wallet
+# Node Wallet
 export PROVIDER_KEYFILE="/accounts/provider.json"
-# GATEWAY RSA KEY FILES
+# Node RSA KEY FILES
 export RSA_PRIVKEY_FILE="/accounts/rsa_priv_key.pem"
 export RSA_PUBKEY_FILE="/accounts/rsa_pub_key.pem"
 
@@ -172,7 +172,7 @@ if [ ${IP} = "localhost" ]; then
     export MARKETPLACE_CLIENT_URL=http://localhost:3000
     export MARKETPLACE_KEEPER_RPC_HOST=http://localhost:8545
     export MARKETPLACE_SECRET_STORE_URL=http://localhost:12001
-    export GATEWAY_URL=http://172.17.0.1:8030
+    export NODE_URL=http://172.17.0.1:8030
     export COMPUTE_API_URL=http://172.17.0.1:8050
     export MINIO_URL=http://172.17.0.1:9000
 
@@ -188,7 +188,7 @@ else
     export MARKETPLACE_CLIENT_URL=http://${IP}:3000
     export MARKETPLACE_KEEPER_RPC_HOST=http://${IP}:8545
     export MARKETPLACE_SECRET_STORE_URL=http://${IP}:12001
-    export GATEWAY_URL=http://${IP}:8030
+    export NODE_URL=http://${IP}:8030
     export COMPUTE_API_URL=http://${IP}:8050
     export MINIO_URL=http://${IP}:9000
 
@@ -199,10 +199,10 @@ export FAUCET_TIMESPAN=${FAUCET_TIMESPAN:-24}
 export FAUCET_PRIVATE_KEY=${FAUCET_PRIVATE_KEY:-dcb15ba5d2caf586c22f0414f527201d2fb2424c92ced3efacd742a34e5b0db2}
 
 # Marketplace
-export MARKETPLACE_GATEWAY_URL=${GATEWAY_URL}
+export MARKETPLACE_NODE_URL=${NODE_URL}
 export MARKETPLACE_METADATA_URI=${METADATA_URI}
 export MARKETPLACE_FAUCET_URL=${FAUCET_URL}
-export MARKETPLACE_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
+export MARKETPLACE_IPFS_NODE_URI=https://ipfs.ipdb.com
 export MARKETPLACE_IPFS_NODE_URI=https://ipfs.ipdb.com:443
 
 
@@ -350,7 +350,7 @@ COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace_api.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway_ts.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/node_ts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/graph.yml"
 DOCKER_COMPOSE_EXTRA_OPTS="${DOCKER_COMPOSE_EXTRA_OPTS:-}"
@@ -363,7 +363,7 @@ while :; do
         # Log level
         #################################################
         --debug)
-            export GATEWAY_LOG_LEVEL="DEBUG"
+            export NODE_LOG_LEVEL="DEBUG"
             export MARKETPLACE_API_LOG_LEVEL="DEBUG"
             ;;
         #################################################
@@ -387,7 +387,7 @@ while :; do
             export METADATA_VERSION="latest"
             export CONTROL_CENTER_BACKEND_VERSION="latest"
             export CONTROL_CENTER_UI_VERSION="latest"
-            export GATEWAY_VERSION="latest"
+            export NODE_VERSION="latest"
             export MARKETPLACE_API_VERSION="latest"
             export KEEPER_VERSION="latest"
             export FAUCET_VERSION="latest"
@@ -407,16 +407,16 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/marketplace.yml/}"
             printf $COLOR_Y'Starting without Marketplace...\n\n'$COLOR_RESET
             ;;
-        --no-gateway)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway_ts.yml/}"
+        --no-node)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/node_ts.yml/}"
             printf $COLOR_Y'Starting without Gateway...\n\n'$COLOR_RESET
             ;;
-        --new-gateway | --gateway)
+        --new-gateway | --node)
             # The TS will start by default, we keep this option to support backward compatibility
             printf $COLOR_Y'Starting with Typescript Gateway...\n\n'$COLOR_RESET
             ;;
         --legacy-gateway | --python-gateway)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/gateway_ts.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/node_ts.yml/}"
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway_python.yml"
             printf $COLOR_Y'Starting with Python Legacy Gateway...\n\n'$COLOR_RESET
             ;;            

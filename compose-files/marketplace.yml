@@ -22,7 +22,7 @@ services:
     depends_on:
       - keeper-node
       - nevermined-metadata
-      - gateway
+      - node
       - marketplace-server
     environment:
       LISTEN_ADDRESS: '0.0.0.0'
