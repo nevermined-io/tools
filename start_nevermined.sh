@@ -407,13 +407,13 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/marketplace.yml/}"
             printf $COLOR_Y'Starting without Marketplace...\n\n'$COLOR_RESET
             ;;
-        --no-node)
+        --no-node | --no-gateway)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/node.yml/}"
-            printf $COLOR_Y'Starting without Gateway...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting without Nevermined Node...\n\n'$COLOR_RESET
             ;;
         --new-gateway | --node)
             # The TS will start by default, we keep this option to support backward compatibility
-            printf $COLOR_Y'Starting with Typescript Gateway...\n\n'$COLOR_RESET
+            printf $COLOR_Y'Starting with Nevermined Node...\n\n'$COLOR_RESET
             ;;
         --legacy-gateway | --python-gateway)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/node.yml/}"
