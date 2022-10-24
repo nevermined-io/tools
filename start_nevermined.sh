@@ -89,7 +89,7 @@ else
     export KEEPER_RPC_HOST=${IP}
 fi
 export KEEPER_RPC_PORT="8545"
-export KEEPER_RPC_URL="http://"${KEEPER_RPC_HOST}:${KEEPER_RPC_PORT}
+export WEB3_PROVIDER_URL="http://"${KEEPER_RPC_HOST}:${KEEPER_RPC_PORT}
 # Use this seed only on local networks! (Local is the default.)
 export KEEPER_MNEMONIC="${KEEPER_MNEMONIC:-taxi music thumb unique chat sand crew more leg another off lamp}"
 
@@ -350,7 +350,7 @@ COMPOSE_FILES+=" -f ${COMPOSE_DIR}/nevermined_contracts.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace_api.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/elasticsearch.yml"
-COMPOSE_FILES+=" -f ${COMPOSE_DIR}/node_ts.yml"
+COMPOSE_FILES+=" -f ${COMPOSE_DIR}/node.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/faucet.yml"
 COMPOSE_FILES+=" -f ${COMPOSE_DIR}/graph.yml"
 DOCKER_COMPOSE_EXTRA_OPTS="${DOCKER_COMPOSE_EXTRA_OPTS:-}"
@@ -408,7 +408,7 @@ while :; do
             printf $COLOR_Y'Starting without Marketplace...\n\n'$COLOR_RESET
             ;;
         --no-node)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/node_ts.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/node.yml/}"
             printf $COLOR_Y'Starting without Gateway...\n\n'$COLOR_RESET
             ;;
         --new-gateway | --node)
@@ -416,7 +416,7 @@ while :; do
             printf $COLOR_Y'Starting with Typescript Gateway...\n\n'$COLOR_RESET
             ;;
         --legacy-gateway | --python-gateway)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/node_ts.yml/}"
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/node.yml/}"
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway_python.yml"
             printf $COLOR_Y'Starting with Python Legacy Gateway...\n\n'$COLOR_RESET
             ;;            
