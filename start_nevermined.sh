@@ -48,6 +48,7 @@ export CONTROL_CENTER_UI_VERSION=${CONTROL_CENTER_UI_VERSION:-latest}
 export GATEWAY_VERSION=${GATEWAY_VERSION:-latest}
 export KEEPER_VERSION=${KEEPER_VERSION:-v2.0.5}
 export FAUCET_VERSION=${FAUCET_VERSION:-v0.2.2}
+export OPENGSN_VERSION=${OPENGSN_VERSION:-latest}
 export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-v0.1.4}
 export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-v0.1.4}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.3.0}
@@ -439,6 +440,10 @@ while :; do
         --minio)
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/minio.yml"
             printf $COLOR_Y'Using minio...\n\n'$COLOR_RESET
+            ;;
+        --opengsn)
+            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/opengsn.yml"
+            printf $COLOR_Y'Using OpenGSN relay...\n\n'$COLOR_RESET
             ;;
         --no-graph)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/graph.yml/}"
