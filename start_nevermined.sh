@@ -39,8 +39,7 @@ export GATEWAY_ENV_FILE="${DIR}/gateway.env"
 DIR="${DIR/ /\\ }"
 COMPOSE_DIR="${DIR}/compose-files"
 
-# Default versions of Metadata API, Gateway, Keeper Contracts and Marketplace
-export METADATA_VERSION=${METADATA_VERSION:-v0.5.5}
+# Default versions of Marketplace API, Gateway, Keeper Contracts and Marketplace
 export MARKETPLACE_API_VERSION=${MARKETPLACE_API_VERSION:-latest}
 export SUBGRAPH_VERSION=${SUBGRAPH_VERSION:-latest}
 export CONTROL_CENTER_BACKEND_VERSION=${CONTROL_CENTER_BACKEND_VERSION:-latest}
@@ -93,7 +92,7 @@ export KEEPER_RPC_URL="http://"${KEEPER_RPC_HOST}:${KEEPER_RPC_PORT}
 # Use this seed only on local networks! (Local is the default.)
 export KEEPER_MNEMONIC="${KEEPER_MNEMONIC:-taxi music thumb unique chat sand crew more leg another off lamp}"
 
-# Default MetadataAPI parameters: use Elasticsearch
+# Default Marketplace API parameters: use Elasticsearch
 export DB_MODULE="elasticsearch"
 export DB_HOSTNAME="elasticsearch"
 export DB_PORT="9200"
@@ -110,13 +109,6 @@ export MARKETPLACE_API_JWT_SECRET_KEY="secret"
 export ENABLE_HTTPS_REDIRECT="false"
 
 CHECK_ELASTIC_VM_COUNT=true
-
-# TODO: Disable this when work on arweave is done
-# Default external MetadataDB parameters with arweave
-# export DB_MODULE_EXTERNAL="arweave"
-# export DB_HOSTNAME_EXTERNAL="https://arweave.net"
-# export DB_PORT_EXTERNAL="443"
-# export DB_WALLET_FILE_PATH_EXTERNAL="./tests/resources/arweave-key-A1t0391IV20zpoKjhftup1ROdWBjBRGZrhx8pe55Uwc.json"
 
 # S3 integration
 export AWS_ACCESS_KEY="minioadmin"
@@ -156,7 +148,6 @@ export LDAP_PREPOPULATE_FOLDER="${DIR}/${LDAP_DATA_FOLDER}"
 
 export ACCOUNTS_FOLDER="../accounts"
 if [ ${IP} = "localhost" ]; then
-    export METADATA_URI=http://172.17.0.1:5000
     export MARKETPLACE_API_URL=http://172.17.0.1:3100
     export CONTROL_CENTER_BACKEND_URI=http://localhost:3020
     export CONTROL_CENTER_UI_URI=http://localhost:3021
@@ -169,7 +160,6 @@ if [ ${IP} = "localhost" ]; then
     export MINIO_URL=http://172.17.0.1:9000
 
 else
-    export METADATA_URI=http://${IP}:5000
     export MARKETPLACE_API_URL=http://${IP}:3100
     export CONTROL_CENTER_BACKEND_URI=http://${IP}:3020
     export CONTROL_CENTER_UI_URI=http://${IP}:3021
@@ -189,7 +179,7 @@ export FAUCET_PRIVATE_KEY=${FAUCET_PRIVATE_KEY:-dcb15ba5d2caf586c22f0414f527201d
 
 # Marketplace
 export MARKETPLACE_GATEWAY_URL=${GATEWAY_URL}
-export MARKETPLACE_METADATA_URI=${METADATA_URI}
+export MARKETPLACE_METADATA_URI=${MARKETPLACE_API_URL}
 export MARKETPLACE_FAUCET_URL=${FAUCET_URL}
 export MARKETPLACE_IPFS_GATEWAY_URI=https://ipfs.ipdb.com
 export MARKETPLACE_IPFS_NODE_URI=https://ipfs.ipdb.com:443
@@ -345,7 +335,6 @@ while :; do
         # Version switches
         #################################################
         --latest)
-            export METADATA_VERSION="latest"
             export CONTROL_CENTER_BACKEND_VERSION="latest"
             export CONTROL_CENTER_UI_VERSION="latest"
             export GATEWAY_VERSION="latest"
@@ -381,9 +370,9 @@ while :; do
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/gateway_python.yml"
             printf $COLOR_Y'Starting with Python Legacy Gateway...\n\n'$COLOR_RESET
             ;;            
-        --no-metadata)
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata.yml/}"
-            printf $COLOR_Y'Starting without Metadata API...\n\n'$COLOR_RESET
+        --no-marketplace-api)
+            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/marketplace_api.yml/}"
+            printf $COLOR_Y'Starting without Marketplace API...\n\n'$COLOR_RESET
             ;;
         --no-faucet)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/faucet.yml/}"
@@ -405,19 +394,7 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/graph.yml/}"
             printf $COLOR_Y'Starting without the graph API...\n\n'$COLOR_RESET
             ;;
-
-        #################################################
-        # MongoDB
-        #################################################
-        --mongodb)
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/metadata_mongodb.yml"
-            COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/metadata.yml/}"
-            CHECK_ELASTIC_VM_COUNT=false
-            export DB_MODULE="mongodb"
-            export DB_HOSTNAME="mongodb"
-            export DB_PORT="27017"
-            printf $COLOR_Y'Starting with MongoDB...\n\n'$COLOR_RESET
-            ;;
+        
         #################################################
         # Nevermined Compute
         #################################################
@@ -434,13 +411,6 @@ while :; do
             printf $COLOR_Y'Starting OpenLdap...\n\n'$COLOR_RESET
             echo "Loading LDIF from ${LDAP_PREPOPULATE_FOLDER}...\n\n"
             export LDAP_START="true"
-            ;;
-        #################################################
-        # Metadata API (deprecated in favor of Marketplace API)
-        #################################################
-        --metadata-api)
-			COMPOSE_FILES+=" -f ${COMPOSE_DIR}/marketplace.yml"
-            printf $COLOR_Y'Starting with Metadata API...\n\n'$COLOR_RESET
             ;;
         #################################################
         # Dashboard
