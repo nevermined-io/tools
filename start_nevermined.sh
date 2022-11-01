@@ -53,7 +53,6 @@ export MARKETPLACE_SERVER_VERSION=${MARKETPLACE_SERVER_VERSION:-v0.1.4}
 export MARKETPLACE_CLIENT_VERSION=${MARKETPLACE_CLIENT_VERSION:-v0.1.4}
 export COMPUTE_API_VERSION=${COMPUTE_API_VERSION:-v0.3.0}
 export SS_VERSION=${SS_VERSION:-latest}
-export SS_IMAGE=${SS_IMAGE:-neverminedio/secret-store}
 export MINIO_VERSION=${MINIO_VERSION:-latest}
 export KEEPER_PATH=${KEEPER_PATH:-/usr/local/nevermined-contracts}
 
@@ -93,10 +92,6 @@ export KEEPER_RPC_PORT="8545"
 export KEEPER_RPC_URL="http://"${KEEPER_RPC_HOST}:${KEEPER_RPC_PORT}
 # Use this seed only on local networks! (Local is the default.)
 export KEEPER_MNEMONIC="${KEEPER_MNEMONIC:-taxi music thumb unique chat sand crew more leg another off lamp}"
-
-# Enable acl-contract validation in Secret-store
-export CONFIGURE_ACL="true"
-export ACL_CONTRACT_ADDRESS=""
 
 # Default MetadataAPI parameters: use Elasticsearch
 export DB_MODULE="elasticsearch"
@@ -149,7 +144,6 @@ export COMPUTE_NAMESPACE="nevermined-compute"
 export GATEWAY_IPFS_GATEWAY="https://dweb.link/ipfs/:cid"
 
 # Set a valid parity address and password to have seamless interaction with the `keeper`
-# it has to exist on the secret store signing node and as well on the keeper node
 export PROVIDER_ADDRESS=0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
 export PROVIDER_PASSWORD=secret
 # GATEWAY Wallet
@@ -162,8 +156,6 @@ export LDAP_PREPOPULATE_FOLDER="${DIR}/${LDAP_DATA_FOLDER}"
 
 export ACCOUNTS_FOLDER="../accounts"
 if [ ${IP} = "localhost" ]; then
-    export SECRET_STORE_URL=http://secret-store:12001
-    export SIGNING_NODE_URL=http://secret-store-signing-node:8545
     export METADATA_URI=http://172.17.0.1:5000
     export MARKETPLACE_API_URL=http://172.17.0.1:3100
     export CONTROL_CENTER_BACKEND_URI=http://localhost:3020
@@ -172,14 +164,11 @@ if [ ${IP} = "localhost" ]; then
     export MARKETPLACE_SERVER_URL=http://localhost:4000
     export MARKETPLACE_CLIENT_URL=http://localhost:3000
     export MARKETPLACE_KEEPER_RPC_HOST=http://localhost:8545
-    export MARKETPLACE_SECRET_STORE_URL=http://localhost:12001
     export GATEWAY_URL=http://172.17.0.1:8030
     export COMPUTE_API_URL=http://172.17.0.1:8050
     export MINIO_URL=http://172.17.0.1:9000
 
 else
-    export SECRET_STORE_URL=http://${IP}:12001
-    export SIGNING_NODE_URL=http://${IP}:8545
     export METADATA_URI=http://${IP}:5000
     export MARKETPLACE_API_URL=http://${IP}:3100
     export CONTROL_CENTER_BACKEND_URI=http://${IP}:3020
@@ -188,7 +177,6 @@ else
     export MARKETPLACE_SERVER_URL=http://${IP}:4000
     export MARKETPLACE_CLIENT_URL=http://${IP}:3000
     export MARKETPLACE_KEEPER_RPC_HOST=http://${IP}:8545
-    export MARKETPLACE_SECRET_STORE_URL=http://${IP}:12001
     export GATEWAY_URL=http://${IP}:8030
     export COMPUTE_API_URL=http://${IP}:8050
     export MINIO_URL=http://${IP}:9000
@@ -255,38 +243,10 @@ function register_services_control_center {
     eval ./scripts/register_services.sh
 }
 
-function get_acl_address {
-    # detect keeper version
-    local version="${1:-latest}"
-
-    # sesarch in the file for the keeper version
-    line=$(grep "^${version}=" "${DIR}/ACL/${KEEPER_NETWORK_NAME}_addresses.txt")
-    # set address
-    address="${line##*=}"
-
-    # if address is still empty
-    if [ -z "${address}" ]; then
-      # fetch from latest line
-      line=$(grep "^latest=" "${DIR}/ACL/${KEEPER_NETWORK_NAME}_addresses.txt")
-      # set address
-      address="${line##*=}"
-    fi
-
-    echo "${address}"
-}
-
 function show_banner {
     local output=$(cat .banner)
     echo -e "$COLOR_B$output$COLOR_RESET"
     echo ""
-}
-
-function configure_secret_store {
-    # restore default secret store config (Issue #126)
-    if [ -e "$DIR/networks/secret-store/config/config.toml.save" ]; then
-        cp "$DIR/networks/secret-store/config/config.toml.save" \
-           "$DIR/networks/secret-store/config/config.toml"
-    fi
 }
 
 function check_if_owned_by_root {
@@ -433,10 +393,6 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/elasticsearch.yml/}"
             printf $COLOR_Y'Starting without ElasticSearch...\n\n'$COLOR_RESET
             ;;
-        --no-acl-contract)
-            export CONFIGURE_ACL="false"
-            printf $COLOR_Y'Disabling acl validation in secret-store...\n\n'$COLOR_RESET
-            ;;
         --minio)
             COMPOSE_FILES+=" -f ${COMPOSE_DIR}/minio.yml"
             printf $COLOR_Y'Using minio...\n\n'$COLOR_RESET
@@ -448,21 +404,6 @@ while :; do
         --no-graph)
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/graph.yml/}"
             printf $COLOR_Y'Starting without the graph API...\n\n'$COLOR_RESET
-            ;;
-        --secret-store)
-            # Enable Secret store
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
-            configure_secret_store
-            printf $COLOR_Y'Starting with Secret Store...\n\n'$COLOR_RESET
-            ;;
-        --only-secret-store)
-            COMPOSE_FILES=""
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/network_volumes.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store.yml"
-            COMPOSE_FILES+=" -f ${COMPOSE_DIR}/secret_store_signing_node.yml"
-            NODE_COMPOSE_FILE=""
-            printf $COLOR_Y'Starting only Secret Store...\n\n'$COLOR_RESET
             ;;
 
         #################################################
@@ -534,16 +475,12 @@ while :; do
             export KEEPER_NETWORK_NAME="development"
             export KEEPER_DEPLOY_CONTRACTS="false"
             printf $COLOR_Y'Starting without Keeper node...\n\n'$COLOR_RESET
-            printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
-            printf $COLOR_Y'Starting without Secret Store signing node...\n\n'$COLOR_RESET
             ;;
         --local-ganache-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/ganache_node.yml"
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="development"
             printf $COLOR_Y'Starting with local Ganache node...\n\n'$COLOR_RESET
-            printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
-            printf $COLOR_Y'Starting without Secret Store signing node...\n\n'$COLOR_RESET
             ;;
         # connects you to staging network
         --local-staging-node)
@@ -552,7 +489,6 @@ while :; do
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="staging"
             export KEEPER_DEPLOY_CONTRACTS="false"
-            export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
             printf $COLOR_Y'Starting with local Staging node...\n\n'$COLOR_RESET
             ;;
         # connects you to integration network
@@ -562,7 +498,6 @@ while :; do
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="integration"
             export KEEPER_DEPLOY_CONTRACTS="false"
-            export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
             printf $COLOR_Y'Starting with local Integration node...\n\n'$COLOR_RESET
             ;;
         # connects you to production network
@@ -572,20 +507,16 @@ while :; do
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="production"
             export KEEPER_DEPLOY_CONTRACTS="false"
-            export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
             printf $COLOR_Y'Starting with local Production node...\n\n'$COLOR_RESET
-            printf $COLOR_Y'Starting without Secret Store...\n\n'$COLOR_RESET
             ;;
         # connects you to rinkeby testnet
         --local-rinkeby-node)
             export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/rinkeby_node.yml"
-            # No contracts deployment, secret store & faucet
+            # No contracts deployment, faucet
             export KEEPER_MNEMONIC=''
             export KEEPER_NETWORK_NAME="rinkeby"
             export KEEPER_DEPLOY_CONTRACTS="false"
-            export ACL_CONTRACT_ADDRESS="$(get_acl_address ${KEEPER_VERSION})"
             printf $COLOR_Y'Starting with local Rinkeby node...\n\n'$COLOR_RESET
-            printf $COLOR_Y'Starting without Secret Store ...\n\n'$COLOR_RESET
             ;;
         # spins up polygon sdk
         --polygon)
@@ -611,8 +542,6 @@ while :; do
             eval docker-compose --project-name=$PROJECT_NAME "$COMPOSE_FILES" -f "${NODE_COMPOSE_FILE}" down
             docker network rm ${PROJECT_NAME}_default || true
             docker network rm ${PROJECT_NAME}_backend || true
-            docker network rm ${PROJECT_NAME}_secretstore || true
-            docker volume rm ${PROJECT_NAME}_secret-store || true
             docker volume rm ${PROJECT_NAME}_keeper-node-rinkeby || true
             docker volume rm ${PROJECT_NAME}_keeper-node-integration || true
             docker volume rm ${PROJECT_NAME}_keeper-node-staging || true

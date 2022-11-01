@@ -25,7 +25,6 @@
       * [Gateway](#gateway)
       * [Compute API](#compute-api)
       * [Keeper Node](#keeper-node)
-      * [Secret Store](#secret-store)
       * [Faucet](#faucet)
       * [OpenLdap](#openldap)
       * [Dashboard](#dashboard)
@@ -181,11 +180,9 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--no-marketplace`         | Start up without the `marketplace` Building Block. Helpful when you are developing the `marketplace`. |
 | `--no-metadata`            | Start up without the `metadata` Building Block.                                                       |
 | `--no-gateway`             | Start up without the `gateway` Building Block.                                                        |
-| `--no-secret-store`        | Start up without the `secret-store` Building Block.                                                   |
 | `--no-faucet`              | Start up without the `faucet` Building Block.                                                         |
 | `--no-elastic`             | Start up without ElasticSearch.                                                                       |
 | `--no-graph`               | Start up without the `graph` node for the Nevermined events.                                     |
-| `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                                     |
 | `--compute`                | Start up with the Nevermined compute components.                                                      |
 | `--ldap`                   | Start an OpenLdap instance use for keeping the users and groups authentication.                       |
 | `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                              |
@@ -319,16 +316,6 @@ This node can be one of the following types (with the default being `geth-localn
 | `integration` | Runs a local node connected to the Integration Network.                                                                                                                                                                  |
 | `staging`     | Runs a local node connected to the Staging Network.                                                                                                                                                                      |
 | `production`  | Runs a local node connected to the Production Network.                                                                                                                                                                   |
-
-### Secret Store
-
-By default it will start three containers. This Building Block can be disabled by setting the `--no-secret-store` flag.
-
-| Hostname                    | External Ports   | Internal URL                            | Local URL                | Description                                                                                   |
-| --------------------------- | ---------------- | --------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------- |
-| `secret-store`              | `12000`, `32771` | <http://secret-store:12000>             | <http://localhost:12000> | An instance of the  Secret Store                                                              |
-| `secret-store-cors-proxy`   | `12001`          | <http://secret-store-cors-proxy:12001>  | <http://localhost:12001> | An NGINX proxy to enable CORS on the secret store                                             |
-| `secret-store-signing-node` | `9545`           | <http://secret-store-signing-node:9545> | <http://localhost:9545>  | A Parity Ethereum node to `sign` messages for the secret store and to `decrypt` and `encrypt` |
 
 ### Faucet
 
