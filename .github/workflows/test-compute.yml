@@ -30,4 +30,7 @@ jobs:
 
         # wait for artifacts
         ./scripts/wait_for_migration_keeper_artifacts.sh
+
+        # wait for argo interface to show up (wait for 12 minutes)
+        ./scripts/wait_for_service.sh http://localhost:2746 -d 5 -r 150
         
