@@ -279,8 +279,7 @@ configure_nevermined_compute() {
   sleep 10
 
   # set secret as default for downloading docker images on the default serviceaccount
-  $K -n $COMPUTE_NAMESPACE patch serviceaccount default \
-      -p '{"imagePullSecrets": [{"name": "regcred"}]}'
+  $K -n $COMPUTE_NAMESPACE patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
 
   $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app.kubernetes.io/name=argo-workflows-server --timeout=300s
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-workflows-server 2746:2746 &
