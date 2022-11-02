@@ -13,4 +13,3 @@ volumes:
   keeper-node-integration:
   keeper-node-staging:
   keeper-node-production:
-  secret-store:
