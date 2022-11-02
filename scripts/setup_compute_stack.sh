@@ -217,6 +217,7 @@ install_helm() {
   
   helm repo add argo https://argoproj.github.io/argo-helm
   helm repo add stable https://charts.helm.sh/stable
+  helm repo add minio https://helm.min.io/
   helm repo update
 
   helm version
@@ -253,10 +254,12 @@ configure_nevermined_compute() {
     $K create namespace $COMPUTE_NAMESPACE
   fi
 
+  echo -e "${COLOR_B}Creating configmap with artifacts from folder ${KEEPER_ARTIFACTS_FOLDER} ...${COLOR_RESET}"
   $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}  
 
   # Install argo artifacts
-  helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts --set resources.requests.memory=1Gi
+  #helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts --set resources.requests.memory=1Gi
+  helm install -n $COMPUTE_NAMESPACE argo-artifacts minio/minio --set service.type=LoadBalancer --set fullnameOverride=argo-artifacts
   $K -n $COMPUTE_NAMESPACE get services -o wide | grep argo-artifacts
   echo -e "${COLOR_G}"Notice: argo-artifacts was successfully installed"${COLOR_RESET}"
 
