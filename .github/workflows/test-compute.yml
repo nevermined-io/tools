@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Testing Nevermined Tools
+name: Testing the Compute Stack
 
 on:
   push:
@@ -21,13 +21,13 @@ jobs:
       run : |
           docker system prune --all --volumes -f
 
-    - name: Test starting Nevermined Tools
+    - name: Test starting Compute
       run: |
         docker login -u ${{ secrets.NEVERMINED_DOCKER_USERNAME }} -p ${{ secrets.NEVERMINED_DOCKER_TOKEN}}
         rm -rf "${HOME}/.nevermined/nevermined-contracts/artifacts"
 
-        ./start_nevermined.sh --latest &
+        ./start_nevermined.sh --latest --compute --no-graph &
 
-        # wait for subgraphs
+        # wait for artifacts
         ./scripts/wait_for_migration_keeper_artifacts.sh
-        ./scripts/wait-subgraphs.sh geth-localnet
+        
