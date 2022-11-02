@@ -197,7 +197,7 @@ install_argo() {
     # $K apply -n $COMPUTE_NAMESPACE -f https://github.com/argoproj/argo-workflows/releases/download/v$ARGO_WORKFLOWS_VERSION/install.yaml
 
     echo -e "${COLOR_Y}Patch argo-server authentication...${COLOR_RESET}"
-    $K patch deployment argo-workflows-server -n $COMPUTE_NAMESPACE --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": ["server","--auth-mode=server"]}]'
+    # $K patch deployment argo-workflows-server -n $COMPUTE_NAMESPACE --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": ["server","--auth-mode=server"]}]'
   fi
 
 }
