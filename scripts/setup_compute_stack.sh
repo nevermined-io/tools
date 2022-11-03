@@ -44,10 +44,6 @@ if [[ $PLATFORM == $LINUX ]]; then
   fi
 fi
 
-remove_unnecesary_contracts() {
-    rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
-}
-
 main() {
 
   echo -e "${COLOR_M}"waiting for artifacts migration. This script should only be started after nevermined-tools"${COLOR_RESET}"
@@ -242,11 +238,24 @@ reset_minikube() {
   fi
 }
 
+remove_unnecesary_contracts() {
+  
+  echo -e "${COLOR_B}Files found in ${KEEPER_ARTIFACTS_FOLDER} : ${COLOR_RESET}"
+  find $KEEPER_ARTIFACTS_FOLDER -type f
+  echo -e "${COLOR_B}Removing contracts for other networks...${COLOR_RESET}"
+  #rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
+  find $KEEPER_ARTIFACTS_FOLDER -type f  ! \( -name *$KEEPER_NETWORK_NAME.json -o -name ready \) -exec rm -f {} \;
+  echo -e "${COLOR_B}Files after ${KEEPER_ARTIFACTS_FOLDER} : ${COLOR_RESET}"
+  ls -la $KEEPER_ARTIFACTS_FOLDER 
+  du -h $KEEPER_ARTIFACTS_FOLDER 
+  
+}
+
 configure_nevermined_compute() {
 
   echo -e "${COLOR_B}Configuring Nevermined Compute...${COLOR_RESET}"
+
   remove_unnecesary_contracts
-  echo -e "${COLOR_B}Removing contracts for other networks...${COLOR_RESET}"
 
   if ! $K get namespace $COMPUTE_NAMESPACE; then
     echo -e "Creating namespace $COMPUTE_NAMESPACE"
