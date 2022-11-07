@@ -211,20 +211,6 @@ function print_log() {
 
 function start_compute_stack {
     eval ./scripts/setup_compute_stack.sh
-
-    # INFO: The Compute API is not necessary anymore because the compute logic was migrated to the new Gateway
-    # TODO: Remove the old compute-api integration
-    # start the compute-api
-    # COMPUTE_API_DEPLOYMENT="${DIR}/scripts/compute-api-deployment.yaml"
-    # envsubst < $COMPUTE_API_DEPLOYMENT | kubectl apply -n $COMPUTE_NAMESPACE -f -
-
-    # # wait for service and setup port forwarding
-    # kubectl -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=compute-api-pod --timeout=180s
-    # kubectl -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/compute-api-deployment 8050:8050 &
-    # echo -e "${COLOR_G}Compute API running at: http://localhost:8050 ${COLOR_RESET}\n"
-
-    # # show logs for the compute-api pod
-    # kubectl -n $COMPUTE_NAMESPACE logs -f -l app=compute-api-pod &
 }
 
 function initialize_openldap {
