@@ -131,7 +131,7 @@ export GATEWAY_LOG_LEVEL="INFO"
 export AUTHLIB_INSECURE_TRANSPORT=true
 
 export COMPUTE_API_LOG_LEVEL="ERROR"
-export COMPUTE_NAMESPACE="nevermined-compute"
+export COMPUTE_NAMESPACE="nvm-disc"
 
 export GATEWAY_IPFS_GATEWAY="https://dweb.link/ipfs/:cid"
 
@@ -209,20 +209,8 @@ function print_log() {
 }
 
 
-function start_compute_api {
-    eval ./scripts/setup_minikube.sh
-
-    # start the compute-api
-    COMPUTE_API_DEPLOYMENT="${DIR}/scripts/compute-api-deployment.yaml"
-    envsubst < $COMPUTE_API_DEPLOYMENT | kubectl apply -n $COMPUTE_NAMESPACE -f -
-
-    # wait for service and setup port forwarding
-    kubectl -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=compute-api-pod --timeout=180s
-    kubectl -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/compute-api-deployment 8050:8050 &
-    echo -e "${COLOR_G}Compute API running at: http://localhost:8050 ${COLOR_RESET}\n"
-
-    # show logs for the compute-api pod
-    kubectl -n $COMPUTE_NAMESPACE logs -f -l app=compute-api-pod &
+function start_compute_stack {
+    eval ./scripts/setup_compute_stack.sh
 }
 
 function initialize_openldap {
@@ -541,7 +529,7 @@ while :; do
             eval docker-compose "$DOCKER_COMPOSE_EXTRA_OPTS" --project-name=$PROJECT_NAME "$COMPOSE_FILES" up $COMPOSE_UP_OPTIONS --remove-orphans &
             [ ${LDAP_START} = "true" ] && initialize_openldap 2>&1 | print_log "openldap" &
             [ ${CONTROL_CENTER} = "true" ] && register_services_control_center 2>&1 | print_log "services registered" &
-            [ ${COMPUTE_START} = "true" ] && start_compute_api 2>&1 | print_log "minikube" &
+            [ ${COMPUTE_START} = "true" ] && start_compute_stack 2>&1 | print_log "minikube" &
             # give control back to docker-compose
             %1
 

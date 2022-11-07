@@ -367,7 +367,7 @@ assigned the correct provider address.
 
 ## Compute Stack
 
-To facilitate the deployment in local of the Nevermined compute stack there is a script called `scripts/setup_minikube.sh`.
+To facilitate the deployment in local of the Nevermined compute stack there is a script called `scripts/setup_compute_stack.sh`.
 This script will be in charge of:
 
 * Install Minikube
@@ -375,7 +375,7 @@ This script will be in charge of:
 * Install the Argo Helm chart
 * Configure the namespace and permissions
 
-So if you want to run the compute stack locally, before running the `start_nevermined.sh` you can run the `scripts/setup_minikube.sh` script.
+So if you want to run the compute stack locally, before running the `start_nevermined.sh` you can run the `scripts/setup_compute_stack.sh` script.
 
 ## Local Mnemonic
 
