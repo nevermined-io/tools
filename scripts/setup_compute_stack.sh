@@ -43,6 +43,9 @@ if [[ $PLATFORM == $LINUX ]]; then
     DIST_TYPE="CentOS"
   fi
 fi
+remove_unnecesary_contracts() {
+    rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
+}
 
 main() {
 
@@ -194,6 +197,13 @@ install_argo() {
 
     echo -e "${COLOR_Y}Patch argo-server authentication...${COLOR_RESET}"
     # $K patch deployment argo-workflows-server -n $COMPUTE_NAMESPACE --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": ["server","--auth-mode=server"]}]'
+      
+    # Create Token
+    kubectl create role argo-workflow --verb=list,update --resource=workflows.argoproj.io -n $COMPUTE_NAMESPACE
+    kubectl create sa argo-workflow -n $COMPUTE_NAMESPACE
+    kubectl create rolebinding argo-workflow --role=argo-workflows --serviceaccount=$COMPUTE_NAMESPACE:argo-workflow
+    kubectl apply -f $__DIR/tokensecret.yaml -n $COMPUTE_NAMESPACE
+    ARGO_TOKEN="Bearer $(kubectl -n $COMPUTE_NAMESPACE get secret argo-workflow.service-account-token -o=jsonpath='{.data.token}' | base64 --decode)"
   fi
 
 }
@@ -238,32 +248,19 @@ reset_minikube() {
   fi
 }
 
-remove_unnecesary_contracts() {
-  
-  echo -e "${COLOR_B}Files found in ${KEEPER_ARTIFACTS_FOLDER} : ${COLOR_RESET}"
-  find $KEEPER_ARTIFACTS_FOLDER -type f
-  echo -e "${COLOR_B}Removing contracts for other networks...${COLOR_RESET}"
-  #rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
-  find $KEEPER_ARTIFACTS_FOLDER -type f  ! \( -name *$KEEPER_NETWORK_NAME.json -o -name ready \) -exec rm -f {} \;
-  echo -e "${COLOR_B}Files after ${KEEPER_ARTIFACTS_FOLDER} : ${COLOR_RESET}"
-  ls -la $KEEPER_ARTIFACTS_FOLDER 
-  du -h $KEEPER_ARTIFACTS_FOLDER 
-  
-}
 
 configure_nevermined_compute() {
 
   echo -e "${COLOR_B}Configuring Nevermined Compute...${COLOR_RESET}"
 
-  remove_unnecesary_contracts
 
   if ! $K get namespace $COMPUTE_NAMESPACE; then
     echo -e "Creating namespace $COMPUTE_NAMESPACE"
     $K create namespace $COMPUTE_NAMESPACE
   fi
 
-  echo -e "${COLOR_B}Creating configmap with artifacts from folder ${KEEPER_ARTIFACTS_FOLDER} ...${COLOR_RESET}"
-  $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}  
+  #echo -e "${COLOR_B}Creating configmap with artifacts from folder ${KEEPER_ARTIFACTS_FOLDER} ...${COLOR_RESET}"
+  #$K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}  
 
   # Install argo artifacts
   helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts --set resources.requests.memory=1Gi
@@ -296,7 +293,9 @@ configure_nevermined_compute() {
 
   $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=minio --timeout=300s
   $K -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/argo-artifacts 8060:9000 &
-
+  echo "Use this token to login to argo workflows"
+  echo $ARGO_TOKEN
+  
   echo -e "${COLOR_G}Argo Workflows at: http://localhost:2746/workflows/ ${COLOR_RESET}\n"
   echo -e "${COLOR_G}Minio at: http://localhost:8060 ${COLOR_RESET}\n"
 
