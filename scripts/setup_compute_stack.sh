@@ -34,9 +34,10 @@ K="kubectl"
 SUDO=""
 
 PLATFORM=$(uname)
-OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
+ARCH=$(uname -m)
 
 if [[ $PLATFORM == $LINUX ]]; then
+  OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
   if [[ $OS_NAME =~ (Ubuntu|Debian) ]]; then
     DIST_TYPE="Ubuntu"
   elif [[ $OS_NAME =~ (CentOS|Fedora|Red Hat) ]]; then
@@ -153,7 +154,12 @@ install_minikube() {
   if ! [ -x "$(command -v minikube)" ] ; then
     echo -e "${COLOR_Y}Installing minikube...${COLOR_RESET}"
     if [[ $PLATFORM == $OSX ]]; then
-      curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
+      if [[ $ARCH == "arm64" ]]; then
+      	echo -e "Installing version for arm64..."
+      	curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-darwin-arm64 && chmod +x minikube && mv minikube $MINIKUBE_HOME
+      else
+      	curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-darwin-amd64 && chmod +x minikube && sudo -A mv minikube $MINIKUBE_HOME
+      fi	
     elif [[ $PLATFORM == $LINUX ]]; then
       curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
     fi
