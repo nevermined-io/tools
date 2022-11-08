@@ -158,7 +158,7 @@ install_minikube() {
       	echo -e "Installing version for arm64..."
       	curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-darwin-arm64 && chmod +x minikube && mv minikube $MINIKUBE_HOME
       else
-      	curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-darwin-amd64 && chmod +x minikube && sudo -A mv minikube $MINIKUBE_HOME
+      	curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-darwin-amd64 && chmod +x minikube && mv minikube $MINIKUBE_HOME
       fi	
     elif [[ $PLATFORM == $LINUX ]]; then
       curl -Lo minikube https://storage.googleapis.com/minikube/releases/$MINIKUBE_VERSION/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube $MINIKUBE_HOME
