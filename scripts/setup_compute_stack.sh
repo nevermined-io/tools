@@ -205,11 +205,11 @@ install_argo() {
     # $K patch deployment argo-workflows-server -n $COMPUTE_NAMESPACE --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": ["server","--auth-mode=server"]}]'
       
     # Create Token
-    kubectl create role argo-workflow --verb=list,update --resource=workflows.argoproj.io -n $COMPUTE_NAMESPACE
-    kubectl create sa argo-workflow -n $COMPUTE_NAMESPACE
-    kubectl create rolebinding argo-workflow --role=argo-workflows --serviceaccount=$COMPUTE_NAMESPACE:argo-workflow
-    kubectl apply -f $__DIR/tokensecret.yaml -n $COMPUTE_NAMESPACE
-    ARGO_TOKEN="Bearer $(kubectl -n $COMPUTE_NAMESPACE get secret argo-workflow.service-account-token -o=jsonpath='{.data.token}' | base64 --decode)"
+    $K create role argo-workflow --verb=list,update --resource=workflows.argoproj.io -n $COMPUTE_NAMESPACE
+    $K create sa argo-workflow -n $COMPUTE_NAMESPACE
+    $K create rolebinding argo-workflow --role=argo-workflows --serviceaccount=$COMPUTE_NAMESPACE:argo-workflow
+    $K apply -f $__DIR/tokensecret.yaml -n $COMPUTE_NAMESPACE
+    ARGO_TOKEN="Bearer $($K -n $COMPUTE_NAMESPACE get secret argo-workflow.service-account-token -o=jsonpath='{.data.token}' | base64 --decode)"
   fi
 
 }
