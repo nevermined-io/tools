@@ -15,14 +15,18 @@ if [[ -f $__DIR/constants.rc ]]; then
     set +o allexport
 fi
 
-MINIKUBE_VERSION=${MINIKUBE_VERSION:-v1.22.0}
-MINIKUBE_RECREATE=${MINIKUBE_RECREATE:-true}
-DEPLOY_MINIKUBE=${DEPLOY_MINIKUBE:-true}
-CONFIGURE_K8S_COMPUTE=${CONFIGURE_K8S_COMPUTE:-true}
-COMPUTE_NAMESPACE=${COMPUTE_NAMESPACE:-nevermined-compute}
-INSTALL_KUBECTL=${INSTALL_KUBECTL:-true}
-INSTALL_HELM=${INSTALL_HELM:-true}
+MINIKUBE_VERSION=${MINIKUBE_VERSION:-v1.27.1}
 KUBERNETES_VERSION=${KUBERNETES_VERSION:-1.21.2}
+ARGO_WORKFLOWS_VERSION=${ARGO_WORKFLOWS_VERSION:-3.4.1}
+INSTALL_KUBECTL=${INSTALL_KUBECTL:-false}
+INSTALL_MINIKUBE=${INSTALL_MINIKUBE:-true}
+INSTALL_ARGO=${INSTALL_ARGO:-true}
+INSTALL_HELM=${INSTALL_HELM:-true}
+MINIKUBE_RECREATE=${MINIKUBE_RECREATE:-true}
+START_MINIKUBE=${START_MINIKUBE:-true}
+CONFIGURE_K8S_COMPUTE=${CONFIGURE_K8S_COMPUTE:-true}
+COMPUTE_NAMESPACE=${COMPUTE_NAMESPACE:-nvm-disc}
+
 MINIKUBE_HOME="/usr/local/bin"
 MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION --mount=true --mount-string=$__PARENT_DIR/accounts:/accounts --driver=docker --network=host"
 
@@ -39,7 +43,6 @@ if [[ $PLATFORM == $LINUX ]]; then
     DIST_TYPE="CentOS"
   fi
 fi
-
 remove_unnecesary_contracts() {
     rm -f "${KEEPER_ARTIFACTS_FOLDER}/!(|*.${KEEPER_NETWORK_NAME}.json|ready|)"
 }
@@ -50,21 +53,38 @@ main() {
   eval $__DIR/wait_for_migration_keeper_artifacts.sh
 
   if [ "$INSTALL_KUBECTL" = true ]; then
-    install_kubectl_minikube_others
+    install_kubectl
+  else
+    K="minikube kubectl --"
+    alias K=$K
+    alias kubectl=$K
+  fi
+
+  if [ "$INSTALL_MINIKUBE" = true ]; then
+    install_minikube
   fi
 
   if [ "$INSTALL_HELM" = true ]; then
     install_helm
   fi
 
-  if [ "$DEPLOY_MINIKUBE" = true ]; then
+  if [ "$START_MINIKUBE" = true ]; then
     set_minikube_parameters
     if [ "$MINIKUBE_RECREATE" = true ]; then
       reset_minikube
     else
         echo -e "Skipping minikube re-install by MINIKUBE_RECREATE env variable"
     fi
-    deploy_minikube
+    start_minikube
+  fi
+
+  if ! $K get namespace $COMPUTE_NAMESPACE; then
+    echo -e "Creating namespace $COMPUTE_NAMESPACE"
+    $K create namespace $COMPUTE_NAMESPACE
+  fi
+
+  if [ "$INSTALL_ARGO" = true ]; then
+    install_argo
   fi
 
   if [ "$CONFIGURE_K8S_COMPUTE" = true ]; then
@@ -83,62 +103,9 @@ set_minikube_parameters() {
 }
 
 
-reset_minikube() {
+install_kubectl() {
 
-  echo -e "Stop and delete previous minikube instance"
-
-  if [ -x "$(command -v minikube)" ] ; then
-    minikube_status=$($SUDO $MINIKUBE_HOME/minikube status | grep 'host:' | awk '{print $2}') || echo -e "Minikube is not running"
-
-    if [[ $minikube_status == "Running" ]]; then
-  	  echo -e "${COLOR_C}First, we need to stop existing minikube...${COLOR_RESET}"
-      $SUDO $MINIKUBE_HOME/minikube stop
-      $SUDO minikube delete
-    fi
-
-    echo -e "${COLOR_C}Delete existing k8s cluster...${COLOR_RESET}"
-    $SUDO $MINIKUBE_HOME/minikube delete
-
-  fi
-
-}
-
-deploy_minikube() {
-
-  # start minikube with desired settings
-  echo -e "${COLOR_M}"minikube will now try to start the local k8s cluster"${COLOR_RESET}"
-  $MINIKUBE_CMD
-
-  minikube_status=$($SUDO $MINIKUBE_HOME/minikube status | grep 'host:' | awk '{print $2}')
-
-  if [[ $minikube_status == "Running" ]]; then
-    echo -e "\n${COLOR_G}Minikube is up and Running!${COLOR_RESET}\n"
-  else
-    echo -e "${COLOR_R}Unable to start minikube. Please see errors above${COLOR_RESET}"
-    return 1
-  fi
-}
-
-
-install_helm() {
-
-  if ! [ -x "$(command -v helm)" ]; then
-    echo -e "${COLOR_Y}Installing helm...${COLOR_RESET}"
-    if [[ $PLATFORM == $OSX ]]; then
-      brew install helm
-    elif [[ $PLATFORM == $LINUX ]]; then
-      curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-      chmod 700 /tmp/get_helm.sh
-      /tmp/get_helm.sh
-    fi
-  fi
-  helm version
-
-}
-
-install_kubectl_minikube_others() {
-
-# Installing kubectl if needed
+  # Installing kubectl if needed
   if ! [ -x "$(command -v kubectl)" ]; then
     echo -e "${COLOR_Y}Installing kubectl...${COLOR_RESET}"
     if [[ $PLATFORM == $OSX ]]; then
@@ -178,9 +145,11 @@ install_kubectl_minikube_others() {
     echo -e "${COLOR_G}[OK]${COLOR_RESET}"
   fi
 
+}
 
+install_minikube() {
 
-# Installing minikube if needed
+  # Installing minikube if needed
   if ! [ -x "$(command -v minikube)" ] ; then
     echo -e "${COLOR_Y}Installing minikube...${COLOR_RESET}"
     if [[ $PLATFORM == $OSX ]]; then
@@ -193,7 +162,7 @@ install_kubectl_minikube_others() {
 
     # Temporary fix to be able to mount volumes
     $K -n kube-system patch pod storage-provisioner --patch '{"spec": {"containers": [{"name": "storage-provisioner","image": "gcr.io/k8s-minikube/storage-provisioner:latest"}]}}'
-    $K apply -f admin $__DIR/admin-user.yaml
+    $K apply -f $__DIR/admin-user.yaml
     $SUDO $MINIKUBE_HOME/minikube config set ShowBootstrapperDeprecationNotification false &&
     $SUDO $MINIKUBE_HOME/minikube config set WantUpdateNotification false &&
     $SUDO $MINIKUBE_HOME/minikube config set WantReportErrorPrompt false &&
@@ -203,24 +172,95 @@ install_kubectl_minikube_others() {
 
 }
 
+start_minikube() {
+
+  # start minikube with desired settings
+  echo -e "${COLOR_M}"minikube will now try to start the local k8s cluster"${COLOR_RESET}"
+  $MINIKUBE_CMD
+
+  minikube_status=$($SUDO $MINIKUBE_HOME/minikube status | grep 'host:' | awk '{print $2}')
+
+  if [[ $minikube_status == "Running" ]]; then
+    echo -e "\n${COLOR_G}Minikube is up and Running!${COLOR_RESET}\n"
+  else
+    echo -e "${COLOR_R}Unable to start minikube. Please see errors above${COLOR_RESET}"
+    return 1
+  fi
+}
+
+install_argo() {
+  
+  if ! [ -x "$(command -v argo)" ]; then
+    echo -e "${COLOR_Y}Installing Argo...${COLOR_RESET}"
+    helm install -n $COMPUTE_NAMESPACE argo-workflows argo/argo-workflows 
+    # $K apply -n $COMPUTE_NAMESPACE -f https://github.com/argoproj/argo-workflows/releases/download/v$ARGO_WORKFLOWS_VERSION/install.yaml
+
+    echo -e "${COLOR_Y}Patch argo-server authentication...${COLOR_RESET}"
+    # $K patch deployment argo-workflows-server -n $COMPUTE_NAMESPACE --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": ["server","--auth-mode=server"]}]'
+      
+    # Create Token
+    $K create role argo-workflow --verb=list,update --resource=workflows.argoproj.io -n $COMPUTE_NAMESPACE
+    $K create sa argo-workflow -n $COMPUTE_NAMESPACE
+    $K create rolebinding argo-workflow --role=argo-workflows --serviceaccount=$COMPUTE_NAMESPACE:argo-workflow
+    $K apply -f $__DIR/tokensecret.yaml -n $COMPUTE_NAMESPACE
+    ARGO_TOKEN="Bearer $($K -n $COMPUTE_NAMESPACE get secret argo-workflow.service-account-token -o=jsonpath='{.data.token}' | base64 --decode)"
+  fi
+
+}
+
+install_helm() {
+
+  if ! [ -x "$(command -v helm)" ]; then
+    echo -e "${COLOR_Y}Installing helm...${COLOR_RESET}"
+    if [[ $PLATFORM == $OSX ]]; then
+      brew install helm
+    elif [[ $PLATFORM == $LINUX ]]; then
+      curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+      chmod 700 /tmp/get_helm.sh
+      /tmp/get_helm.sh
+    fi
+  fi
+  
+  helm repo add argo https://argoproj.github.io/argo-helm
+  helm repo add stable https://charts.helm.sh/stable
+  helm repo update
+
+  helm version
+
+}
+
+reset_minikube() {
+
+  echo -e "Stop and delete previous minikube instance"
+
+  if [ -x "$(command -v minikube)" ] ; then
+    minikube_status=$($SUDO $MINIKUBE_HOME/minikube status | grep 'host:' | awk '{print $2}') || echo -e "Minikube is not running"
+
+    if [[ $minikube_status == "Running" ]]; then
+  	  echo -e "${COLOR_C}First, we need to stop existing minikube...${COLOR_RESET}"
+      $SUDO $MINIKUBE_HOME/minikube stop
+      $SUDO minikube delete
+    fi
+
+    echo -e "${COLOR_C}Delete existing k8s cluster...${COLOR_RESET}"
+    $SUDO $MINIKUBE_HOME/minikube delete
+
+  fi
+}
+
 
 configure_nevermined_compute() {
 
   echo -e "${COLOR_B}Configuring Nevermined Compute...${COLOR_RESET}"
-  remove_unnecesary_contracts
-  echo -e "${COLOR_B}Removing contracts for other networks...${COLOR_RESET}"
+
 
   if ! $K get namespace $COMPUTE_NAMESPACE; then
     echo -e "Creating namespace $COMPUTE_NAMESPACE"
     $K create namespace $COMPUTE_NAMESPACE
   fi
 
-  helm repo add argo https://argoproj.github.io/argo-helm
-  helm repo add stable https://charts.helm.sh/stable
-  helm repo update
-
-  $K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}
-  helm install -n $COMPUTE_NAMESPACE argo-workflows argo/argo-workflows #--version 0.2.7
+  #echo -e "${COLOR_B}Creating configmap with artifacts from folder ${KEEPER_ARTIFACTS_FOLDER} ...${COLOR_RESET}"
+  #$K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}  
 
   # Install argo artifacts
   helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts --set resources.requests.memory=1Gi
@@ -236,25 +276,26 @@ configure_nevermined_compute() {
   fi
 
   # create a secret with host docker credentials
-  kubectl -n $COMPUTE_NAMESPACE create secret generic regcred \
+  $K -n $COMPUTE_NAMESPACE create secret generic regcred \
     --from-file=.dockerconfigjson=$HOME/.docker/config.json \
     --type=kubernetes.io/dockerconfigjson
 
   # make sure the service account exists
-  kubectl -n $COMPUTE_NAMESPACE create serviceaccount default || true
+  $K -n $COMPUTE_NAMESPACE create serviceaccount default || true
 
   sleep 10
 
   # set secret as default for downloading docker images on the default serviceaccount
-  kubectl -n $COMPUTE_NAMESPACE patch serviceaccount default \
-      -p '{"imagePullSecrets": [{"name": "regcred"}]}'
+  $K -n $COMPUTE_NAMESPACE patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
 
   $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app.kubernetes.io/name=argo-workflows-server --timeout=300s
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-workflows-server 2746:2746 &
 
   $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=minio --timeout=300s
   $K -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/argo-artifacts 8060:9000 &
-
+  echo "Use this token to login to argo workflows"
+  echo $ARGO_TOKEN
+  
   echo -e "${COLOR_G}Argo Workflows at: http://localhost:2746/workflows/ ${COLOR_RESET}\n"
   echo -e "${COLOR_G}Minio at: http://localhost:8060 ${COLOR_RESET}\n"
 

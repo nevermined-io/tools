@@ -1,0 +1,18 @@
+version: '3'
+services:
+  opengsn:
+    container_name: nevermined-opengsn
+    image: neverminedio/opengsn:$OPENGSN_VERSION
+    ports:
+      - 2345:2345
+    networks:
+      backend:
+        ipv4_address: 172.15.0.25
+    depends_on:
+      - keeper-node
+    environment:
+      KEEPER_URL: ${KEEPER_RPC_URL}
+      SEED_WORDS: ${KEEPER_MNEMONIC}
+      NODE_ENV: 'production'
+    volumes:
+      - ${KEEPER_ARTIFACTS_FOLDER}:/root/.nevermined/nevermined-contracts/artifacts

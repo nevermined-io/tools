@@ -8,9 +8,11 @@
 
 ---
 
+
 * [Nevermined Tools](#nevermined-tools)
    * [Prerequisites](#prerequisites)
    * [Get Started](#get-started)
+      * [Cleaning your environment first (optional)](#cleaning-your-environment-first-optional)
    * [Get Started on Mac](#get-started-on-mac)
    * [Options](#options)
       * [Component Versions](#component-versions)
@@ -20,12 +22,10 @@
       * [Marketplace](#marketplace)
       * [Minio](#minio)
       * [The Graph](#the-graph)
-      * [Metadata API](#metadata-api)
       * [Marketplace API](#marketplace-api)
       * [Node](#node)
       * [Compute API](#compute-api)
       * [Keeper Node](#keeper-node)
-      * [Secret Store](#secret-store)
       * [Faucet](#faucet)
       * [OpenLdap](#openldap)
       * [Dashboard](#dashboard)
@@ -129,7 +129,7 @@ cd nevermined-tools
 
 This way, a subset of the Nevermined stack will be run, with the Legacy Marketplace ommitted.
 
-The focal point of the setup is the Metadata API. To try the APIs out navigate to the Swagger API description at
+The focal point of the setup is the Marketplace API. To try the APIs out navigate to the Swagger API description at
 
 ```url
 http://metadata:5000/api/v1/docs/
@@ -154,7 +154,6 @@ You can use the `--latest` option to pull the most recent Docker images for all 
 
 You can override the Docker image tag used for a particular component by setting its associated environment variable before calling `start_nevermined.sh`:
 
-* `METADATA_VERSION`
 * `MARKETPLACE_API_VERSION`
 * `NODE_VERSION`
 * `KEEPER_VERSION`
@@ -169,7 +168,7 @@ export NODE_VERSION=v0.3.0
 ./start_nevermined.sh
 ```
 
-will use the default Docker image tags for Metadata API, Nevermined Contracts and Marketplace, but `v0.4.3` for Node.
+will use the default Docker image tags for Metadata API, Nevermined Contracts and Marketplace, but `v0.4.3` for the Node.
 
 > If you use the `--latest` option, then the `latest` Docker images will be used _regardless of whether you set any environment variables beforehand._
 
@@ -180,12 +179,11 @@ will use the default Docker image tags for Metadata API, Nevermined Contracts an
 | `--latest`                 | Pull Docker images tagged with `latest`.                                                              |
 | `--no-marketplace`         | Start up without the `marketplace` Building Block. Helpful when you are developing the `marketplace`. |
 | `--no-metadata`            | Start up without the `metadata` Building Block.                                                       |
-| `--no-node`             | Start up without the `node` Building Block.                                                        |
+| `--no-gateway`             | Start up without the `gateway` Building Block.                                                        |
 | `--no-secret-store`        | Start up without the `secret-store` Building Block.                                                   |
 | `--no-faucet`              | Start up without the `faucet` Building Block.                                                         |
 | `--no-elastic`             | Start up without ElasticSearch.                                                                       |
 | `--no-graph`               | Start up without the `graph` node for the Nevermined events.                                     |
-| `--no-acl-contract`        | Disables the configuration of secret store's ACL contract address                                     |
 | `--compute`                | Start up with the Nevermined compute components.                                                      |
 | `--ldap`                   | Start an OpenLdap instance use for keeping the users and groups authentication.                       |
 | `--dashboard`              | Start up with the `dashboard` for monitoring containers.                                              |
@@ -260,22 +258,10 @@ When passing `--graph` option it will start a graph-node container to index Neve
 | ------------------ | ------------- | ------------------------------ | ----------------------- | ---------------------------- |
 | `nevermined-graph` | `9000`        | <http://nevermined-graph:9000> | <http://localhost:9000> | The Graph used by Nevermined |
 
-### Metadata API
-
-By default it will start two containers (one for Metadata API and one for its database engine). By default, the tools will
-use Elasticsearch for its database engine. You can use the `--mongodb` option to use MongoDB instead.
-
-This Building Block can be disabled by setting the `--no-metadata` flag.
-
-| Hostname        | External Port | Internal URL           | Local URL               | Description                                               |
-| --------------- | ------------- | ---------------------- | ----------------------- | --------------------------------------------------------- |
-| `metadata`      | `5000`        | <http://metadata:5000> | <http://localhost:5000> | [metadata](https://github.com/nevermined-io/metadata-api) |
-| `elasticsearch` |               |                        |                         | The Elasticsearch used by Metadata API                    |
-| `mongodb`       |               |                        |                         | The MongoDB used by Metadata API                          |
 
 ### Marketplace API
 
-The Marketplace API is a RESTful micro-service that will replace and augment the Metadata API functionalities. 
+The Marketplace API is a RESTful micro-service that exposes common functionalities that allow building Marketplaces or Dapps around digital assets. 
 When passing `--marketplace-api` option it will start the [Marketplace API](https://github.com/nevermined-io/marketplace-api) container. If the API is running, you can open the **API Swagger interface** in your browser:
 
 [http://localhost:3100/api/v1/docs](http://localhost:3100)
@@ -320,23 +306,13 @@ This node can be one of the following types (with the default being `geth-localn
 | `staging`     | Runs a local node connected to the Staging Network.                                                                                                                                                                      |
 | `production`  | Runs a local node connected to the Production Network.                                                                                                                                                                   |
 
-### Secret Store
-
-By default it will start three containers. This Building Block can be disabled by setting the `--no-secret-store` flag.
-
-| Hostname                    | External Ports   | Internal URL                            | Local URL                | Description                                                                                   |
-| --------------------------- | ---------------- | --------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------- |
-| `secret-store`              | `12000`, `32771` | <http://secret-store:12000>             | <http://localhost:12000> | An instance of the  Secret Store                                                              |
-| `secret-store-cors-proxy`   | `12001`          | <http://secret-store-cors-proxy:12001>  | <http://localhost:12001> | An NGINX proxy to enable CORS on the secret store                                             |
-| `secret-store-signing-node` | `9545`           | <http://secret-store-signing-node:9545> | <http://localhost:9545>  | A Parity Ethereum node to `sign` messages for the secret store and to `decrypt` and `encrypt` |
-
 ### Faucet
 
-By default it will start two containers, one for Faucet server and one for its database (MongoDB). This Building Block can be disabled by setting the `--no-faucet` flag.
+By default it will start two containers, one for Faucet server and one for its database (ElasticSearch). This Building Block can be disabled by setting the `--no-faucet` flag.
 
 | Hostname | External Port | Internal URL         | Local URL               | Description                                       |
 | -------- | ------------- | -------------------- | ----------------------- | ------------------------------------------------- |
-| `faucet` | `3001`        | <http://faucet:3001> | <http://localhost:3001> | [Faucet](https://github.com/oceanprotocol/faucet) |
+| `faucet` | `3001`        | <http://faucet:3001> | <http://localhost:3001> | [Faucet](https://github.com/nevermined-io/faucet) |
 
 By default the Faucet allows requests every 24hrs. To disable the timespan check you can pass `FAUCET_TIMESPAN=0` as
 environment variable before starting the script.
@@ -392,7 +368,7 @@ assigned the correct provider address.
 
 ## Compute Stack
 
-To facilitate the deployment in local of the Nevermined compute stack there is a script called `scripts/setup_minikube.sh`.
+To facilitate the deployment in local of the Nevermined compute stack there is a script called `scripts/setup_compute_stack.sh`.
 This script will be in charge of:
 
 * Install Minikube
@@ -400,7 +376,7 @@ This script will be in charge of:
 * Install the Argo Helm chart
 * Configure the namespace and permissions
 
-So if you want to run the compute stack locally, before running the `start_nevermined.sh` you can run the `scripts/setup_minikube.sh` script.
+So if you want to run the compute stack locally, before running the `start_nevermined.sh` you can run the `scripts/setup_compute_stack.sh` script.
 
 ## Local Mnemonic
 
