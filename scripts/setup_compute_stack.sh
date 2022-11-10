@@ -26,7 +26,7 @@ MINIKUBE_RECREATE=${MINIKUBE_RECREATE:-true}
 START_MINIKUBE=${START_MINIKUBE:-true}
 CONFIGURE_K8S_COMPUTE=${CONFIGURE_K8S_COMPUTE:-true}
 COMPUTE_NAMESPACE=${COMPUTE_NAMESPACE:-nvm-disc}
-
+KEEPER_ARTIFACTS_FOLDER="${HOME}/nevermined-contracts/artifacts"
 MINIKUBE_HOME="/usr/local/bin"
 MINIKUBE_CMD="$MINIKUBE_HOME/minikube start --kubernetes-version=v$KUBERNETES_VERSION --mount=true --mount-string=$__PARENT_DIR/accounts:/accounts --driver=docker --network=host"
 
@@ -259,11 +259,14 @@ configure_nevermined_compute() {
     $K create namespace $COMPUTE_NAMESPACE
   fi
 
+  #mount local directory to minikube vm
+#  minikube mount  ${KEEPER_ARTIFACTS_FOLDER}:/tmp/hostpath-provisioner/nvm-disc/argo-artifacts &
+
   #echo -e "${COLOR_B}Creating configmap with artifacts from folder ${KEEPER_ARTIFACTS_FOLDER} ...${COLOR_RESET}"
   #$K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}  
 
   # Install argo artifacts
-  helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts --set resources.requests.memory=1Gi
+  helm install -n $COMPUTE_NAMESPACE argo-artifacts bitnami/minio --version 11.10.13   --set fullnameOverride=argo-artifacts --set resources.requests.memory=1Gi
   $K -n $COMPUTE_NAMESPACE get services -o wide | grep argo-artifacts
   echo -e "${COLOR_G}"Notice: argo-artifacts was successfully installed"${COLOR_RESET}"
 
@@ -287,6 +290,12 @@ configure_nevermined_compute() {
 
   # set secret as default for downloading docker images on the default serviceaccount
   $K -n $COMPUTE_NAMESPACE patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
+
+
+  # Update Minio deployment to use default bucket artifacts
+  # The json files will be loaded into the folder but are not accessible via ui
+  $K -n $COMPUTE_NAMESPACE set env deployment/argo-artifacts MINIO_DEFAULT_BUCKETS="artifacts:public,default:private" 
+
 
   $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app.kubernetes.io/name=argo-workflows-server --timeout=300s
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-workflows-server 2746:2746 &
