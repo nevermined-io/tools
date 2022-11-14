@@ -23,7 +23,7 @@
       * [Minio](#minio)
       * [The Graph](#the-graph)
       * [Marketplace API](#marketplace-api)
-      * [Gateway](#gateway)
+      * [Node](#node)
       * [Compute API](#compute-api)
       * [Keeper Node](#keeper-node)
       * [Faucet](#faucet)
@@ -45,7 +45,7 @@ You need to have the newest versions of:
   [Windows Subsystem for Linux (WSL)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux).
 * [Docker](https://www.docker.com/get-started)
 * [Docker Compose](https://docs.docker.com/compose/)
-* If you want to use Azure Storage (and you might not), then you must edit the file [`gateway.env`](gateway.env) to have
+* If you want to use Azure Storage (and you might not), then you must edit the file [`node.env`](node.env) to have
   your Azure credentials.
 
 ## Get Started
@@ -66,7 +66,7 @@ The following command will run the main components of a Nevermined deployment:
 
 * A local Ethereum node using Geth with the Nevermined [Smart Contracts](../architecture/contracts/) deployed on it
 * An instance of the [Marketplace API](../architecture/marketplace-api/) allowing to register assets Metadata
-* An instance of the [Gateway](../architecture/gateway/) giving access to off-chain data and services
+* An instance of the [Node](../architecture/node/) giving access to off-chain data and services
 * An instance of a [Faucet](https://github.com/nevermined-io/faucet/) that can be used to get some ETH in the local network
 * An instance of a [SubGraph](https://github.com/nevermined-io/subgraph) node indexing all the events emitted by the Smart Contracts and exposing them via GraphQL
 
@@ -145,9 +145,9 @@ The startup script comes with a set of options for customizing various things.
 
 The default versions are always a combination of component versions which are considered stable.
 
-| Contracts       | Marketplace API | Gateway   | Faucet   |
+| Contracts       | Marketplace API | Node   | Faucet   |
 | --------------- | --------- | -------- | ----------------- |
-| `v2.0.5`        | `latest`  | `latest` | `v0.2.2`          |
+| `v2.1.0`        | `latest`  | `latest` | `v0.2.2`          |
 
 You can use the `--latest` option to pull the most recent Docker images for all components, which are always tagged as
 `latest` in Docker. The `latest` Docker image tag derives from the default main branch of the component's Git repo.
@@ -155,7 +155,7 @@ You can use the `--latest` option to pull the most recent Docker images for all 
 You can override the Docker image tag used for a particular component by setting its associated environment variable before calling `start_nevermined.sh`:
 
 * `MARKETPLACE_API_VERSION`
-* `GATEWAY_VERSION`
+* `NODE_VERSION`
 * `KEEPER_VERSION`
 * `MARKETPLACE_CLIENT_VERSION`
 * `MARKETPLACE_SERVER_VERSION`
@@ -164,11 +164,11 @@ You can override the Docker image tag used for a particular component by setting
 For example:
 
 ```bash
-export GATEWAY_VERSION=v0.12.5
+export NODE_VERSION=v0.3.0
 ./start_nevermined.sh
 ```
 
-will use the default Docker image tags for Marketplace API, Nevermined Contracts and Marketplace, but `v0.4.3` for Gateway.
+will use the default Docker image tags for Metadata API, Nevermined Contracts and Marketplace, but `v0.4.3` for the Node.
 
 > If you use the `--latest` option, then the `latest` Docker images will be used _regardless of whether you set any environment variables beforehand._
 
@@ -178,8 +178,9 @@ will use the default Docker image tags for Marketplace API, Nevermined Contracts
 | -------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `--latest`                 | Pull Docker images tagged with `latest`.                                                              |
 | `--no-marketplace`         | Start up without the `marketplace` Building Block. Helpful when you are developing the `marketplace`. |
-| `--no-marketplace-api`     | Start up without the `marketplace-api` Building Block.                                                       |
+| `--no-metadata`            | Start up without the `metadata` Building Block.                                                       |
 | `--no-gateway`             | Start up without the `gateway` Building Block.                                                        |
+| `--no-secret-store`        | Start up without the `secret-store` Building Block.                                                   |
 | `--no-faucet`              | Start up without the `faucet` Building Block.                                                         |
 | `--no-elastic`             | Start up without ElasticSearch.                                                                       |
 | `--no-graph`               | Start up without the `graph` node for the Nevermined events.                                     |
@@ -269,13 +270,13 @@ When passing `--marketplace-api` option it will start the [Marketplace API](http
 | ---------------- | ------------- | ---------------------------- | ----------------------- | ------------------------------------------------------------- |
 | `marketplace-api` | `3100`        | <http://marketplace-api:3100> | <http://locahost:3100>  | [Marketplace API](https://github.com/nevermined-io/marketplace-api) |
 
-### Gateway
+### Node
 
-By default it will start one container. This Building Block can be disabled by setting the `--no-gateway` flag.
+By default it will start one container. This Building Block can be disabled by setting the `--no-node` flag.
 
 | Hostname  | External Port | Internal URL          | Local URL               | Description                                         |
 | --------- | ------------- | --------------------- | ----------------------- | --------------------------------------------------- |
-| `gateway` | `8030`        | <http://gateway:8030> | <http://localhost:8030> | [Gateway](https://github.com/nevermined-io/gateway-ts) |
+| `node` | `8030`        | <http://node:8030> | <http://localhost:8030> | [Node](https://github.com/nevermined-io/node-ts) |
 
 ### Compute API
 
@@ -360,7 +361,7 @@ you will have available a keeper node in the local and private network with the 
 | `0xbcE5A3468386C64507D30136685A99cFD5603135` | mnemonic | [info here](#local-mnemonic) | 1000000000 Ether |
 
 Use one of the above accounts to populate `PROVIDER_ADDRESS`, `PROVIDER_PASSWORD` and `PROVIDER_KEYFILE` in `start_nevermined.sh`.
-This account will is used in `gateway` and `events-handler` as the `provider` account which is important for processing the
+This account will is used in `node` and `events-handler` as the `provider` account which is important for processing the
 service agreements flow. The `PROVIDER_KEYFILE` must be placed in the `accounts` folder and must match the ethereum
 address from `PROVIDER_ADDRESS`. The `PROVIDER_ADDRESS` is also set in `marketplace` instance so that published assets get
 assigned the correct provider address.

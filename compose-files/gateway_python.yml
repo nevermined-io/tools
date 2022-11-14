@@ -13,7 +13,7 @@ services:
     env_file:
       - ${GATEWAY_ENV_FILE}
     environment:
-      KEEPER_URL: ${KEEPER_RPC_URL}
+      KEEPER_URL: ${WEB3_PROVIDER_URL}
       KEEPER_PATH: ${KEEPER_PATH}
       PARITY_URL: ${SIGNING_NODE_URL}
       LOCAL_CONTRACTS: ${KEEPER_DEPLOY_CONTRACTS}

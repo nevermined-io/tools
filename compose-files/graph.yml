@@ -19,7 +19,7 @@ services:
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: "ipfs:5001"
-      ethereum: "spree:${KEEPER_RPC_URL}"
+      ethereum: "spree:${WEB3_PROVIDER_URL}"
       GRAPH_LOG: info
       IPFS_URL: "http://ipfs:5001"
       GRAPH_NODE_URL: "http://localhost:8020"
