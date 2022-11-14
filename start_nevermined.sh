@@ -352,7 +352,7 @@ while :; do
             COMPOSE_FILES="${COMPOSE_FILES/ -f ${COMPOSE_DIR}\/node.yml/}"
             printf $COLOR_Y'Starting without Nevermined Node...\n\n'$COLOR_RESET
             ;;
-        --new-gateway | --node)
+        --gateway | --new-gateway | --node)
             # The TS will start by default, we keep this option to support backward compatibility
             printf $COLOR_Y'Starting with Nevermined Node...\n\n'$COLOR_RESET
             ;;
