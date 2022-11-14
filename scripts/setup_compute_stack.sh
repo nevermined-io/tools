@@ -199,15 +199,15 @@ install_argo() {
   if ! [ -x "$(command -v argo)" ]; then
     echo -e "${COLOR_Y}Installing Argo...${COLOR_RESET}"
     helm install -n $COMPUTE_NAMESPACE argo-workflows argo/argo-workflows 
-    # $K apply -n $COMPUTE_NAMESPACE -f https://github.com/argoproj/argo-workflows/releases/download/v$ARGO_WORKFLOWS_VERSION/install.yaml
+    #$K apply -n $COMPUTE_NAMESPACE -f https://github.com/argoproj/argo-workflows/releases/download/v$ARGO_WORKFLOWS_VERSION/install.yaml
 
-    echo -e "${COLOR_Y}Patch argo-server authentication...${COLOR_RESET}"
-    # $K patch deployment argo-workflows-server -n $COMPUTE_NAMESPACE --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": ["server","--auth-mode=server"]}]'
+    #echo -e "${COLOR_Y}Patch argo-server authentication...${COLOR_RESET}"
+    #$K patch deployment argo-workflows-server -n $COMPUTE_NAMESPACE --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": ["server","--auth-mode=server"]}]'
       
     # Create Token
-    $K create role argo-workflow --verb=list,update --resource=workflows.argoproj.io -n $COMPUTE_NAMESPACE
+    $K create role argo-workflow --verb=list,get,create,update,delete --resource=workflows.argoproj.io -n $COMPUTE_NAMESPACE
     $K create sa argo-workflow -n $COMPUTE_NAMESPACE
-    $K create rolebinding argo-workflow --role=argo-workflows --serviceaccount=$COMPUTE_NAMESPACE:argo-workflow
+    $K create rolebinding argo-workflow --role=argo-workflow --serviceaccount=$COMPUTE_NAMESPACE:argo-workflow -n $COMPUTE_NAMESPACE
     $K apply -f $__DIR/tokensecret.yaml -n $COMPUTE_NAMESPACE
     ARGO_TOKEN="Bearer $($K -n $COMPUTE_NAMESPACE get secret argo-workflow.service-account-token -o=jsonpath='{.data.token}' | base64 --decode)"
   fi
