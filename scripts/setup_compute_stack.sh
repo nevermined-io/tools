@@ -199,11 +199,7 @@ install_argo() {
   if ! [ -x "$(command -v argo)" ]; then
     echo -e "${COLOR_Y}Installing Argo...${COLOR_RESET}"
     helm install -n $COMPUTE_NAMESPACE argo-workflows argo/argo-workflows 
-    #$K apply -n $COMPUTE_NAMESPACE -f https://github.com/argoproj/argo-workflows/releases/download/v$ARGO_WORKFLOWS_VERSION/install.yaml
-
-    #echo -e "${COLOR_Y}Patch argo-server authentication...${COLOR_RESET}"
-    #$K patch deployment argo-workflows-server -n $COMPUTE_NAMESPACE --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": ["server","--auth-mode=server"]}]'
-      
+    
     # Create Token
     $K create role argo-workflow --verb=list,get,create,update,delete --resource=workflows.argoproj.io -n $COMPUTE_NAMESPACE
     $K create sa argo-workflow -n $COMPUTE_NAMESPACE
@@ -265,13 +261,10 @@ configure_nevermined_compute() {
     $K create namespace $COMPUTE_NAMESPACE
   fi
 
-  #echo -e "${COLOR_B}Creating configmap with artifacts from folder ${KEEPER_ARTIFACTS_FOLDER} ...${COLOR_RESET}"
-  #$K create -n $COMPUTE_NAMESPACE configmap artifacts --from-file=${KEEPER_ARTIFACTS_FOLDER}  
-
-  # Install argo artifacts
-  helm install -n $COMPUTE_NAMESPACE argo-artifacts stable/minio --set fullnameOverride=argo-artifacts --set resources.requests.memory=1Gi
-  $K -n $COMPUTE_NAMESPACE get services -o wide | grep argo-artifacts
-  echo -e "${COLOR_G}"Notice: argo-artifacts was successfully installed"${COLOR_RESET}"
+  # Install MinIO
+  helm install -n $COMPUTE_NAMESPACE compute-minio stable/minio --set fullnameOverride=compute-minio --set resources.requests.memory=1Gi
+  $K -n $COMPUTE_NAMESPACE get services -o wide | grep compute-minio
+  echo -e "${COLOR_G}"Notice: compute-minio was successfully installed"${COLOR_RESET}"
 
   if ! $K get  -n $COMPUTE_NAMESPACE  rolebinding default-admin; then
     echo -e "Granting admin privileges"
@@ -298,12 +291,15 @@ configure_nevermined_compute() {
   $K -n $COMPUTE_NAMESPACE port-forward deployment/argo-workflows-server 2746:2746 &
 
   $K -n $COMPUTE_NAMESPACE wait --for=condition=ready pod -l app=minio --timeout=300s
-  $K -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/argo-artifacts 8060:9000 &
+  $K -n $COMPUTE_NAMESPACE port-forward --address 0.0.0.0 deployment/compute-minio 8060:9000 &
   echo "Use this token to login to argo workflows"
   echo $ARGO_TOKEN
   
   echo -e "${COLOR_G}Argo Workflows at: http://localhost:2746/workflows/ ${COLOR_RESET}\n"
   echo -e "${COLOR_G}Minio at: http://localhost:8060 ${COLOR_RESET}\n"
+
+  echo -e "${COLOR_B}Mounting Minikube Volume /nevermined-artifacts from folder ${KEEPER_ARTIFACTS_FOLDER} ...${COLOR_RESET}"
+  $SUDO minikube mount ${KEEPER_ARTIFACTS_FOLDER}:/nevermined-artifacts
 
 }
 
