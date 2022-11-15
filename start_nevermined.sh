@@ -75,7 +75,6 @@ export KEEPER_ARTIFACTS_FOLDER="${NEVERMINED_HOME}/nevermined-contracts/artifact
 export KEEPER_CIRCUITS_FOLDER="${NEVERMINED_HOME}/nevermined-contracts/circuits"
 # Specify which ethereum client to run or connect to: development, integration or staging
 export KEEPER_NETWORK_NAME="geth-localnet"
-export KEEPER_DEPLOY_CONTRACTS="false"
 export NODE_COMPOSE_FILE="${COMPOSE_DIR}/nodes/geth_localnet.yml"
 
 # Ganache specific option, these two options have no effect when not running ganache-cli
