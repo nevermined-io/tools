@@ -133,7 +133,9 @@ export AUTHLIB_INSECURE_TRANSPORT=true
 export COMPUTE_API_LOG_LEVEL="ERROR"
 export COMPUTE_NAMESPACE="nvm-disc"
 
-export NODE_IPFS_GATEWAY="https://dweb.link/ipfs/:cid"
+export NODE_IPFS_GATEWAY="https://ipfs.infura.io:5001"
+export IPFS_PROJECT_ID="2HalpIpBwQJ3CVttLU9LPlHENPE"
+export IPFS_PROJECT_SECRET="8cf3d5fe7a7d132e060f012848b9a10f"
 
 # Set a valid parity address and password to have seamless interaction with the `keeper`
 export PROVIDER_ADDRESS=0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
