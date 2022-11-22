@@ -201,9 +201,15 @@ install_argo() {
     helm install -n $COMPUTE_NAMESPACE argo-workflows argo/argo-workflows 
     
     # Create Token
-    $K create role argo-workflow --verb=list,get,create,update,delete --resource=workflows.argoproj.io -n $COMPUTE_NAMESPACE
+    $K create role argo-workflow --verb=list,get,create,update,delete,watch --resource=workflows.argoproj.io -n $COMPUTE_NAMESPACE
+    $K create role argo-workflow-pods --verb=list,get,watch --resource=pods -n $COMPUTE_NAMESPACE
+    $K create role argo-workflow-pods-log --verb=list,get,watch --resource=pods/log -n $COMPUTE_NAMESPACE
+
     $K create sa argo-workflow -n $COMPUTE_NAMESPACE
     $K create rolebinding argo-workflow --role=argo-workflow --serviceaccount=$COMPUTE_NAMESPACE:argo-workflow -n $COMPUTE_NAMESPACE
+    $K create rolebinding argo-workflow-pods --role=argo-workflow-pods --serviceaccount=$COMPUTE_NAMESPACE:argo-workflow -n $COMPUTE_NAMESPACE
+    $K create rolebinding argo-workflow-pods-log --role=argo-workflow-pods-log --serviceaccount=$COMPUTE_NAMESPACE:argo-workflow -n $COMPUTE_NAMESPACE
+
     $K apply -f $__DIR/tokensecret.yaml -n $COMPUTE_NAMESPACE
     ARGO_TOKEN="Bearer $($K -n $COMPUTE_NAMESPACE get secret argo-workflow.service-account-token -o=jsonpath='{.data.token}' | base64 --decode)"
   fi
