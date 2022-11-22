@@ -1,8 +1,8 @@
 version: '3'
 services:
-  gateway:
-    container_name: nevermined-gateway
-    image: neverminedio/gateway-ts:$GATEWAY_VERSION
+  node:
+    container_name: nevermined-node
+    image: neverminedio/node:$NODE_VERSION
     ports:
       - 8030:8030
     networks:
@@ -11,19 +11,19 @@ services:
     depends_on:
       - keeper-node
     env_file:
-      - ${GATEWAY_ENV_FILE}
+      - ${NODE_ENV_FILE}
     environment:
-      KEEPER_URL: ${KEEPER_RPC_URL}
-      KEEPER_PATH: ${KEEPER_PATH}
-      LOCAL_CONTRACTS: ${KEEPER_DEPLOY_CONTRACTS}
-      PROVIDER_ADDRESS: ${PROVIDER_ADDRESS}
+      WEB3_PROVIDER_URL: ${WEB3_PROVIDER_URL}
+      NODE_ADDRESS: ${PROVIDER_ADDRESS}
       PROVIDER_PASSWORD: ${PROVIDER_PASSWORD}
       PROVIDER_KEYFILE: ${PROVIDER_KEYFILE}
       RSA_PRIVKEY_FILE: ${RSA_PRIVKEY_FILE}
       RSA_PUBKEY_FILE: ${RSA_PUBKEY_FILE}
-      LOG_LEVEL: ${GATEWAY_LOG_LEVEL}
-      GATEWAY_WORKERS: ${GATEWAY_WORKERS}
-      IPFS_GATEWAY: ${GATEWAY_IPFS_GATEWAY}
+      LOG_LEVEL: ${NODE_LOG_LEVEL}
+      NODE_WORKERS: ${NODE_WORKERS}
+      IPFS_GATEWAY: ${NODE_IPFS_GATEWAY}
+      IPFS_PROJECT_ID: ${IPFS_PROJECT_ID}
+      IPFS_PROJECT_SECRET: ${IPFS_PROJECT_SECRET}
       COMPUTE_API_URL: ${COMPUTE_API_URL}
       AUTHLIB_INSECURE_TRANSPORT: ${AUTHLIB_INSECURE_TRANSPORT}
       AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
