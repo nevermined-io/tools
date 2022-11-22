@@ -118,7 +118,7 @@ export AWS_ENDPOINT_URL="http://nevermined-minio:9000"
 
 # Filecoin integration
 export ESTUARY_TOKEN="EST651aa3a7-4756-4bd9-a563-1cdd54229f64ARY"
-export ESTUARY_GATEWAY="https://shuttle-5.estuary.tech"
+export ESTUARY_ENDPOINT="https://api.estuary.tech"
 
 # minio
 
