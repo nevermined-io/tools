@@ -11,7 +11,7 @@ services:
     depends_on:
       - keeper-node
     environment:
-      KEEPER_URL: ${KEEPER_RPC_URL}
+      WEB3_PROVIDER_URL: ${WEB3_PROVIDER_URL}
       SEED_WORDS: ${KEEPER_MNEMONIC}
       NODE_ENV: 'production'
     volumes:
